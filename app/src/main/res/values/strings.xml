@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">TemplateProject</string>
+    <string name="treseta_blok">Treseta Blok</string>
+    <string name="new_game_button">Nova igra</string>
+    <string name="placeholder">placeholder</string>
 </resources>
