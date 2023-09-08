@@ -14,7 +14,6 @@ object ApiClient {
     private const val BASE_URL = "https://quotable.io/"
     lateinit var retrofit: Retrofit
 
-    @OptIn(ExperimentalSerializationApi::class)
     fun initRetrofit(context: Context) {
         val client: OkHttpClient =
             OkHttpClient.Builder()
