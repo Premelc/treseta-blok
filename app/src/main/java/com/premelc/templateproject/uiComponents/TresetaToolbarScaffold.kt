@@ -33,8 +33,6 @@ internal fun TresetaToolbarScaffold(
                 },
             )
         },
-        backgroundColor = Color.DarkGray,
-        contentColor = Color.White,
     ) {
         Column(modifier = Modifier.padding(it)) {
             content()

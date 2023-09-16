@@ -4,10 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "round")
-class RoundEntity(
+@Entity(tableName = "setTable")
+data class SetEntity(
     @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "gameId") val gameId: Int,
-    @ColumnInfo(name = "firstTeamPoints") val firstTeamPoints: Int,
-    @ColumnInfo(name = "secondTeamPoints") val secondTeamPoints: Int,
 )

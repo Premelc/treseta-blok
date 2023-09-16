@@ -3,16 +3,22 @@ package com.premelc.templateproject.domain.gameCalculator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.premelc.templateproject.data.RoundEntity
+import com.premelc.templateproject.data.TresetaDatabase
+import com.premelc.templateproject.navigation.NavRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 private const val MAX_POINT_DIGITS = 2
 
 class GameCalculatorViewModel(
-    val navController: NavController,
+    private val gameId: Int,
+    private val navController: NavController,
+    private val tresetaDatabase: TresetaDatabase,
 ) : ViewModel() {
 
     private val selectedTeam: MutableStateFlow<Team> = MutableStateFlow(Team.NONE)
@@ -55,9 +61,21 @@ class GameCalculatorViewModel(
             }
 
             GameCalculatorInteraction.TapOnSaveButton -> {
-                // TODO (add logic for saving the game result)
-
+                viewModelScope.launch {
+                    tresetaDatabase.roundDao().insertRound(
+                        listOf(
+                            RoundEntity(
+                                id = 0,
+                                gameId = gameId,
+                                firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
+                                secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
+                            )
+                        )
+                    )
+                }
+                navController.popBackStack()
             }
+
             is GameCalculatorInteraction.TapOnTeamCard -> {
                 selectedTeam.value = when (selectedTeam.value) {
                     interaction.team -> Team.NONE

@@ -6,7 +6,7 @@ internal data class GameCalculatorViewState(
     val selectedTeam: Team? = null,
 )
 
-internal enum class Team {
+enum class Team {
     FIRST,
     SECOND,
     NONE,

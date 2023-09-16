@@ -52,8 +52,8 @@ import org.koin.core.parameter.parametersOf
 
 
 @Composable
-internal fun GameCalculatorScreen(navController: NavController) {
-    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController) }
+internal fun GameCalculatorScreen(navController: NavController, gameId: Int) {
+    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController , gameId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameCalculatorContent(viewState, viewModel::onInteraction)
 }
@@ -63,7 +63,7 @@ private fun GameCalculatorContent(
     viewState: GameCalculatorViewState,
     onInteraction: (GameCalculatorInteraction) -> Unit,
 ) {
-    TresetaToolbarScaffold(backAction = {}) {
+    TresetaToolbarScaffold(backAction = {onInteraction(GameCalculatorInteraction.TapOnBackButton)}) {
         Column(
             modifier = Modifier
                 .padding(top = 20.dp)
