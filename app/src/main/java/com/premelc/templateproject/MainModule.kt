@@ -5,9 +5,11 @@ import com.premelc.templateproject.data.TresetaDatabase
 import com.premelc.templateproject.domain.mainMenu.MainMenuViewModel
 import com.premelc.templateproject.domain.tresetaGame.TresetaGameViewModel
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorViewModel
+import com.premelc.templateproject.service.TresetaService
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val appModule = module {
@@ -22,10 +24,11 @@ val appModule = module {
     viewModelOf(::MainMenuViewModel)
     viewModel { params ->
         TresetaGameViewModel(
-            tresetaDatabase = get(),
+            tresetaService = get(),
             navController = params[0],
             gameId = params[1],
         )
     }
     viewModelOf(::GameCalculatorViewModel)
+    singleOf(::TresetaService)
 }

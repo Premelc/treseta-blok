@@ -81,8 +81,8 @@ private fun MainMenuContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Image(
-                            modifier = Modifier.size(350.dp),
-                            painter = painterResource(id = R.drawable.treseta_no_text2),
+                            modifier = Modifier.fillMaxWidth().height(350.dp),
+                            painter = painterResource(id = R.drawable.treseta_cards),
                             contentDescription = null,
                         )
                     }

@@ -52,8 +52,8 @@ import org.koin.core.parameter.parametersOf
 
 
 @Composable
-internal fun GameCalculatorScreen(navController: NavController, gameId: Int) {
-    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController , gameId) }
+internal fun GameCalculatorScreen(navController: NavController, setId: Int) {
+    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController , setId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameCalculatorContent(viewState, viewModel::onInteraction)
 }

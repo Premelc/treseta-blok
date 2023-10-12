@@ -17,6 +17,9 @@ interface GameDao {
     @Query("SELECT * FROM game WHERE id IS :id")
     fun getSingleGame(id: Int): Flow<GameEntity>
 
+    @Query("SELECT * FROM game WHERE id IS :id")
+    suspend fun getCurrentGame(id: Int): GameEntity
+
     @Query("SELECT * FROM game ORDER BY id DESC LIMIT 1")
     suspend fun getNewGame(): GameEntity
 

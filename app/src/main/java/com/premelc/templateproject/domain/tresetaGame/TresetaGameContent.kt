@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.premelc.templateproject.data.RoundEntity
 import com.premelc.templateproject.domain.gameCalculator.Team
 import com.premelc.templateproject.ui.theme.Typography
 import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
@@ -48,7 +47,7 @@ internal fun TresetaGameContent(
     onInteraction: (TresetaGameInteraction) -> Unit,
 ) {
     Column {
-        PointListColumn(viewState.rounds)
+        PointListColumn(viewState)
         Divider(
             modifier = Modifier
                 .padding(horizontal = 4.dp, vertical = 8.dp)
@@ -87,7 +86,7 @@ internal fun TresetaGameContent(
 
 @Composable
 internal fun ColumnScope.PointListColumn(
-    roundList: List<RoundEntity>,
+    viewState: TresetaGameViewState,
 ) {
     Column(
         modifier = Modifier
@@ -103,13 +102,13 @@ internal fun ColumnScope.PointListColumn(
                     .padding(top = 12.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = "0", style = Typography.h6)
+                Text(text = viewState.firstTeamScore.toString(), style = Typography.h6)
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     text = ":",
                     style = Typography.h6
                 )
-                Text(text = "0", style = Typography.h6)
+                Text(text = viewState.secondTeamScore.toString(), style = Typography.h6)
             }
             Row(
                 modifier = Modifier
@@ -127,7 +126,7 @@ internal fun ColumnScope.PointListColumn(
                 color = MaterialTheme.colors.onSurface
             )
         }
-        if (roundList.isEmpty()) {
+        if (viewState.rounds.isEmpty()) {
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 textAlign = TextAlign.Center,
@@ -136,9 +135,8 @@ internal fun ColumnScope.PointListColumn(
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
             )
         } else {
-
             LazyColumn(Modifier.weight(1f)) {
-                items(roundList) {
+                items(viewState.rounds) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly

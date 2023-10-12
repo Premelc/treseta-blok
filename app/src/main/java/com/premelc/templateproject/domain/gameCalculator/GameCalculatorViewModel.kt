@@ -1,11 +1,11 @@
 package com.premelc.templateproject.domain.gameCalculator
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.premelc.templateproject.data.RoundEntity
 import com.premelc.templateproject.data.TresetaDatabase
-import com.premelc.templateproject.navigation.NavRoutes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 private const val MAX_POINT_DIGITS = 2
 
 class GameCalculatorViewModel(
-    private val gameId: Int,
+    private val setId: Int,
     private val navController: NavController,
     private val tresetaDatabase: TresetaDatabase,
 ) : ViewModel() {
@@ -66,7 +66,7 @@ class GameCalculatorViewModel(
                         listOf(
                             RoundEntity(
                                 id = 0,
-                                gameId = gameId,
+                                setId = setId,
                                 firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
                                 secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
                             )

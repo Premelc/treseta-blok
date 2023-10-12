@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.premelc.templateproject.data.GameEntity
+import com.premelc.templateproject.data.SetEntity
 import com.premelc.templateproject.data.TresetaDatabase
 import com.premelc.templateproject.navigation.NavRoutes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -20,20 +22,27 @@ class MainMenuViewModel(
     private val navController: NavController,
 ) : ViewModel() {
 
-    val viewState = tresetaDatabase.gameDao().getAllGames().flatMapLatest {
-        MutableStateFlow(MainMenuViewState(it))
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.Eagerly,
-        MainMenuViewState(emptyList()),
-    )
+
+
+    val viewState =
+        tresetaDatabase.gameDao().getAllGames().flatMapLatest {
+            MutableStateFlow(MainMenuViewState(it))
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            MainMenuViewState(emptyList()),
+        )
+
+
+
+
 
     internal fun onInteraction(interaction: MainMenuInteraction) {
         when (interaction) {
             MainMenuInteraction.OnNewGameClicked -> {
                 viewModelScope.launch {
-                    addNewGame(GameEntity(id = 0, firstTeamPoints = 0, secondTeamPoints = 0))
-                    val newGameId = tresetaDatabase.gameDao().getNewGame().id
+                    val newGameId =
+                        addNewGame(GameEntity(id = 0, firstTeamPoints = 0, secondTeamPoints = 0))
                     navController.navigate(NavRoutes.TresetaGame.route.plus("/${newGameId}"))
                 }
             }
@@ -56,6 +65,10 @@ class MainMenuViewModel(
         }
     }
 
-    private suspend fun addNewGame(game: GameEntity) =
+    private suspend fun addNewGame(game: GameEntity): Int {
         tresetaDatabase.gameDao().insertGame(listOf(game))
+        val newGameId = tresetaDatabase.gameDao().getNewGame().id
+        tresetaDatabase.setDao().insertSet(listOf(SetEntity(id = 0, gameId = newGameId)))
+        return newGameId
+    }
 }

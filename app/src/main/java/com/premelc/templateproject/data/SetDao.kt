@@ -14,6 +14,9 @@ interface SetDao {
     @Query("SELECT * FROM setTable WHERE gameId IS :gameId ")
     fun getAllSets(gameId: Int): Flow<List<SetEntity>>
 
-    @Query("SELECT * FROM setTable WHERE id IS :id")
+    @Query("SELECT * FROM setTable WHERE setId IS :id")
     fun getSingleSet(id: Int): Flow<SetEntity>
+
+    @Query("SELECT * FROM setTable WHERE gameId IS :gameId ORDER BY setId DESC LIMIT 1")
+    suspend fun getLatestSet(gameId: Int): SetEntity
 }

@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
         RoundEntity::class,
         SetEntity::class,
     ],
-    version = 2
+    version = 7
 )
 
 @TypeConverters(GameTypeConverter::class, RoundTypeConverter::class)
@@ -18,4 +18,5 @@ abstract class TresetaDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun roundDao(): RoundDao
     abstract fun setDao(): SetDao
+    abstract fun setRoundDao(): SetRoundDao
 }
