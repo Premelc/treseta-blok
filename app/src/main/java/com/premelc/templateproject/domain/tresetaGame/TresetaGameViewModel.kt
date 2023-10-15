@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class TresetaGameViewModel(
@@ -22,22 +23,19 @@ class TresetaGameViewModel(
 ) : ViewModel() {
     private val currentSetId = MutableStateFlow(0)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     internal val viewState =
-        tresetaService.selectedGameFlow(gameId).flatMapLatest { game ->
+        tresetaService.selectedGameFlow(gameId).map { game ->
             currentSetId.value = game.setList.first().id
             game.checkIfSetIsOver(game.setList.first().roundsList)
-            flowOf(
-                TresetaGameViewState(
-                    rounds = game.setList.first().roundsList,
-                    firstTeamScore = game.firstTeamScore ,
-                    secondTeamScore = game.secondTeamScore,
-                    winningTeam = when {
-                        game.firstTeamScore > game.secondTeamScore -> Team.FIRST
-                        game.secondTeamScore > game.firstTeamScore -> Team.SECOND
-                        else -> Team.NONE
-                    }
-                )
+            TresetaGameViewState(
+                rounds = game.setList.first().roundsList,
+                firstTeamScore = game.firstTeamScore,
+                secondTeamScore = game.secondTeamScore,
+                winningTeam = when {
+                    game.firstTeamScore > game.secondTeamScore -> Team.FIRST
+                    game.secondTeamScore > game.firstTeamScore -> Team.SECOND
+                    else -> Team.NONE
+                }
             )
         }.stateIn(
             viewModelScope,

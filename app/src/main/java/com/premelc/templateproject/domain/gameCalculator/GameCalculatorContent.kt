@@ -66,7 +66,6 @@ private fun GameCalculatorContent(
     TresetaToolbarScaffold(backAction = {onInteraction(GameCalculatorInteraction.TapOnBackButton)}) {
         Column(
             modifier = Modifier
-                .padding(top = 20.dp)
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,

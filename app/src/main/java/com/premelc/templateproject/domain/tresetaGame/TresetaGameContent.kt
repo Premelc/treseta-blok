@@ -33,12 +33,7 @@ import org.koin.core.parameter.parametersOf
 internal fun TresetaGameScreen(navController: NavController, gameId: Int) {
     val viewModel: TresetaGameViewModel = koinViewModel { parametersOf(navController, gameId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
-    TresetaToolbarScaffold(
-        backAction = { viewModel.onInteraction(TresetaGameInteraction.TapOnBackButton) },
-        title = { Text(text = "treseta igra") },
-    ) {
-        TresetaGameContent(viewState, viewModel::onInteraction)
-    }
+    TresetaGameContent(viewState, viewModel::onInteraction)
 }
 
 @Composable
@@ -46,40 +41,45 @@ internal fun TresetaGameContent(
     viewState: TresetaGameViewState,
     onInteraction: (TresetaGameInteraction) -> Unit,
 ) {
-    Column {
-        PointListColumn(viewState)
-        Divider(
-            modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-            color = MaterialTheme.colors.onSurface
-        )
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Text(
-                text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
-                style = Typography.h6,
-                textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
+    TresetaToolbarScaffold({ onInteraction(TresetaGameInteraction.TapOnBackButton) }) {
+        Column {
+            PointListColumn(viewState)
+            Divider(
+                modifier = Modifier
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colors.onSurface
             )
-            Text(
-                text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
-                style = Typography.h6,
-                textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(
+                    text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
+                    style = Typography.h6,
+                    textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
+                )
+                Text(
+                    text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
+                    style = Typography.h6,
+                    textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
+                )
+            }
+            Divider(
+                modifier = Modifier
+                    .padding(horizontal = 4.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                color = MaterialTheme.colors.onSurface
             )
-        }
-        Divider(
-            modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-            color = MaterialTheme.colors.onSurface
-        )
-        Button(
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .height(64.dp)
-                .fillMaxWidth(),
-            onClick = { onInteraction(TresetaGameInteraction.TapOnNewRound) },
-        ) {
-            Text(text = "Dodaj novu partiju")
+            Button(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .height(64.dp)
+                    .fillMaxWidth(),
+                onClick = { onInteraction(TresetaGameInteraction.TapOnNewRound) },
+            ) {
+                Text(text = "Dodaj novu partiju")
+            }
         }
     }
 }

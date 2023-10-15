@@ -12,7 +12,7 @@ enum class Team {
     NONE,
 }
 
-internal enum class Call(val value: Int) {
+enum class Call(val value: Int) {
     NAPOLITANA(3),
     X3(3),
     X4(4),

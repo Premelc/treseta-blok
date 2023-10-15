@@ -7,8 +7,6 @@ sealed interface GameState{
         val secondTeamScore: Int,
         val setList: List<GameSet>
     ):GameState
-
-    data object GameUpdating:GameState
 }
 
 data class GameSet(

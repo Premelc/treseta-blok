@@ -1,11 +1,9 @@
 package com.premelc.templateproject.domain.gameCalculator
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.premelc.templateproject.data.RoundEntity
-import com.premelc.templateproject.data.TresetaDatabase
+import com.premelc.templateproject.service.TresetaService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +15,8 @@ private const val MAX_POINT_DIGITS = 2
 
 class GameCalculatorViewModel(
     private val setId: Int,
+    private val tresetaService: TresetaService,
     private val navController: NavController,
-    private val tresetaDatabase: TresetaDatabase,
 ) : ViewModel() {
 
     private val selectedTeam: MutableStateFlow<Team> = MutableStateFlow(Team.NONE)
@@ -33,7 +31,7 @@ class GameCalculatorViewModel(
         secondTeamPoints,
         firstTeamCalls,
         secondTeamCalls,
-    ) { selection: Team, firstPoints: Int?, secondPoints: Int, firstCalls, secondCalls ->
+    ) { selection: Team, _: Int?, _: Int, _, _ ->
         GameCalculatorViewState(
             firstTeamScore = calculatePointsPlusCalls(Team.FIRST),
             secondTeamScore = calculatePointsPlusCalls(Team.SECOND),
@@ -62,15 +60,12 @@ class GameCalculatorViewModel(
 
             GameCalculatorInteraction.TapOnSaveButton -> {
                 viewModelScope.launch {
-                    tresetaDatabase.roundDao().insertRound(
-                        listOf(
-                            RoundEntity(
-                                id = 0,
-                                setId = setId,
-                                firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
-                                secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
-                            )
-                        )
+                    tresetaService.insertRound(
+                        setId = setId,
+                        firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
+                        secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
+                        firstTeamCalls = firstTeamCalls.value,
+                        secondTeamCalls = secondTeamCalls.value,
                     )
                 }
                 navController.popBackStack()

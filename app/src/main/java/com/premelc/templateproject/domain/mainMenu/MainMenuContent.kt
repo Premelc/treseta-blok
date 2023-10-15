@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -22,9 +21,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,9 +41,10 @@ import androidx.navigation.NavController
 import com.premelc.templateproject.R
 import com.premelc.templateproject.data.GameEntity
 import com.premelc.templateproject.ui.theme.Typography
+import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
-import java.time.LocalTime
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -60,11 +60,9 @@ private fun MainMenuContent(
     viewState: MainMenuViewState,
     onInteraction: (MainMenuInteraction) -> Unit,
 ) {
-    Scaffold {
+    TresetaToolbarScaffold {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             LazyColumn(
@@ -81,7 +79,9 @@ private fun MainMenuContent(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Image(
-                            modifier = Modifier.fillMaxWidth().height(350.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp),
                             painter = painterResource(id = R.drawable.treseta_cards),
                             contentDescription = null,
                         )
@@ -166,7 +166,7 @@ private fun PastGameCard(
                     verticalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     Text(
-                        text = "Zadnja partija: ${LocalTime.now()}",
+                        text = "Zadnja partija: ${game.timestamp.parseTimestamp()}",
                         style = Typography.body2,
                         color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
                     )
@@ -237,5 +237,28 @@ private fun PastGameCard(
                 }
             }
         }
+    }
+}
+
+@Composable
+@ReadOnlyComposable
+private fun Long?.parseTimestamp(): String {
+    return if (this == null) " - "
+    else when (val difference = System.currentTimeMillis() - this) {
+        in Long.MIN_VALUE..60000 -> "Upravo"
+        in 60001..1200000 -> "Prije nekoliko minuta"
+        in 1200001..4000000 -> "Prije sat vremena"
+        in 4000001..21600000 -> "Prije nekoliko sati"
+        in 21600000..Long.MAX_VALUE -> {
+            val gameDate = LocalDate.ofEpochDay(difference)
+            val nowDate = LocalDate.now()
+            when {
+                nowDate == gameDate -> "Danas"
+                nowDate.minusDays(1) == gameDate -> "Jucer"
+                else -> "${gameDate.dayOfMonth}.${gameDate.month}.${gameDate.year}"
+            }
+        }
+
+        else -> ""
     }
 }

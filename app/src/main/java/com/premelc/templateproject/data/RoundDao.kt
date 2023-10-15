@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RoundDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRound(round: List<RoundEntity>)
+    suspend fun insertRound(round: RoundEntity): Long
 
     @Query("SELECT * FROM round WHERE setId  IS :setId")
     suspend fun getAllRounds(setId: Int): List<RoundEntity>
