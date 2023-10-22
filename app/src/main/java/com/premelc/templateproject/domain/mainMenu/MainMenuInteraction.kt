@@ -5,4 +5,5 @@ internal sealed interface MainMenuInteraction {
     data object TestButton : MainMenuInteraction
     data class TapOnDeleteButton(val gameId: Int) : MainMenuInteraction
     data class TapOnGameCard(val gameId: Int) : MainMenuInteraction
+    data class TapOnFavoriteButton(val gameId: Int) : MainMenuInteraction
 }

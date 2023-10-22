@@ -10,4 +10,5 @@ data class TresetaGameViewState(
     val firstTeamScore: Int = 0,
     val secondTeamScore: Int = 0,
     val winningTeam: Team = Team.NONE,
+    val showHistoryButton: Boolean = false,
 )

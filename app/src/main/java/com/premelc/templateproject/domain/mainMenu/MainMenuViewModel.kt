@@ -19,8 +19,8 @@ class MainMenuViewModel(
 ) : ViewModel() {
 
     val viewState =
-        tresetaService.gamesFlow().flatMapLatest {
-            MutableStateFlow(MainMenuViewState(it))
+        tresetaService.gamesFlow().flatMapLatest { gameList ->
+            MutableStateFlow(MainMenuViewState(gameList.sortedByDescending { it.timestamp }))
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
@@ -47,6 +47,12 @@ class MainMenuViewModel(
             }
 
             MainMenuInteraction.TestButton -> Unit
+            is MainMenuInteraction.TapOnFavoriteButton ->
+                viewModelScope.launch {
+                    tresetaService.toggleGameFavoriteState(
+                        interaction.gameId
+                    )
+                }
         }
     }
 }

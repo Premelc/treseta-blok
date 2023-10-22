@@ -5,6 +5,7 @@ import com.premelc.templateproject.data.TresetaDatabase
 import com.premelc.templateproject.domain.mainMenu.MainMenuViewModel
 import com.premelc.templateproject.domain.tresetaGame.TresetaGameViewModel
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorViewModel
+import com.premelc.templateproject.domain.gameHistory.GameHistoryViewModel
 import com.premelc.templateproject.service.TresetaService
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -30,5 +31,6 @@ val appModule = module {
         )
     }
     viewModelOf(::GameCalculatorViewModel)
+    viewModelOf(::GameHistoryViewModel)
     singleOf(::TresetaService)
 }

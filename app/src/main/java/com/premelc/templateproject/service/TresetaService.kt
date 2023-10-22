@@ -9,19 +9,21 @@ import com.premelc.templateproject.domain.gameCalculator.Call
 import com.premelc.templateproject.domain.gameCalculator.Team
 import com.premelc.templateproject.service.data.GameSet
 import com.premelc.templateproject.service.data.GameState
-import com.premelc.templateproject.service.data.toRound
+import com.premelc.templateproject.service.data.Round
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class TresetaService(private val tresetaDatabase: TresetaDatabase) {
 
     fun selectedGameFlow(gameId: Int) = combine(
         tresetaDatabase.gameDao().getSingleGame(gameId),
         tresetaDatabase.setDao().getAllSets(gameId),
-        tresetaDatabase.roundDao().getRounds()
+        tresetaDatabase.roundDao().getRounds(),
     ) { game, sets, rounds ->
         GameState.GameReady(
             gameId = game.id,
+            isFavorite = game.isFavorite,
             firstTeamScore = game.firstTeamPoints,
             secondTeamScore = game.secondTeamPoints,
             setList = sets.map { setEntity ->
@@ -37,6 +39,23 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
 
     fun gamesFlow() = tresetaDatabase.gameDao().getAllGames()
     suspend fun deleteGame(gameId: Int) = tresetaDatabase.gameDao().deleteGameById(gameId)
+
+    suspend fun toggleGameFavoriteState(gameId: Int) {
+        tresetaDatabase.gameDao().getSingleGame(gameId).first().let {
+            tresetaDatabase.gameDao().insertGame(
+                listOf(
+                    GameEntity(
+                        id = it.id,
+                        isFavorite = !it.isFavorite,
+                        timestamp = it.timestamp,
+                        firstTeamPoints = it.firstTeamPoints,
+                        secondTeamPoints = it.secondTeamPoints,
+                    )
+                )
+            )
+        }
+    }
+
     suspend fun insertRound(
         setId: Int,
         firstTeamPoints: Int,
@@ -58,24 +77,21 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
             tresetaDatabase.setDao().getSingleSet(setId).first().gameId,
             newTimestamp
         )
-        val callEntityList = emptyList<CallsEntity>()
-        for (call in firstTeamCalls) {
-            callEntityList + CallsEntity(
+        tresetaDatabase.callsDao().insertCalls(firstTeamCalls.map {
+            CallsEntity(
                 id = 0,
                 roundId = roundId.toInt(),
                 team = Team.FIRST,
-                call = call
+                call = it
             )
-        }
-        for (call in secondTeamCalls) {
-            callEntityList + CallsEntity(
+        } + (secondTeamCalls.map {
+            CallsEntity(
                 id = 0,
                 roundId = roundId.toInt(),
                 team = Team.SECOND,
-                call = call
+                call = it
             )
-        }
-        tresetaDatabase.callsDao().insertCalls(callEntityList)
+        }))
     }
 
     suspend fun startNewGame(): Int {
@@ -83,6 +99,7 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
             listOf(
                 GameEntity(
                     id = 0,
+                    isFavorite = false,
                     timestamp = null,
                     firstTeamPoints = 0,
                     secondTeamPoints = 0
@@ -116,10 +133,11 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 tresetaDatabase.gameDao().insertGame(
                     listOf(
                         GameEntity(
-                            game.gameId,
-                            System.currentTimeMillis(),
-                            game.firstTeamScore + 1,
-                            game.secondTeamScore,
+                            id = game.gameId,
+                            isFavorite = false,
+                            timestamp = System.currentTimeMillis(),
+                            firstTeamPoints = game.firstTeamScore + 1,
+                            secondTeamPoints = game.secondTeamScore,
                         )
                     )
                 )
@@ -137,10 +155,11 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 tresetaDatabase.gameDao().insertGame(
                     listOf(
                         GameEntity(
-                            game.gameId,
-                            System.currentTimeMillis(),
-                            game.firstTeamScore,
-                            game.secondTeamScore + 1,
+                            id = game.gameId,
+                            isFavorite = game.isFavorite,
+                            timestamp = System.currentTimeMillis(),
+                            firstTeamPoints = game.firstTeamScore,
+                            secondTeamPoints = game.secondTeamScore + 1,
                         )
                     )
                 )
@@ -156,6 +175,7 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 listOf(
                     GameEntity(
                         id = it.id,
+                        isFavorite = it.isFavorite,
                         timestamp = newTimestamp,
                         firstTeamPoints = it.firstTeamPoints,
                         secondTeamPoints = it.secondTeamPoints
@@ -163,5 +183,17 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 )
             )
         }
+    }
+
+    private suspend fun RoundEntity.toRound(): Round {
+        val calls = tresetaDatabase.callsDao().getCallsInRound(this.id)
+        return Round(
+            id = this.id,
+            timestamp = this.timestamp,
+            firstTeamPoints = this.firstTeamPoints,
+            secondTeamPoints = this.secondTeamPoints,
+            firstTeamCalls = calls.filter { it.team == Team.FIRST }.map { it.call },
+            secondTeamCalls = calls.filter { it.team == Team.SECOND }.map { it.call },
+        )
     }
 }

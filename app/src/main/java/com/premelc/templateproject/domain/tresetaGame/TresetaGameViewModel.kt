@@ -8,18 +8,15 @@ import com.premelc.templateproject.navigation.NavRoutes
 import com.premelc.templateproject.service.TresetaService
 import com.premelc.templateproject.service.data.GameState
 import com.premelc.templateproject.service.data.Round
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class TresetaGameViewModel(
     private val tresetaService: TresetaService,
     private val navController: NavController,
-    gameId: Int,
+    private val gameId: Int,
 ) : ViewModel() {
     private val currentSetId = MutableStateFlow(0)
 
@@ -35,7 +32,8 @@ class TresetaGameViewModel(
                     game.firstTeamScore > game.secondTeamScore -> Team.FIRST
                     game.secondTeamScore > game.firstTeamScore -> Team.SECOND
                     else -> Team.NONE
-                }
+                },
+                showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() }
             )
         }.stateIn(
             viewModelScope,
@@ -63,6 +61,12 @@ class TresetaGameViewModel(
             TresetaGameInteraction.TapOnNewRound -> {
                 navController.navigate(NavRoutes.GameCalculator.route.plus("/${currentSetId.value}"))
             }
+
+            TresetaGameInteraction.TapOnHistoryButton -> navController.navigate(
+                NavRoutes.GameHistory.route.plus(
+                    "/${gameId}"
+                )
+            )
         }
     }
 

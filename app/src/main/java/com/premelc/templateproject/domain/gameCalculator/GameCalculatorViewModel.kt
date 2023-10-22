@@ -31,11 +31,14 @@ class GameCalculatorViewModel(
         secondTeamPoints,
         firstTeamCalls,
         secondTeamCalls,
-    ) { selection: Team, _: Int?, _: Int, _, _ ->
+    ) { selection: Team, _: Int?, _: Int, firstTeamCalls, secondTeamCalls ->
         GameCalculatorViewState(
             firstTeamScore = calculatePointsPlusCalls(Team.FIRST),
             secondTeamScore = calculatePointsPlusCalls(Team.SECOND),
+            firstTeamCalls = firstTeamCalls,
+            secondTeamCalls = secondTeamCalls,
             selectedTeam = selection,
+            isSaveButtonEnabled = firstTeamPoints.value > 0 || secondTeamPoints.value > 0,
         )
     }.stateIn(
         viewModelScope,

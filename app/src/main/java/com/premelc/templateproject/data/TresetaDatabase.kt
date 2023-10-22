@@ -11,7 +11,7 @@ import androidx.room.TypeConverters
         SetEntity::class,
         CallsEntity::class,
     ],
-    version = 9
+    version = 14
 )
 
 @TypeConverters(GameTypeConverter::class, RoundTypeConverter::class)

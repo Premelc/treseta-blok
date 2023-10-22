@@ -2,6 +2,8 @@ package com.premelc.templateproject.domain.mainMenu
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +25,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -42,11 +45,10 @@ import com.premelc.templateproject.R
 import com.premelc.templateproject.data.GameEntity
 import com.premelc.templateproject.ui.theme.Typography
 import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
+import com.premelc.templateproject.uiComponents.parseTimestamp
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
-import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainMenuScreen(navController: NavController) {
     val viewModel: MainMenuViewModel = getViewModel { parametersOf(navController) }
@@ -54,7 +56,6 @@ fun MainMenuScreen(navController: NavController) {
     MainMenuContent(viewState, viewModel::onInteraction)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun MainMenuContent(
     viewState: MainMenuViewState,
@@ -114,13 +115,10 @@ private fun MainMenuContent(
                                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                             )
                         }
-
                     }
                 } else {
-                    for (game in viewState.games) {
-                        item {
-                            PastGameCard(game, onInteraction)
-                        }
+                    item {
+                        PastGameContent(games = viewState.games, onInteraction = onInteraction)
                     }
                 }
             }
@@ -136,14 +134,52 @@ private fun MainMenuContent(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+private fun PastGameContent(games: List<GameEntity>, onInteraction: (MainMenuInteraction) -> Unit) {
+    Column {
+        if (games.any { it.isFavorite }) {
+            Text(
+                text = "Favoriti",
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 18.sp,
+                    fontStyle = FontStyle.Italic,
+                    letterSpacing = 0.15.sp
+                ),
+                modifier = Modifier.padding(bottom = 4.dp, start = 20.dp)
+            )
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
+            )
+            games.filter { it.isFavorite }.forEach {
+                PastGameCard(game = it, onInteraction = onInteraction)
+            }
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
+            )
+        }
+        games.filter { !it.isFavorite }.forEach {
+            PastGameCard(
+                game = it,
+                onInteraction = onInteraction
+            )
+        }
+    }
+}
+
+
 @Composable
 private fun PastGameCard(
+    modifier: Modifier = Modifier,
     game: GameEntity,
     onInteraction: (MainMenuInteraction) -> Unit,
 ) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(horizontal = 20.dp)
@@ -161,15 +197,39 @@ private fun PastGameCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                Icon(
+                    modifier = Modifier
+                        .size(34.dp)
+                        .padding(end = 8.dp)
+                        .clickable {
+                            onInteraction(
+                                MainMenuInteraction.TapOnFavoriteButton(
+                                    game.id
+                                )
+                            )
+                        },
+                    painter = if (game.isFavorite) painterResource(R.drawable.star_full) else painterResource(
+                        R.drawable.star_empty
+                    ),
+                    contentDescription = null,
+                    tint = Color.Yellow,
+                )
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    Text(
-                        text = "Zadnja partija: ${game.timestamp.parseTimestamp()}",
-                        style = Typography.body2,
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-                    )
+                    if (game.timestamp != null) {
+                        Text(
+                            text = "Zadnja partija: ${game.timestamp.parseTimestamp()}",
+                            style = TextStyle(
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 10.sp,
+                                fontStyle = FontStyle.Italic,
+                                letterSpacing = 0.25.sp,
+                            ),
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
+                        )
+                    }
                     Row(
                         horizontalArrangement = Arrangement.Center,
                     ) {
@@ -237,28 +297,5 @@ private fun PastGameCard(
                 }
             }
         }
-    }
-}
-
-@Composable
-@ReadOnlyComposable
-private fun Long?.parseTimestamp(): String {
-    return if (this == null) " - "
-    else when (val difference = System.currentTimeMillis() - this) {
-        in Long.MIN_VALUE..60000 -> "Upravo"
-        in 60001..1200000 -> "Prije nekoliko minuta"
-        in 1200001..4000000 -> "Prije sat vremena"
-        in 4000001..21600000 -> "Prije nekoliko sati"
-        in 21600000..Long.MAX_VALUE -> {
-            val gameDate = LocalDate.ofEpochDay(difference)
-            val nowDate = LocalDate.now()
-            when {
-                nowDate == gameDate -> "Danas"
-                nowDate.minusDays(1) == gameDate -> "Jucer"
-                else -> "${gameDate.dayOfMonth}.${gameDate.month}.${gameDate.year}"
-            }
-        }
-
-        else -> ""
     }
 }

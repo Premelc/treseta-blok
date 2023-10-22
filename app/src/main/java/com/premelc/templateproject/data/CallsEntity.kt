@@ -8,7 +8,7 @@ import com.premelc.templateproject.domain.gameCalculator.Team
 
 @Entity(tableName = "call")
 class CallsEntity(
-    @ColumnInfo(name = "callId") @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "id") @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "roundId") val roundId: Int,
     @ColumnInfo(name = "team") val team: Team,
     @ColumnInfo(name = "call") val call: Call,

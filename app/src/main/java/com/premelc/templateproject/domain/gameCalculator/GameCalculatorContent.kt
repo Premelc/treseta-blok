@@ -47,13 +47,15 @@ import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteracti
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnSaveButton
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnCallButton
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnTeamCard
+import com.premelc.templateproject.uiComponents.CallsList
+import com.premelc.templateproject.uiComponents.animatePlacement
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 
 @Composable
 internal fun GameCalculatorScreen(navController: NavController, setId: Int) {
-    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController , setId) }
+    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController, setId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameCalculatorContent(viewState, viewModel::onInteraction)
 }
@@ -63,39 +65,58 @@ private fun GameCalculatorContent(
     viewState: GameCalculatorViewState,
     onInteraction: (GameCalculatorInteraction) -> Unit,
 ) {
-    TresetaToolbarScaffold(backAction = {onInteraction(GameCalculatorInteraction.TapOnBackButton)}) {
+    TresetaToolbarScaffold(backAction = { onInteraction(GameCalculatorInteraction.TapOnBackButton) }) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(Modifier.padding(20.dp)) {
-                TeamPointCard(
-                    team = "MI",
-                    pointValue = viewState.firstTeamScore,
-                    isSelected = viewState.selectedTeam == Team.FIRST,
-                    onClick = {
-                        onInteraction(TapOnTeamCard(Team.FIRST))
-                    },
+            Row(Modifier.padding(horizontal = 20.dp)) {
+                CallsList(
+                    horizontalArrangement = Arrangement.Start,
+                    calls = viewState.firstTeamCalls
                 )
-                TeamPointCard(
-                    team = "VI",
-                    pointValue = viewState.secondTeamScore,
-                    isSelected = viewState.selectedTeam == Team.SECOND,
-                    onClick = {
-                        onInteraction(TapOnTeamCard(Team.SECOND))
+                CallsList(
+                    horizontalArrangement = Arrangement.End,
+                    calls = viewState.secondTeamCalls
+                )
+            }
+            Column(modifier = Modifier.animatePlacement()) {
+                Row(Modifier.padding(20.dp)) {
+                    TeamPointCard(
+                        team = "MI",
+                        pointValue = viewState.firstTeamScore,
+                        isSelected = viewState.selectedTeam == Team.FIRST,
+                        onClick = {
+                            onInteraction(TapOnTeamCard(Team.FIRST))
+                        },
+                    )
+                    TeamPointCard(
+                        team = "VI",
+                        pointValue = viewState.secondTeamScore,
+                        isSelected = viewState.selectedTeam == Team.SECOND,
+                        onClick = {
+                            onInteraction(TapOnTeamCard(Team.SECOND))
+                        },
+                    )
+                }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Zvanja",
+                )
+                Calls(
+                    onInteraction = { call ->
+                        onInteraction(TapOnCallButton(call))
                     },
                 )
             }
-            Text(text = "Zvanja")
-            Calls(
-                onInteraction = { call ->
-                    onInteraction(TapOnCallButton(call))
-                },
-            )
             Spacer(modifier = Modifier.weight(1f))
-            BuiltInNumPad(onInteraction = onInteraction)
+            BuiltInNumPad(
+                onInteraction = onInteraction,
+                isSaveButtonEnabled = viewState.isSaveButtonEnabled,
+            )
         }
     }
 }
@@ -198,7 +219,7 @@ private fun RowScope.TeamPointCard(
 
 @Composable
 private fun BuiltInNumPad(
-    modifier: Modifier = Modifier,
+    isSaveButtonEnabled: Boolean,
     onInteraction: (GameCalculatorInteraction) -> Unit,
 ) {
     Card(
@@ -210,57 +231,57 @@ private fun BuiltInNumPad(
                 .padding(horizontal = 8.dp, vertical = 20.dp),
         ) {
             Row {
-                numberField(
+                NumberField(
                     text = "7",
                     onClick = { onInteraction(TapOnNumberButton(7)) })
-                numberField(
+                NumberField(
                     text = "8",
                     onClick = { onInteraction(TapOnNumberButton(8)) })
-                numberField(
+                NumberField(
                     text = "9",
                     onClick = { onInteraction(TapOnNumberButton(9)) })
             }
             Row {
-                numberField(
+                NumberField(
                     text = "4",
                     onClick = { onInteraction(TapOnNumberButton(4)) })
-                numberField(
+                NumberField(
                     text = "5",
                     onClick = { onInteraction(TapOnNumberButton(5)) })
-                numberField(
+                NumberField(
                     text = "6",
                     onClick = { onInteraction(TapOnNumberButton(6)) })
             }
             Row {
-                numberField(
+                NumberField(
                     text = "1",
                     onClick = { onInteraction(TapOnNumberButton(1)) })
-                numberField(
+                NumberField(
                     text = "2",
                     onClick = { onInteraction(TapOnNumberButton(2)) })
-                numberField(
+                NumberField(
                     text = "3",
                     onClick = { onInteraction(TapOnNumberButton(3)) })
             }
             Row {
-                numberField(
+                NumberField(
                     text = "Obrisi",
                     backgroundColor = Color.Red,
                     onClick = { onInteraction(TapOnDeleteButton) })
-                numberField(
+                NumberField(
                     text = "0",
                     onClick = { onInteraction(TapOnNumberButton(0)) })
-                numberField(
+                NumberField(
                     text = "Spremi",
-                    backgroundColor = Color.Green,
-                    onClick = { onInteraction(TapOnSaveButton) })
+                    backgroundColor = if (isSaveButtonEnabled) Color.Green else Color.Gray,
+                    onClick = { if (isSaveButtonEnabled) onInteraction(TapOnSaveButton) })
             }
         }
     }
 }
 
 @Composable
-private fun RowScope.numberField(
+private fun RowScope.NumberField(
     text: String,
     backgroundColor: Color = MaterialTheme.colors.surface,
     onClick: () -> Unit = {}
