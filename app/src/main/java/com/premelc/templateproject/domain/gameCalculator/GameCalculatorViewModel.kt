@@ -120,5 +120,4 @@ class GameCalculatorViewModel(
     private fun String.parseTeamPoints() =
         this.filter { it.isDigit() }.take(MAX_POINT_DIGITS).removePrefix("0").toInt()
             .coerceAtMost(11)
-
 }
