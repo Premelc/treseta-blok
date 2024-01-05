@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -54,9 +55,9 @@ internal fun TresetaToolbarScaffold(
 }
 
 @Composable
-internal fun TresetaToolbarScaffold(
-    backAction: (() -> Unit)?,
-    topBarContent: @Composable RowScope.() -> Unit,
+internal fun TresetaGameScaffold(
+    leftAction: @Composable () -> Unit,
+    rightAction: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Scaffold(
@@ -69,20 +70,12 @@ internal fun TresetaToolbarScaffold(
                     .fillMaxWidth()
                     .padding(20.dp),
             ) {
-                backAction?.let {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable { it() },
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null
-                    )
-                }
+                leftAction()
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    topBarContent()
+                    rightAction()
                 }
             }
         },

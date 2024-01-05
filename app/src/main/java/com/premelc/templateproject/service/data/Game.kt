@@ -1,7 +1,6 @@
 package com.premelc.templateproject.service.data
 
 import com.premelc.templateproject.domain.gameCalculator.Call
-import java.security.Timestamp
 
 sealed interface GameState{
     data class GameReady(
@@ -11,6 +10,8 @@ sealed interface GameState{
         val secondTeamScore: Int,
         val setList: List<GameSet>
     ):GameState
+
+    data object NoActiveGames: GameState
 }
 
 data class GameSet(

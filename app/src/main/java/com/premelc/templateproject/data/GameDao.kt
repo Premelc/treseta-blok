@@ -12,7 +12,7 @@ interface GameDao {
     suspend fun insertGame(game: List<GameEntity>)
 
     @Query("SELECT * FROM game")
-    fun getAllGames(): Flow<List<GameEntity>>
+    fun getAllGames(): Flow<List<GameEntity>?>
 
     @Query("SELECT * FROM game WHERE id IS :id")
     fun getSingleGame(id: Int): Flow<GameEntity>
@@ -26,5 +26,6 @@ interface GameDao {
     @Query("DELETE FROM game WHERE id = :gameId")
     suspend fun deleteGameById(gameId: Int)
 
-
+    @Query("SELECT * FROM game ORDER BY timestamp DESC")
+    fun getLatestGame(): Flow<GameEntity?>
 }

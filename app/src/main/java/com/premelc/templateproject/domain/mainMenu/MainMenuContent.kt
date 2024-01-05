@@ -1,9 +1,5 @@
 package com.premelc.templateproject.domain.mainMenu
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -126,6 +122,7 @@ private fun MainMenuContent(
                 onClick = { onInteraction(MainMenuInteraction.OnNewGameClicked) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(20.dp)
                     .height(60.dp),
             ) {
                 Text(text = stringResource(R.string.new_game_button))

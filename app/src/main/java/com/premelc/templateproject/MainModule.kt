@@ -27,7 +27,6 @@ val appModule = module {
         TresetaGameViewModel(
             tresetaService = get(),
             navController = params[0],
-            gameId = params[1],
         )
     }
     viewModelOf(::GameCalculatorViewModel)

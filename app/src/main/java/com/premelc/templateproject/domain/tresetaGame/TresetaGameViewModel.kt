@@ -10,35 +10,59 @@ import com.premelc.templateproject.service.data.GameState
 import com.premelc.templateproject.service.data.Round
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class TresetaGameViewModel(
     private val tresetaService: TresetaService,
     private val navController: NavController,
-    private val gameId: Int,
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            if (tresetaService.selectedGameFlow().first() is GameState.NoActiveGames){
+                tresetaService.startNewGame()
+            }
+        }
+    }
+
     private val currentSetId = MutableStateFlow(0)
 
     internal val viewState =
-        tresetaService.selectedGameFlow(gameId).map { game ->
-            currentSetId.value = game.setList.first().id
-            game.checkIfSetIsOver(game.setList.first().roundsList)
-            TresetaGameViewState(
-                rounds = game.setList.first().roundsList,
-                firstTeamScore = game.firstTeamScore,
-                secondTeamScore = game.secondTeamScore,
-                winningTeam = when {
-                    game.firstTeamScore > game.secondTeamScore -> Team.FIRST
-                    game.secondTeamScore > game.firstTeamScore -> Team.SECOND
-                    else -> Team.NONE
-                },
-                showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() }
-            )
+        tresetaService.selectedGameFlow().map { game ->
+            when (game) {
+                GameState.NoActiveGames -> {
+                    TresetaGameViewState.GameReady(
+                        rounds = emptyList(),
+                        firstTeamScore = 0,
+                        secondTeamScore = 0,
+                        winningTeam = Team.NONE,
+                        showHistoryButton = true
+                    )
+                }
+
+                is GameState.GameReady -> {
+                    currentSetId.value = game.setList.firstOrNull()?.id ?: 0
+                    game.checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
+                    TresetaGameViewState.GameReady(
+                        rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
+                        firstTeamScore = game.firstTeamScore,
+                        secondTeamScore = game.secondTeamScore,
+                        winningTeam = when {
+                            game.firstTeamScore > game.secondTeamScore -> Team.FIRST
+                            game.secondTeamScore > game.firstTeamScore -> Team.SECOND
+                            else -> Team.NONE
+                        },
+                        showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() }
+                    )
+                }
+            }
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            TresetaGameViewState()
+            TresetaGameViewState.GameLoading
         )
 
     private suspend fun GameState.GameReady.checkIfSetIsOver(roundsList: List<Round>) {
@@ -62,11 +86,8 @@ class TresetaGameViewModel(
                 navController.navigate(NavRoutes.GameCalculator.route.plus("/${currentSetId.value}"))
             }
 
-            TresetaGameInteraction.TapOnHistoryButton -> navController.navigate(
-                NavRoutes.GameHistory.route.plus(
-                    "/${gameId}"
-                )
-            )
+            TresetaGameInteraction.TapOnHistoryButton -> navController.navigate(NavRoutes.GameHistory.route)
+            TresetaGameInteraction.TapOnMenuButton -> navController.navigate(NavRoutes.MainMenu.route)
         }
     }
 

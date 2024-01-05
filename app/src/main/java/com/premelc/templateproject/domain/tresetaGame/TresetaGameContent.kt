@@ -16,7 +16,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,25 +29,33 @@ import androidx.navigation.NavController
 import com.premelc.templateproject.R
 import com.premelc.templateproject.domain.gameCalculator.Team
 import com.premelc.templateproject.ui.theme.Typography
-import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
+import com.premelc.templateproject.uiComponents.TresetaGameScaffold
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-internal fun TresetaGameScreen(navController: NavController, gameId: Int) {
-    val viewModel: TresetaGameViewModel = koinViewModel { parametersOf(navController, gameId) }
+internal fun TresetaGameScreen(navController: NavController) {
+    val viewModel: TresetaGameViewModel = koinViewModel { parametersOf(navController) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
-    TresetaGameContent(viewState, viewModel::onInteraction)
+    if (viewState is TresetaGameViewState.GameReady) {
+        TresetaGameContent(viewState, viewModel::onInteraction)
+    }
 }
 
 @Composable
 internal fun TresetaGameContent(
-    viewState: TresetaGameViewState,
+    viewState: TresetaGameViewState.GameReady,
     onInteraction: (TresetaGameInteraction) -> Unit,
 ) {
-    TresetaToolbarScaffold(
-        backAction = { onInteraction(TresetaGameInteraction.TapOnBackButton) },
-        topBarContent = {
+    TresetaGameScaffold(
+        leftAction = {
+            Icon(
+                modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnMenuButton) },
+                painter = painterResource(id = org.koin.android.R.drawable.abc_ic_menu_overflow_material),
+                contentDescription = null,
+            )
+        },
+        rightAction = {
             if (viewState.showHistoryButton) {
                 Icon(
                     modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnHistoryButton) },
@@ -89,7 +96,7 @@ internal fun TresetaGameContent(
             )
             Button(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(20.dp)
                     .height(64.dp)
                     .fillMaxWidth(),
                 onClick = { onInteraction(TresetaGameInteraction.TapOnNewRound) },
@@ -102,7 +109,7 @@ internal fun TresetaGameContent(
 
 @Composable
 internal fun ColumnScope.PointListColumn(
-    viewState: TresetaGameViewState,
+    viewState: TresetaGameViewState.GameReady,
 ) {
     Column(
         modifier = Modifier

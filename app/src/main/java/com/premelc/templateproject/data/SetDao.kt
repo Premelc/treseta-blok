@@ -19,4 +19,7 @@ interface SetDao {
 
     @Query("SELECT * FROM setTable WHERE gameId IS :gameId ORDER BY setId DESC LIMIT 1")
     suspend fun getLatestSet(gameId: Int): SetEntity
+
+    @Query("DELETE FROM setTable WHERE gameID IS :gameId")
+    suspend fun deleteSets(gameId: Int)
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.templateproject.service.data.GameSet
+import com.premelc.templateproject.ui.theme.Typography
 import com.premelc.templateproject.uiComponents.Accordion
 import com.premelc.templateproject.uiComponents.CallsList
 import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
@@ -41,8 +42,8 @@ import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun GameHistoryScreen(navController: NavController, gameId: Int) {
-    val viewModel: GameHistoryViewModel = getViewModel { parametersOf(navController, gameId) }
+fun GameHistoryScreen(navController: NavController) {
+    val viewModel: GameHistoryViewModel = getViewModel { parametersOf(navController) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameHistoryContent(viewState, viewModel::onInteraction)
 }
@@ -55,9 +56,6 @@ private fun GameHistoryContent(
     TresetaToolbarScaffold(
         backAction = {
             onInteraction(GameHistoryInteraction.OnBackButtonClicked)
-        },
-        topBarContent = {
-
         }
     ) {
         val listState = rememberLazyListState()
@@ -68,14 +66,22 @@ private fun GameHistoryContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             state = listState,
         ) {
+            item {
+                Text(
+                    text = "Povijest igre",
+                    style = Typography.h6.copy(fontWeight = FontWeight.Bold),
+                )
+            }
             viewState.sets.filter { it.roundsList.isNotEmpty() }.sortedBy { it.id }
                 .forEachIndexed { index, set ->
                     item {
                         Accordion(
+                            modifier = Modifier.padding(vertical = 9.dp),
                             title = "${index + 1}. set",
                             isExpanded = expanded.value == index,
                             onFinished = {

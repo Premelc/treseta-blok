@@ -19,7 +19,7 @@ class GameCalculatorViewModel(
     private val navController: NavController,
 ) : ViewModel() {
 
-    private val selectedTeam: MutableStateFlow<Team> = MutableStateFlow(Team.NONE)
+    private val selectedTeam: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamCalls: MutableStateFlow<List<Call>> = MutableStateFlow(emptyList())
     private val secondTeamCalls: MutableStateFlow<List<Call>> = MutableStateFlow(emptyList())
     private val firstTeamPoints: MutableStateFlow<Int> = MutableStateFlow(0)

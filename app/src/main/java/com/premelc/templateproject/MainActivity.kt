@@ -1,11 +1,9 @@
 package com.premelc.templateproject
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +22,9 @@ import com.premelc.templateproject.domain.tresetaGame.TresetaGameScreen
 import com.premelc.templateproject.navigation.NavRoutes
 import com.premelc.templateproject.ui.theme.TresetaBlokTheme
 
+private const val TRANSITION_DURATION = 500
+
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -38,40 +37,46 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = NavRoutes.MainMenu.route,
+                        startDestination = NavRoutes.TresetaGame.route,
                     ) {
+                        composable(
+                            route = NavRoutes.TresetaGame.route,
+                            enterTransition = {
+                                slideIntoContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                                    animationSpec = tween(TRANSITION_DURATION)
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                                    animationSpec = tween(TRANSITION_DURATION)
+                                )
+                            },
+                        ) {
+                            TresetaGameScreen(navController)
+                        }
                         composable(
                             route = NavRoutes.MainMenu.route,
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
-                            },
-                            popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            }) {
+                            }
+                        ) {
                             MainMenuScreen(navController = navController)
                         }
                         composable(
-                            route = NavRoutes.TresetaGame.route.plus("/{gameId}"),
+                            route = NavRoutes.GameCalculator.route.plus("/{setId}"),
                             arguments = listOf(
-                                navArgument("gameId") {
+                                navArgument("setId") {
                                     type = NavType.IntType
                                     defaultValue = 0
                                 }
@@ -79,99 +84,34 @@ class MainActivity : ComponentActivity() {
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
                             },
-                            popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            }
                         ) {
-                            TresetaGameScreen(navController, it.arguments?.getInt("gameId") ?: 0)
+                            GameCalculatorScreen(navController, it.arguments?.getInt("setId") ?: 0)
                         }
                         composable(
-                            route = NavRoutes.GameCalculator.route.plus("/{gameId}"),
-                            arguments = listOf(
-                                navArgument("gameId") {
-                                    type = NavType.IntType
-                                    defaultValue = 0
-                                }
-                            ),
+                            route = NavRoutes.GameHistory.route,
                             enterTransition = {
                                 slideIntoContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
                             },
                             exitTransition = {
                                 slideOutOfContainer(
                                     towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
+                                    animationSpec = tween(TRANSITION_DURATION)
                                 )
                             },
-                            popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            }
                         ) {
-                            GameCalculatorScreen(navController, it.arguments?.getInt("gameId") ?: 0)
-                        }
-                        composable(
-                            route = NavRoutes.GameHistory.route.plus("/{gameId}"),
-                            arguments = listOf(
-                                navArgument("gameId") {
-                                    type = NavType.IntType
-                                    defaultValue = 0
-                                }
-                            ),
-                            enterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            exitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            },
-                            popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-                                    animationSpec = tween(300)
-                                )
-                            }
-                        ) {
-                            GameHistoryScreen(navController, it.arguments?.getInt("gameId") ?: 0)
+                            GameHistoryScreen(navController)
                         }
                     }
                 }

@@ -39,11 +39,11 @@ fun Accordion(
     isExpanded: Boolean,
     onClick: () -> Unit = {},
     onFinished: () -> Unit = {},
+    modifier: Modifier = Modifier,
     rowContent: @Composable () -> Unit,
 ) {
     Column(
-        Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+        modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {

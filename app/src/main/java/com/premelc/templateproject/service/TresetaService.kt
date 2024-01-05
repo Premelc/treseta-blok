@@ -10,35 +10,93 @@ import com.premelc.templateproject.domain.gameCalculator.Team
 import com.premelc.templateproject.service.data.GameSet
 import com.premelc.templateproject.service.data.GameState
 import com.premelc.templateproject.service.data.Round
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TresetaService(private val tresetaDatabase: TresetaDatabase) {
 
-    fun selectedGameFlow(gameId: Int) = combine(
-        tresetaDatabase.gameDao().getSingleGame(gameId),
-        tresetaDatabase.setDao().getAllSets(gameId),
-        tresetaDatabase.roundDao().getRounds(),
-    ) { game, sets, rounds ->
-        GameState.GameReady(
-            gameId = game.id,
-            isFavorite = game.isFavorite,
-            firstTeamScore = game.firstTeamPoints,
-            secondTeamScore = game.secondTeamPoints,
-            setList = sets.map { setEntity ->
-                GameSet(
-                    id = setEntity.id,
-                    roundsList = rounds.filter {
-                        it.setId == setEntity.id
-                    }.map { it.toRound() }
-                )
-            }.sortedByDescending { it.id }
-        )
-    }
+    private val selectedGameId = MutableStateFlow<Int?>(null)
+
+    fun selectedGameFlow() =
+        selectedGameId.flatMapLatest {
+            selectedOrFirstGameFlow(it)
+        }
 
     fun gamesFlow() = tresetaDatabase.gameDao().getAllGames()
-    suspend fun deleteGame(gameId: Int) = tresetaDatabase.gameDao().deleteGameById(gameId)
+
+    fun setSelectedGame(gameId: Int) {
+        selectedGameId.value = gameId
+    }
+
+    private fun selectedOrFirstGameFlow(gameId: Int?) =
+        if (gameId != null) {
+            combine(
+                tresetaDatabase.gameDao().getSingleGame(gameId),
+                tresetaDatabase.setDao().getAllSets(gameId),
+                tresetaDatabase.roundDao().getRounds(),
+            ) { game, sets, rounds ->
+                GameState.GameReady(
+                    gameId = game.id,
+                    isFavorite = game.isFavorite,
+                    firstTeamScore = game.firstTeamPoints,
+                    secondTeamScore = game.secondTeamPoints,
+                    setList = sets.map { setEntity ->
+                        GameSet(
+                            id = setEntity.id,
+                            roundsList = rounds.filter {
+                                it.setId == setEntity.id
+                            }.map { it.toRound() }
+                        )
+                    }.sortedByDescending { it.id }
+                )
+            }
+        } else {
+            latestGameFlow()
+        }
+
+    private fun latestGameFlow() =
+        tresetaDatabase.gameDao().getLatestGame().flatMapLatest { game ->
+            if (game == null) {
+                flowOf(GameState.NoActiveGames)
+            } else {
+                combine(
+                    tresetaDatabase.setDao().getAllSets(game.id),
+                    tresetaDatabase.roundDao().getRounds(),
+                ) { sets, rounds ->
+                    setSelectedGame(game.id)
+                    GameState.GameReady(
+                        gameId = game.id,
+                        isFavorite = game.isFavorite,
+                        firstTeamScore = game.firstTeamPoints,
+                        secondTeamScore = game.secondTeamPoints,
+                        setList = sets.map { setEntity ->
+                            GameSet(
+                                id = setEntity.id,
+                                roundsList = rounds.filter {
+                                    it.setId == setEntity.id
+                                }.map { it.toRound() }
+                            )
+                        }.sortedByDescending { it.id }
+                    )
+                }
+            }
+        }
+
+    suspend fun deleteGame(gameId: Int) {
+        if (selectedGameId.value == gameId) selectedGameId.value = null
+        tresetaDatabase.gameDao().deleteGameById(gameId)
+        tresetaDatabase.setDao().getAllSets(gameId).collect {
+            it.map { set ->
+                tresetaDatabase.roundDao().deleteRounds(set.id)
+            }
+        }
+        tresetaDatabase.setDao().deleteSets(gameId)
+    }
 
     suspend fun toggleGameFavoriteState(gameId: Int) {
         tresetaDatabase.gameDao().getSingleGame(gameId).first().let {
@@ -94,7 +152,7 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
         }))
     }
 
-    suspend fun startNewGame(): Int {
+    suspend fun startNewGame() {
         tresetaDatabase.gameDao().insertGame(
             listOf(
                 GameEntity(
@@ -115,7 +173,7 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 )
             )
         )
-        return newGameId
+        setSelectedGame(newGameId)
     }
 
 

@@ -15,4 +15,7 @@ interface RoundDao {
     suspend fun getAllRounds(setId: Int): List<RoundEntity>
     @Query("SELECT * FROM round")
     fun getRounds(): Flow<List<RoundEntity>>
+
+    @Query("DELETE FROM round WHERE setId IS :setId")
+    suspend fun deleteRounds(setId: Int)
 }
