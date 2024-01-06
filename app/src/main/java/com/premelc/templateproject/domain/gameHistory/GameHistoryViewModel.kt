@@ -21,14 +21,20 @@ class GameHistoryViewModel(
     val viewState =
         tresetaService.selectedGameFlow().flatMapLatest {
             if (it is GameState.GameReady) {
-                MutableStateFlow(GameHistoryViewState(it.setList))
+                MutableStateFlow(
+                    GameHistoryViewState(
+                        firstTeamScore = it.firstTeamScore,
+                        secondTeamScore = it.secondTeamScore,
+                        sets = it.setList,
+                    ),
+                )
             } else {
-                MutableStateFlow(GameHistoryViewState(emptyList()))
+                MutableStateFlow(GameHistoryViewState())
             }
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            GameHistoryViewState(emptyList()),
+            GameHistoryViewState(),
         )
 
     fun onInteraction(interaction: GameHistoryInteraction) {
