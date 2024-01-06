@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.templateproject.R
 import com.premelc.templateproject.data.GameEntity
+import com.premelc.templateproject.ui.theme.ColorPalette
 import com.premelc.templateproject.ui.theme.Typography
 import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
 import com.premelc.templateproject.uiComponents.parseTimestamp
@@ -104,11 +105,11 @@ private fun MainMenuContent(
                             Text(
                                 modifier = Modifier.padding(top = 150.dp),
                                 text = "Nemate prijasnjih igara",
-                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
                             )
                             Text(
                                 text = "Zapocni novu igru pritiskom na tipku",
-                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -209,7 +210,7 @@ private fun PastGameCard(
                         R.drawable.star_empty
                     ),
                     contentDescription = null,
-                    tint = Color.Yellow,
+                    tint = ColorPalette.goldenYellow,
                 )
                 Column(
                     modifier = Modifier.weight(1f),
@@ -289,7 +290,7 @@ private fun PastGameCard(
                             .clickable { onInteraction(MainMenuInteraction.TapOnDeleteButton(game.id)) },
                         painter = painterResource(R.drawable.trash),
                         contentDescription = null,
-                        tint = Color.Red,
+                        tint = ColorPalette.richRed,
                     )
                 }
             }

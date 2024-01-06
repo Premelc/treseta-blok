@@ -47,6 +47,7 @@ import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteracti
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnSaveButton
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnCallButton
 import com.premelc.templateproject.domain.gameCalculator.GameCalculatorInteraction.TapOnTeamCard
+import com.premelc.templateproject.ui.theme.ColorPalette
 import com.premelc.templateproject.uiComponents.CallsList
 import com.premelc.templateproject.uiComponents.animatePlacement
 import org.koin.androidx.compose.koinViewModel
@@ -170,7 +171,7 @@ private fun RowScope.TeamPointCard(
     Box(
         modifier = Modifier
             .padding(8.dp)
-            .border(2.dp, if (isSelected) Color.Green else Color.Transparent)
+            .border(2.dp, if (isSelected) ColorPalette.mossGreen else Color.Transparent)
             .weight(1f),
         contentAlignment = Alignment.Center,
     ) {
@@ -221,60 +222,57 @@ private fun BuiltInNumPad(
     isSaveButtonEnabled: Boolean,
     onInteraction: (GameCalculatorInteraction) -> Unit,
 ) {
-    Card(
-        modifier = Modifier.wrapContentSize()
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 20.dp),
     ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 20.dp),
-        ) {
-            Row {
-                NumberField(
-                    text = "7",
-                    onClick = { onInteraction(TapOnNumberButton(7)) })
-                NumberField(
-                    text = "8",
-                    onClick = { onInteraction(TapOnNumberButton(8)) })
-                NumberField(
-                    text = "9",
-                    onClick = { onInteraction(TapOnNumberButton(9)) })
-            }
-            Row {
-                NumberField(
-                    text = "4",
-                    onClick = { onInteraction(TapOnNumberButton(4)) })
-                NumberField(
-                    text = "5",
-                    onClick = { onInteraction(TapOnNumberButton(5)) })
-                NumberField(
-                    text = "6",
-                    onClick = { onInteraction(TapOnNumberButton(6)) })
-            }
-            Row {
-                NumberField(
-                    text = "1",
-                    onClick = { onInteraction(TapOnNumberButton(1)) })
-                NumberField(
-                    text = "2",
-                    onClick = { onInteraction(TapOnNumberButton(2)) })
-                NumberField(
-                    text = "3",
-                    onClick = { onInteraction(TapOnNumberButton(3)) })
-            }
-            Row {
-                NumberField(
-                    text = "Obrisi",
-                    backgroundColor = Color.Red,
-                    onClick = { onInteraction(TapOnDeleteButton) })
-                NumberField(
-                    text = "0",
-                    onClick = { onInteraction(TapOnNumberButton(0)) })
-                NumberField(
-                    text = "Spremi",
-                    backgroundColor = if (isSaveButtonEnabled) Color.Green else Color.Gray,
-                    onClick = { if (isSaveButtonEnabled) onInteraction(TapOnSaveButton) })
-            }
+        Row {
+            NumberField(
+                text = "7",
+                onClick = { onInteraction(TapOnNumberButton(7)) })
+            NumberField(
+                text = "8",
+                onClick = { onInteraction(TapOnNumberButton(8)) })
+            NumberField(
+                text = "9",
+                onClick = { onInteraction(TapOnNumberButton(9)) })
+        }
+        Row {
+            NumberField(
+                text = "4",
+                onClick = { onInteraction(TapOnNumberButton(4)) })
+            NumberField(
+                text = "5",
+                onClick = { onInteraction(TapOnNumberButton(5)) })
+            NumberField(
+                text = "6",
+                onClick = { onInteraction(TapOnNumberButton(6)) })
+        }
+        Row {
+            NumberField(
+                text = "1",
+                onClick = { onInteraction(TapOnNumberButton(1)) })
+            NumberField(
+                text = "2",
+                onClick = { onInteraction(TapOnNumberButton(2)) })
+            NumberField(
+                text = "3",
+                onClick = { onInteraction(TapOnNumberButton(3)) })
+        }
+        Row {
+            NumberField(
+                text = "Obrisi",
+                backgroundColor = ColorPalette.richRed,
+                onClick = { onInteraction(TapOnDeleteButton) })
+            NumberField(
+                text = "0",
+                onClick = { onInteraction(TapOnNumberButton(0)) })
+            NumberField(
+                text = "Spremi",
+                backgroundColor = if (isSaveButtonEnabled) ColorPalette.coolGreen else ColorPalette.neutralGray,
+                isEnabled = isSaveButtonEnabled,
+                onClick = { onInteraction(TapOnSaveButton) })
         }
     }
 }
@@ -282,7 +280,8 @@ private fun BuiltInNumPad(
 @Composable
 private fun RowScope.NumberField(
     text: String,
-    backgroundColor: Color = MaterialTheme.colors.surface,
+    backgroundColor: Color = MaterialTheme.colors.background,
+    isEnabled: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -292,14 +291,14 @@ private fun RowScope.NumberField(
             .weight(1f)
             .padding(6.dp)
             .heightIn(60.dp)
-            .clickable { onClick() },
+            .clickable(enabled = isEnabled) { onClick() },
         backgroundColor = backgroundColor,
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = text)
+            Text(text)
         }
     }
 }

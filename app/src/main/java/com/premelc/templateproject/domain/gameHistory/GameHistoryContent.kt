@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -75,7 +76,41 @@ private fun GameHistoryContent(
                 Text(
                     text = "Povijest igre",
                     style = Typography.h6.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
+            }
+            item {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Text(text = "MI", style = Typography.h6)
+                        Text(text = "VI", style = Typography.h6)
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "1", style = Typography.h6)
+                        Text(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            text = ":",
+                            style = Typography.h6
+                        )
+                        Text(text = "2", style = Typography.h6)
+                    }
+                    Divider(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
+                        color = MaterialTheme.colors.onBackground
+                    )
+                }
             }
             viewState.sets.filter { it.roundsList.isNotEmpty() }.sortedBy { it.id }
                 .forEachIndexed { index, set ->
