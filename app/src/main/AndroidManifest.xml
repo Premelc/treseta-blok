@@ -17,7 +17,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/treseta_blok"
             android:theme="@style/Theme.TemplateProject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
