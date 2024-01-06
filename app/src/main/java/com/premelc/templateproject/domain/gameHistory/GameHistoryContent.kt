@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -66,10 +67,9 @@ private fun GameHistoryContent(
         }
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+                .fillMaxHeight()
                 .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.Top,
             state = listState,
         ) {
             item {
@@ -96,13 +96,13 @@ private fun GameHistoryContent(
                             .padding(top = 12.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "1", style = Typography.h6)
+                        Text(text = viewState.firstTeamScore.toString(), style = Typography.h6)
                         Text(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             text = ":",
                             style = Typography.h6
                         )
-                        Text(text = "2", style = Typography.h6)
+                        Text(text = viewState.secondTeamScore.toString(), style = Typography.h6)
                     }
                     Divider(
                         modifier = Modifier
