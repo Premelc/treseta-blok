@@ -74,7 +74,7 @@ internal fun TresetaGameContent(
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 8.dp)
                     .fillMaxWidth(),
-                color = MaterialTheme.colors.onSurface
+                color = MaterialTheme.colors.onBackground
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -95,7 +95,7 @@ internal fun TresetaGameContent(
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 8.dp)
                     .fillMaxWidth(),
-                color = MaterialTheme.colors.onSurface
+                color = MaterialTheme.colors.onBackground
             )
             Button(
                 modifier = Modifier
@@ -149,7 +149,7 @@ internal fun ColumnScope.PointListColumn(
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 8.dp)
                     .fillMaxWidth(),
-                color = MaterialTheme.colors.onSurface
+                color = MaterialTheme.colors.onBackground
             )
         }
         if (viewState.rounds.isEmpty()) {
@@ -158,7 +158,7 @@ internal fun ColumnScope.PointListColumn(
                 textAlign = TextAlign.Center,
                 text = "Nije odigrana nijedna partija, pritisnite gumb za dodavanje partije",
                 style = Typography.body1,
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
             )
         } else {
             Box(Modifier.weight(1f)) {

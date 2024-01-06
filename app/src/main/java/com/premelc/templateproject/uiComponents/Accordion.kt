@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -99,12 +100,12 @@ private fun AccordionHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(title, Modifier.weight(1f))
-            Surface(shape = CircleShape, color = Color.LightGray) {
+            Surface(shape = CircleShape, color = MaterialTheme.colors.surface) {
                 Icon(
                     Icons.Outlined.ArrowDropDown,
                     contentDescription = "arrow-down",
                     modifier = Modifier.rotate(rotation.value),
-                    tint = Color.Blue
+                    tint = MaterialTheme.colors.primary
                 )
             }
         }
