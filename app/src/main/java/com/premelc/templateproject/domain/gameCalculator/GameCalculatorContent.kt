@@ -52,7 +52,6 @@ import com.premelc.templateproject.uiComponents.animatePlacement
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-
 @Composable
 internal fun GameCalculatorScreen(navController: NavController, setId: Int) {
     val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController, setId) }

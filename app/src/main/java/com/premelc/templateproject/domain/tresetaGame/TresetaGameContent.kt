@@ -1,11 +1,14 @@
 package com.premelc.templateproject.domain.tresetaGame
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,20 +52,20 @@ internal fun TresetaGameContent(
 ) {
     TresetaGameScaffold(
         leftAction = {
-            Icon(
-                modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnMenuButton) },
-                painter = painterResource(id = org.koin.android.R.drawable.abc_ic_menu_overflow_material),
-                contentDescription = null,
-            )
-        },
-        rightAction = {
             if (viewState.showHistoryButton) {
                 Icon(
                     modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnHistoryButton) },
-                    painter = painterResource(id = R.drawable.history),
+                    painter = painterResource(R.drawable.history),
                     contentDescription = null,
                 )
             }
+        },
+        rightAction = {
+            Icon(
+                modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnMenuButton) },
+                painter = painterResource(org.koin.android.R.drawable.abc_ic_menu_overflow_material),
+                contentDescription = null,
+            )
         },
     ) {
         Column {
@@ -158,29 +161,38 @@ internal fun ColumnScope.PointListColumn(
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
             )
         } else {
-            LazyColumn(Modifier.weight(1f)) {
-                items(viewState.rounds) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text(
-                            text = it.firstTeamPoints.toString(),
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            style = Typography.body1
-                        )
-                        Text(
-                            text = it.secondTeamPoints.toString(),
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            style = Typography.body1
+            Box(Modifier.weight(1f)) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    painter = painterResource(id = R.drawable.treseta_cards),
+                    contentDescription = null,
+                    alpha = 0.1f
+                )
+                LazyColumn {
+                    items(viewState.rounds) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Text(
+                                text = it.firstTeamPoints.toString(),
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                style = Typography.body1
+                            )
+                            Text(
+                                text = it.secondTeamPoints.toString(),
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                style = Typography.body1
+                            )
+                        }
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, bottom = 8.dp),
+                            color = Color.LightGray
                         )
                     }
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp, bottom = 8.dp),
-                        color = Color.LightGray
-                    )
                 }
             }
         }
