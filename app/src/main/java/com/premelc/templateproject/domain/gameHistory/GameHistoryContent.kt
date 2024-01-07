@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,12 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.premelc.templateproject.domain.gameCalculator.Team
 import com.premelc.templateproject.service.data.GameSet
 import com.premelc.templateproject.ui.theme.Typography
 import com.premelc.templateproject.uiComponents.Accordion
 import com.premelc.templateproject.uiComponents.CallsList
 import com.premelc.templateproject.uiComponents.TresetaToolbarScaffold
 import com.premelc.templateproject.uiComponents.getItemViewportOffset
+import com.premelc.templateproject.uiComponents.graph.Graph
 import com.premelc.templateproject.uiComponents.parseTimestamp
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -146,6 +146,9 @@ private fun GameHistoryContent(
 private fun SetHistoryContent(
     set: GameSet
 ) {
+    val pointsAfterRoundFirstTeam = set.getTeamTotalPointsPerRound(Team.FIRST)
+    val pointsAfterRoundSecondTeam = set.getTeamTotalPointsPerRound(Team.SECOND)
+
     Card(
         modifier = Modifier
             .wrapContentSize()
@@ -157,6 +160,12 @@ private fun SetHistoryContent(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
+            Graph(
+                modifier = Modifier.height(250.dp),
+                xValues = (0..set.roundsList.size.coerceAtLeast(5) + 1).toList(),
+                firstTeamPoints = pointsAfterRoundFirstTeam,
+                secondTeamPoints = pointsAfterRoundSecondTeam,
+            )
             Text(
                 text = "Zadnja partija: ${set.roundsList.last().timestamp.parseTimestamp()}",
                 style = TextStyle(
@@ -181,6 +190,12 @@ private fun SetHistoryContent(
                             .weight(1f),
                         text = "${round.firstTeamPoints} : ${round.secondTeamPoints}"
                     )
+                    Text(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .weight(1f),
+                        text = "${pointsAfterRoundFirstTeam[index]} : ${pointsAfterRoundSecondTeam[index]}"
+                    )
                     CallsList(
                         horizontalArrangement = Arrangement.Start,
                         calls = round.secondTeamCalls
@@ -193,5 +208,14 @@ private fun SetHistoryContent(
                 )
             }
         }
+    }
+}
+
+private fun GameSet.getTeamTotalPointsPerRound(team: Team) = buildList {
+    var totalPoints = 0
+    add(totalPoints)
+    this@getTeamTotalPointsPerRound.roundsList.forEachIndexed { index, round ->
+        totalPoints += if (team == Team.FIRST) round.firstTeamPoints else round.secondTeamPoints
+        this.add(totalPoints)
     }
 }
