@@ -1,14 +1,22 @@
 package com.premelc.templateproject.uiComponents.graph
 
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
 import android.graphics.Paint
 import android.graphics.PointF
+import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -17,8 +25,11 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.premelc.templateproject.ui.theme.ColorPalette
+import java.time.format.TextStyle
 
 private val paddingSpace = 16.dp
 private const val VERTICAL_STEP = 5f
@@ -31,12 +42,11 @@ fun Graph(
     firstTeamPoints: List<Int>,
     secondTeamPoints: List<Int>,
 ) {
-    val firstTeamCoordinates = mutableListOf<PointF>()
-    val secondTeamCoordinates = mutableListOf<PointF>()
     val density = LocalDensity.current
+    val textColor = if (isSystemInDarkTheme()) WHITE else BLACK
     val textPaint = remember(density) {
         Paint().apply {
-            color = android.graphics.Color.BLACK
+            color = textColor
             textAlign = Paint.Align.CENTER
             textSize = density.run { 12.sp.toPx() }
         }
@@ -56,44 +66,57 @@ fun Graph(
 
             /** placing x axis points */
             for (i in xValues.indices) {
-                drawContext.canvas.nativeCanvas.drawText(
-                    "${xValues[i]}.",
-                    xAxisSpace * (i + 1),
-                    size.height,
-                    textPaint
-                )
+                if (i != 0) {
+                    drawContext.canvas.nativeCanvas.drawText(
+                        "${xValues[i]}.",
+                        xAxisSpace * (i + 1),
+                        size.height,
+                        textPaint
+                    )
+                }
                 drawLine(
                     start = Offset(xAxisSpace * (i + 1), size.height - 53),
                     end = Offset(xAxisSpace * (i + 1), 0f),
                     color = if (i == 0) Color.Black else Color.LightGray,
-                    strokeWidth = if (i == 0) 2.dp.toPx() else 1.dp.toPx()
+                    alpha = if (i == 0) 0.9f else 0.3f,
+                    strokeWidth = 1.dp.toPx()
                 )
             }
 
             /** placing y axis points */
             for (i in yValues.indices) {
-                drawContext.canvas.nativeCanvas.drawText(
-                    "${yValues[i]}",
-                    paddingSpace.toPx() / 2f,
-                    (size.height - yAxisSpace * (i + 1)) + 10,
-                    textPaint
-                )
+                if (i % 2 == 0) {
+                    drawContext.canvas.nativeCanvas.drawText(
+                        "${yValues[i]}",
+                        paddingSpace.toPx() / 2f,
+                        (size.height - yAxisSpace * (i + 1)) + 10,
+                        textPaint
+                    )
+                }
                 drawLine(
-                    start = Offset(xAxisSpace, size.height - yAxisSpace * (i + 1)),
+                    start = Offset(xAxisSpace + 2, size.height - yAxisSpace * (i + 1)),
                     end = Offset(
                         size.width - paddingSpace.toPx(),
                         size.height - yAxisSpace * (i + 1)
                     ),
                     color = if (i == 0) Color.Black else Color.LightGray,
-                    strokeWidth = if (i == 0) 2.dp.toPx() else 1.dp.toPx()
+                    alpha = if (i == 0) 0.9f else 0.3f,
+                    strokeWidth = 1.dp.toPx()
                 )
             }
 
+            //this is done to draw the current winning team points over the losing team
+            val points = if (firstTeamPoints.sum() >= secondTeamPoints.sum()) Pair(
+                firstTeamPoints,
+                secondTeamPoints
+            ) else Pair(secondTeamPoints, firstTeamPoints)
 
-            for (i in firstTeamPoints.indices) {
+            val firstTeamCoordinates = mutableListOf<PointF>()
+            val secondTeamCoordinates = mutableListOf<PointF>()
+
+            for (i in points.second.indices) {
                 val x = (xAxisSpace * xValues[i]) + xAxisSpace
-                val y =
-                    (size.height - (yAxisSpace * ((firstTeamPoints[i] / VERTICAL_STEP) + 1)))
+                val y = (size.height - (yAxisSpace * ((firstTeamPoints[i] / VERTICAL_STEP) + 1)))
                 firstTeamCoordinates.add(PointF(x, y))
                 drawCircle(
                     color = Color.Blue,
@@ -102,10 +125,9 @@ fun Graph(
                 )
             }
 
-            for (i in secondTeamPoints.indices) {
+            for (i in points.first.indices) {
                 val x = (xAxisSpace * xValues[i]) + xAxisSpace
-                val y =
-                    (size.height - (yAxisSpace * ((secondTeamPoints[i] / VERTICAL_STEP) + 1)))
+                val y = (size.height - (yAxisSpace * ((secondTeamPoints[i] / VERTICAL_STEP) + 1)))
                 secondTeamCoordinates.add(PointF(x, y))
                 drawCircle(
                     color = Color.Red,
@@ -114,21 +136,23 @@ fun Graph(
                 )
             }
 
-            drawGraphLine(firstTeamCoordinates, Color.Blue)
-            drawGraphLine(secondTeamCoordinates, Color.Red)
+            if (firstTeamPoints.sum() >= secondTeamPoints.sum()) {
+                drawGraphLine(secondTeamCoordinates.distinct(), Color.Red)
+                drawGraphLine(firstTeamCoordinates.distinct(), Color.Blue)
+            } else {
+                drawGraphLine(firstTeamCoordinates.distinct(), Color.Blue)
+                drawGraphLine(secondTeamCoordinates.distinct(), Color.Red)
+            }
         }
     }
 }
 
-private fun DrawScope.drawGraphLine(coordinates: MutableList<PointF>, color: Color) {
+private fun DrawScope.drawGraphLine(coordinates: List<PointF>, color: Color) {
     /** drawing the path */
     val stroke = Path().apply {
-        reset()
         moveTo(coordinates.first().x, coordinates.first().y)
-        for (i in 0 until coordinates.size - 1) {
-            lineTo(
-                coordinates[i + 1].x, coordinates[i + 1].y
-            )
+        for (coord in coordinates) {
+            lineTo(coord.x, coord.y)
         }
     }
     drawPath(
