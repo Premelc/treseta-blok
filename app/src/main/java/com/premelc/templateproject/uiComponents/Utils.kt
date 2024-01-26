@@ -21,7 +21,11 @@ import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
 import kotlinx.coroutines.launch
-import java.time.LocalDate
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 @ReadOnlyComposable
@@ -33,8 +37,13 @@ fun Long?.parseTimestamp(): String {
         in 3600001..4000000 -> "Prije sat vremena"
         in 4000001..14400000 -> "Prije ${difference / 3600000} sata"
         in 14400001..Long.MAX_VALUE -> {
-            val gameDate = LocalDate.ofEpochDay(difference)
-            "${gameDate.dayOfMonth}.${gameDate.month}.${gameDate.year}"
+            val milliseconds = this // Example milliseconds
+
+            val instant = Instant.ofEpochMilli(milliseconds)
+            val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+
+            val formatter = DateTimeFormatter.ofPattern("dd. MMMM yyyy. HH:mm", Locale.getDefault())
+            date.format(formatter)
         }
 
         else -> ""

@@ -1,5 +1,6 @@
 package com.premelc.templateproject.domain.gameHistory
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -162,7 +163,7 @@ private fun SetHistoryContent(
         ) {
             Graph(
                 modifier = Modifier.height(250.dp),
-                xValues = (0..set.roundsList.size.coerceAtLeast(5) + 1).toList(),
+                xValues = (0..set.roundsList.size.coerceAtLeast(6) + 1).toList(),
                 firstTeamPoints = pointsAfterRoundFirstTeam,
                 secondTeamPoints = pointsAfterRoundSecondTeam,
             )
@@ -211,11 +212,12 @@ private fun SetHistoryContent(
     }
 }
 
-private fun GameSet.getTeamTotalPointsPerRound(team: Team) = buildList {
+private fun GameSet.getTeamTotalPointsPerRound(team: Team): List<Int> {
     var totalPoints = 0
-    add(totalPoints)
+    val list = mutableListOf(totalPoints)
     this@getTeamTotalPointsPerRound.roundsList.forEachIndexed { index, round ->
         totalPoints += if (team == Team.FIRST) round.firstTeamPoints else round.secondTeamPoints
-        this.add(totalPoints)
+        list.add(totalPoints)
     }
+    return list
 }
