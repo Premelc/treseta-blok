@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.domain.gameCalculator.Call
 
 @Composable
@@ -43,9 +45,9 @@ fun CallsPill(
             Text(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 text = when (call) {
-                    Call.NAPOLITANA -> "Napola"
-                    Call.X3 -> "X3"
-                    Call.X4 -> "X4"
+                    Call.NAPOLITANA -> stringResource(R.string.calls_napola)
+                    Call.X3 -> stringResource(R.string.calls_x3)
+                    Call.X4 -> stringResource(R.string.calls_x4)
                 },
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
@@ -85,9 +87,9 @@ fun RemovableCallsPill(
             Text(
                 modifier = Modifier.padding(end = 8.dp),
                 text = when (call) {
-                    Call.NAPOLITANA -> "Napola"
-                    Call.X3 -> "3X"
-                    Call.X4 -> "4X"
+                    Call.NAPOLITANA -> stringResource(R.string.calls_napola)
+                    Call.X3 -> stringResource(R.string.calls_x3)
+                    Call.X4 -> stringResource(R.string.calls_x4)
                 },
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,

@@ -1,5 +1,30 @@
 <resources>
-    <string name="treseta_blok">Treseta Blok</string>
-    <string name="new_game_button">Nova igra</string>
-    <string name="placeholder">placeholder</string>
+    <string name="app_title">Treseta Counter</string>
+    <string name="game_history_title">Povijest igre</string>
+    <string name="game_history_first_team_title">MI</string>
+    <string name="game_history_second_team_title">VI</string>
+    <string name="treseta_score">%1$d : %2$d</string>
+    <string name="game_history_set_number">%1$d. set</string>
+    <string name="last_game_timestamp">Zadnja partija: %1$s</string>
+    <string name="game_calculator_first_team_title">MI</string>
+    <string name="game_calculator_second_team_title">VI</string>
+    <string name="game_calculator_calls_title">Zvanja</string>
+    <string name="game_calculator_calls_napola">Napola</string>
+    <string name="game_calculator_calls_x3">x3</string>
+    <string name="game_calculator_calls_x4">x4</string>
+    <string name="game_calculator_delete_label">Obrisi</string>
+    <string name="game_calculator_save_label">Spremi</string>
+    <string name="main_menu_continue_game_title">Nastavi prijasnju igru</string>
+    <string name="main_menu_no_previous_games_label">Nemate prijasnjih igara \n Zapocni novu igru pritiskom na tipku</string>
+    <string name="main_menu_new_game_button">Nova igra</string>
+    <string name="main_menu_favourite_label">Favoriti</string>
+    <string name="main_menu_first_team_label">Mi\u0020</string>
+    <string name="main_menu_second_team_label">\u0020Vi</string>
+    <string name="game_add_new_round_button_label">Dodaj novu partiju</string>
+    <string name="game_first_team_title">MI</string>
+    <string name="game_second_team_title">VI</string>
+    <string name="game_no_rounds_yet_label">"Nije odigrana nijedna partija, pritisnite gumb za dodavanje partije"</string>
+    <string name="calls_napola">Napola</string>
+    <string name="calls_x3">X3</string>
+    <string name="calls_x4">X4</string>
 </resources>

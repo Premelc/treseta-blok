@@ -84,7 +84,7 @@ private fun MainMenuContent(
                         )
                     }
                     Text(
-                        text = "Nastavi prijasnju igru",
+                        text = stringResource(R.string.main_menu_continue_game_title),
                         style = Typography.h6,
                         modifier = Modifier.padding(bottom = 4.dp, start = 20.dp)
                     )
@@ -103,12 +103,9 @@ private fun MainMenuContent(
                         ) {
                             Text(
                                 modifier = Modifier.padding(top = 150.dp),
-                                text = "Nemate prijasnjih igara",
-                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
-                            )
-                            Text(
-                                text = "Zapocni novu igru pritiskom na tipku",
-                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
+                                text = stringResource(R.string.main_menu_no_previous_games_label),
+                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),
+                                textAlign = TextAlign.Center
                             )
                         }
                     }
@@ -132,7 +129,7 @@ private fun MainMenuContent(
                     .padding(20.dp)
                     .height(60.dp),
             ) {
-                Text(text = stringResource(R.string.new_game_button))
+                Text(text = stringResource(R.string.main_menu_new_game_button))
             }
         }
     }
@@ -147,7 +144,7 @@ private fun PastGameContent(
     Column {
         if (games.any { it.isFavorite }) {
             Text(
-                text = "Favoriti",
+                text = stringResource(R.string.main_menu_favourite_label),
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
@@ -236,7 +233,10 @@ private fun PastGameCard(
                 ) {
                     if (game.timestamp != null) {
                         Text(
-                            text = "Zadnja partija: ${game.timestamp.parseTimestamp()}",
+                            text = stringResource(
+                                R.string.last_game_timestamp,
+                                game.timestamp.parseTimestamp()
+                            ),
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 10.sp,
@@ -259,7 +259,7 @@ private fun PastGameCard(
                                         fontSize = 22.sp
                                     )
                                 ) {
-                                    append("Mi ")
+                                    append(stringResource(R.string.main_menu_first_team_label))
                                 }
                                 withStyle(
                                     style = SpanStyle(
@@ -291,7 +291,7 @@ private fun PastGameCard(
                                         fontSize = 22.sp
                                     )
                                 ) {
-                                    append(" Vi")
+                                    append(stringResource(R.string.main_menu_second_team_label))
                                 }
                             },
                         )

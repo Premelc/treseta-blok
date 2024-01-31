@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +47,7 @@ import com.premelc.tresetacounter.uiComponents.parseTimestamp
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
+import com.premelc.tresetacounter.R
 
 @Composable
 fun GameHistoryScreen(navController: NavController) {
@@ -78,7 +80,7 @@ private fun GameHistoryContent(
         ) {
             item {
                 Text(
-                    text = "Povijest igre",
+                    text = stringResource(id = R.string.game_history_title),
                     style = Typography.h6.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
@@ -91,8 +93,14 @@ private fun GameHistoryContent(
                             .padding(top = 8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(text = "MI", style = Typography.h6)
-                        Text(text = "VI", style = Typography.h6)
+                        Text(
+                            text = stringResource(R.string.game_history_first_team_title),
+                            style = Typography.h6
+                        )
+                        Text(
+                            text = stringResource(R.string.game_history_second_team_title),
+                            style = Typography.h6
+                        )
                     }
                     Row(
                         modifier = Modifier
@@ -100,13 +108,14 @@ private fun GameHistoryContent(
                             .padding(top = 12.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = viewState.firstTeamScore.toString(), style = Typography.h6)
                         Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = ":",
-                            style = Typography.h6
+                            text = stringResource(
+                                R.string.treseta_score,
+                                viewState.firstTeamScore,
+                                viewState.secondTeamScore
+                            ),
+                            style = Typography.h6,
                         )
-                        Text(text = viewState.secondTeamScore.toString(), style = Typography.h6)
                     }
                     Divider(
                         modifier = Modifier
@@ -121,7 +130,7 @@ private fun GameHistoryContent(
                     item {
                         Accordion(
                             modifier = Modifier.padding(vertical = 9.dp),
-                            title = "${index + 1}. set",
+                            title = stringResource(R.string.game_history_set_number, index + 1),
                             isExpanded = expanded.value == index,
                             onFinished = {
                                 scope.launch {
@@ -201,7 +210,10 @@ private fun SetHistoryContent(
                 secondTeamPoints = pointsAfterRoundSecondTeam,
             )
             Text(
-                text = "Zadnja partija: ${set.roundsList.last().timestamp.parseTimestamp()}",
+                text = stringResource(
+                    R.string.last_game_timestamp,
+                    set.roundsList.last().timestamp.parseTimestamp()
+                ),
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 10.sp,
@@ -228,7 +240,11 @@ private fun SetHistoryContent(
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 8.dp),
-                            text = "${pointsAfterRoundFirstTeam[index + 1]} : ${pointsAfterRoundSecondTeam[index + 1]}",
+                            text = stringResource(
+                                R.string.treseta_score,
+                                pointsAfterRoundFirstTeam[index + 1],
+                                pointsAfterRoundSecondTeam[index + 1]
+                            ),
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 8.sp,
@@ -237,7 +253,11 @@ private fun SetHistoryContent(
                             ),
                         )
                         Text(
-                            text = "${round.firstTeamPoints} : ${round.secondTeamPoints}",
+                            text = stringResource(
+                                R.string.treseta_score,
+                                round.firstTeamPoints,
+                                round.secondTeamPoints
+                            ),
                             style = TextStyle(
                                 fontWeight = FontWeight.Normal,
                                 fontSize = 16.sp,
