@@ -1,9 +1,9 @@
 package com.premelc.tresetacounter.domain.gameCalculator
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,41 +13,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.premelc.tresetacounter.ui.theme.Typography
-import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnNumberButton
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnDeleteButton
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnSaveButton
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnCallButton
+import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnDeleteButton
+import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnNumberButton
+import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnSaveButton
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnTeamCard
 import com.premelc.tresetacounter.ui.theme.ColorPalette
+import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.RemovableCallsList
+import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.animatePlacement
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -105,6 +99,7 @@ private fun GameCalculatorContent(
                     TeamPointCard(
                         team = "MI",
                         pointValue = viewState.firstTeamScore,
+                        callsValue = viewState.firstTeamCalls.sumOf { it.value },
                         isSelected = viewState.selectedTeam == Team.FIRST,
                         onClick = {
                             onInteraction(TapOnTeamCard(Team.FIRST))
@@ -113,6 +108,7 @@ private fun GameCalculatorContent(
                     TeamPointCard(
                         team = "VI",
                         pointValue = viewState.secondTeamScore,
+                        callsValue = viewState.secondTeamCalls.sumOf { it.value },
                         isSelected = viewState.selectedTeam == Team.SECOND,
                         onClick = {
                             onInteraction(TapOnTeamCard(Team.SECOND))
@@ -184,6 +180,7 @@ private fun RowScope.TeamPointCard(
     team: String,
     isSelected: Boolean,
     pointValue: Int?,
+    callsValue: Int?,
     onClick: () -> Unit,
 ) {
     Box(
@@ -203,33 +200,31 @@ private fun RowScope.TeamPointCard(
                     style = Typography.h6.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
-                TextField(
-                    value = TextFieldValue(
+                Box(
+                    modifier = Modifier
+                        .height(60.dp)
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colors.background)
+                ) {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
                         text = pointValue?.toString() ?: "0",
-                    ),
-                    onValueChange = {},
-                    enabled = false,
-                    textStyle = Typography.h6.merge(
-                        TextStyle(
-                            textAlign = TextAlign.Center,
-                            fontWeight = if (pointValue != null) FontWeight.Bold else FontWeight.Thin
-                        )
-                    ),
-                    label = {},
-                    placeholder = {
+                        style = Typography.h6.merge(
+                            TextStyle(
+                                textAlign = TextAlign.Center,
+                                fontWeight = if (pointValue != null) FontWeight.Bold else FontWeight.Thin
+                            )
+                        ),
+                    )
+                    if (callsValue != null && callsValue > 0) {
                         Text(
-                            modifier = Modifier.alpha(0.5f),
-                            text = "0",
-                            style = Typography.h6
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                                .align(Alignment.CenterEnd),
+                            text = "+ $callsValue"
                         )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    singleLine = true,
-                    interactionSource = remember { MutableInteractionSource() },
-                )
+                    }
+                }
             }
         }
     }
