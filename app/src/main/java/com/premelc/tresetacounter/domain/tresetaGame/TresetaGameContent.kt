@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -113,7 +114,7 @@ internal fun TresetaGameContent(
                     onInteraction(TresetaGameInteraction.TapOnNewRound)
                 },
             ) {
-                Text(text = "Dodaj novu partiju")
+                Text(text = stringResource(R.string.game_add_new_round_button_label))
             }
         }
     }
@@ -151,8 +152,14 @@ internal fun ColumnScope.PointListColumn(
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Text(text = "MI", style = Typography.h6)
-                Text(text = "VI", style = Typography.h6)
+                Text(
+                    text = stringResource(R.string.game_first_team_title),
+                    style = Typography.h6,
+                )
+                Text(
+                    text = stringResource(R.string.game_second_team_title),
+                    style = Typography.h6,
+                )
             }
             Divider(
                 modifier = Modifier
@@ -165,7 +172,7 @@ internal fun ColumnScope.PointListColumn(
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 textAlign = TextAlign.Center,
-                text = "Nije odigrana nijedna partija, pritisnite gumb za dodavanje partije",
+                text = stringResource(R.string.game_no_rounds_yet_label),
                 style = Typography.body1,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
             )

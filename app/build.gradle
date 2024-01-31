@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -13,7 +15,7 @@ android {
     defaultConfig {
         applicationId "com.premelc.tresetacounter"
         minSdk 26
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -105,8 +107,12 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
+    //Ads
+    implementation 'com.google.android.gms:play-services-ads:22.6.0'
+
 }
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+tasks.withType(KotlinCompile).all {
     kotlinOptions {
         languageVersion = "1.9"
     }
