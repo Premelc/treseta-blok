@@ -1,4 +1,4 @@
-package com.premelc.templateproject
+package com.premelc.tresetacounter
 
 import org.junit.Test
 
