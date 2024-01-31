@@ -124,8 +124,8 @@ private fun MainMenuContent(
             }
             Button(
                 onClick = {
-                    navigate(NavRoutes.TresetaGame.route)
                     onInteraction(MainMenuInteraction.OnNewGameClicked)
+                    navigate(NavRoutes.TresetaGame.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

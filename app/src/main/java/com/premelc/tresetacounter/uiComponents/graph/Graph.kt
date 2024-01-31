@@ -4,9 +4,6 @@ import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
 import android.graphics.Paint
 import android.graphics.PointF
-import android.util.Log
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -15,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -25,11 +20,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.premelc.tresetacounter.ui.theme.ColorPalette
-import java.time.format.TextStyle
 
 private val paddingSpace = 16.dp
 private const val VERTICAL_STEP = 5f
@@ -44,6 +36,7 @@ fun Graph(
 ) {
     val density = LocalDensity.current
     val textColor = if (isSystemInDarkTheme()) WHITE else BLACK
+    val graphAxisColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val textPaint = remember(density) {
         Paint().apply {
             color = textColor
@@ -77,7 +70,7 @@ fun Graph(
                 drawLine(
                     start = Offset(xAxisSpace * (i + 1), size.height - 53),
                     end = Offset(xAxisSpace * (i + 1), 0f),
-                    color = if (i == 0) Color.Black else Color.LightGray,
+                    color = if (i == 0) graphAxisColor else Color.LightGray,
                     alpha = if (i == 0) 0.9f else 0.3f,
                     strokeWidth = 1.dp.toPx()
                 )
@@ -99,7 +92,7 @@ fun Graph(
                         size.width - paddingSpace.toPx(),
                         size.height - yAxisSpace * (i + 1)
                     ),
-                    color = if (i == 0) Color.Black else Color.LightGray,
+                    color = if (i == 0) graphAxisColor else Color.LightGray,
                     alpha = if (i == 0) 0.9f else 0.3f,
                     strokeWidth = 1.dp.toPx()
                 )

@@ -1,6 +1,5 @@
 package com.premelc.tresetacounter.domain.gameHistory
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -32,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,7 +44,6 @@ import com.premelc.tresetacounter.uiComponents.getItemViewportOffset
 import com.premelc.tresetacounter.uiComponents.graph.Graph
 import com.premelc.tresetacounter.uiComponents.parseTimestamp
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -167,6 +164,36 @@ private fun SetHistoryContent(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = pointsAfterRoundFirstTeam.last().toString(),
+                    style = Typography.subtitle1,
+                    textDecoration = if (pointsAfterRoundFirstTeam.last() > pointsAfterRoundSecondTeam.last()) {
+                        TextDecoration.Underline
+                    } else {
+                        TextDecoration.None
+                    }
+                )
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    text = ":",
+                    style = Typography.subtitle1
+                )
+                Text(
+                    text = pointsAfterRoundSecondTeam.last().toString(),
+                    style = Typography.subtitle1,
+                    textDecoration = if (pointsAfterRoundSecondTeam.last() > pointsAfterRoundFirstTeam.last()) {
+                        TextDecoration.Underline
+                    } else {
+                        TextDecoration.None
+                    }
+                )
+            }
             Graph(
                 modifier = Modifier.height(250.dp),
                 xValues = (0..set.roundsList.size.coerceAtLeast(6) + 1).toList(),

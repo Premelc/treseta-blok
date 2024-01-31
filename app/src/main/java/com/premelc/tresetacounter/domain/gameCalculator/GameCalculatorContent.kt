@@ -28,9 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnCallButton
@@ -221,7 +223,11 @@ private fun RowScope.TeamPointCard(
                             modifier = Modifier
                                 .padding(end = 24.dp)
                                 .align(Alignment.CenterEnd),
-                            text = "+ $callsValue"
+                            text = "+ $callsValue",
+                            style = TextStyle(
+                                fontWeight = FontWeight.Normal,
+                                fontStyle = FontStyle.Italic,
+                            ),
                         )
                     }
                 }
