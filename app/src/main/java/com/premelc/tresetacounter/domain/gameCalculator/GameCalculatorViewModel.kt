@@ -19,26 +19,26 @@ class GameCalculatorViewModel(
     private val navController: NavController,
 ) : ViewModel() {
 
-    private val selectedTeam: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
-    private val firstTeamCalls: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
-    private val secondTeamCalls: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
-    private val firstTeamPoints: MutableStateFlow<Int> = MutableStateFlow(0)
-    private val secondTeamPoints: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
+    private val firstTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
+    private val secondTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
+    private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
 
     internal val viewState: StateFlow<GameCalculatorViewState> = combine(
-        selectedTeam,
-        firstTeamPoints,
-        secondTeamPoints,
-        firstTeamCalls,
-        secondTeamCalls,
-    ) { selection: Team, _: Int?, _: Int, firstTeamCalls, secondTeamCalls ->
+        selectedTeamFlow,
+        firstTeamPointsFlow,
+        secondTeamPointsFlow,
+        firstTeamCallsFlow,
+        secondTeamCallsFlow,
+    ) { selection: Team, firstTeamPoints: Int, secondTeamPoints: Int, firstTeamCalls, secondTeamCalls ->
         GameCalculatorViewState(
-            firstTeamScore = calculatePointsPlusCalls(Team.FIRST),
-            secondTeamScore = calculatePointsPlusCalls(Team.SECOND),
+            firstTeamScore = firstTeamPoints,
+            secondTeamScore = secondTeamPoints,
             firstTeamCalls = firstTeamCalls,
             secondTeamCalls = secondTeamCalls,
             selectedTeam = selection,
-            isSaveButtonEnabled = firstTeamPoints.value > 0 || secondTeamPoints.value > 0,
+            isSaveButtonEnabled = firstTeamPoints > 0 || secondTeamPoints > 0,
         )
     }.stateIn(
         viewModelScope,
@@ -51,10 +51,10 @@ class GameCalculatorViewModel(
             is GameCalculatorInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
 
             GameCalculatorInteraction.TapOnDeleteButton -> {
-                firstTeamPoints.value = 0
-                secondTeamPoints.value = 0
-                firstTeamCalls.value = mutableListOf()
-                secondTeamCalls.value = mutableListOf()
+                firstTeamPointsFlow.value = 0
+                secondTeamPointsFlow.value = 0
+                firstTeamCallsFlow.value = mutableListOf()
+                secondTeamCallsFlow.value = mutableListOf()
             }
 
             is GameCalculatorInteraction.TapOnNumberButton -> {
@@ -67,15 +67,15 @@ class GameCalculatorViewModel(
                         setId = setId,
                         firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
                         secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
-                        firstTeamCalls = firstTeamCalls.value,
-                        secondTeamCalls = secondTeamCalls.value,
+                        firstTeamCalls = firstTeamCallsFlow.value,
+                        secondTeamCalls = secondTeamCallsFlow.value,
                     )
                 }
                 navController.popBackStack()
             }
 
             is GameCalculatorInteraction.TapOnTeamCard -> {
-                selectedTeam.value = when (selectedTeam.value) {
+                selectedTeamFlow.value = when (selectedTeamFlow.value) {
                     interaction.team -> Team.NONE
                     else -> interaction.team
                 }
@@ -84,42 +84,42 @@ class GameCalculatorViewModel(
             GameCalculatorInteraction.TapOnBackButton -> navController.popBackStack()
             is GameCalculatorInteraction.TapOnRemovablePill -> {
                 if (interaction.team == Team.FIRST) {
-                    firstTeamCalls.value =
-                        firstTeamCalls.value.filterIndexed { index, _ -> index != interaction.index }
+                    firstTeamCallsFlow.value =
+                        firstTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
                 } else {
-                    secondTeamCalls.value =
-                        secondTeamCalls.value.filterIndexed { index, _ -> index != interaction.index }
+                    secondTeamCallsFlow.value =
+                        secondTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
                 }
             }
         }
     }
 
     private fun calculatePointsPlusCalls(team: Team) = when (team) {
-        Team.FIRST -> firstTeamPoints.value + firstTeamCalls.value.sumOf { it.value }
-        Team.SECOND -> secondTeamPoints.value + secondTeamCalls.value.sumOf { it.value }
+        Team.FIRST -> firstTeamPointsFlow.value + firstTeamCallsFlow.value.sumOf { it.value }
+        Team.SECOND -> secondTeamPointsFlow.value + secondTeamCallsFlow.value.sumOf { it.value }
         else -> 0
     }
 
     private fun addCallToSelectedTeam(call: Call) {
-        when (selectedTeam.value) {
-            Team.FIRST -> firstTeamCalls.value += call
-            Team.SECOND -> secondTeamCalls.value += call
+        when (selectedTeamFlow.value) {
+            Team.FIRST -> firstTeamCallsFlow.value += call
+            Team.SECOND -> secondTeamCallsFlow.value += call
             else -> Unit
         }
     }
 
     private fun parseInputForSelectedTeam(input: Int) {
-        when (selectedTeam.value) {
+        when (selectedTeamFlow.value) {
             Team.FIRST -> {
-                firstTeamPoints.value =
-                    (firstTeamPoints.value.toString() + input.toString()).parseTeamPoints()
-                secondTeamPoints.value = 11 - firstTeamPoints.value
+                firstTeamPointsFlow.value =
+                    (firstTeamPointsFlow.value.toString() + input.toString()).parseTeamPoints()
+                secondTeamPointsFlow.value = 11 - firstTeamPointsFlow.value
             }
 
             Team.SECOND -> {
-                secondTeamPoints.value =
-                    (secondTeamPoints.value.toString() + input.toString()).parseTeamPoints()
-                firstTeamPoints.value = 11 - secondTeamPoints.value
+                secondTeamPointsFlow.value =
+                    (secondTeamPointsFlow.value.toString() + input.toString()).parseTeamPoints()
+                firstTeamPointsFlow.value = 11 - secondTeamPointsFlow.value
             }
 
             Team.NONE -> Unit
