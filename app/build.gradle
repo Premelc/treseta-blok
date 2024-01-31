@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.premelc.templateproject'
+    namespace 'com.premelc.tresetacounter'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.premelc.templateproject"
+        applicationId "com.premelc.tresetacounter"
         minSdk 26
         targetSdk 31
         versionCode 1

@@ -1,4 +1,4 @@
-package com.premelc.templateproject
+package com.premelc.tresetacounter
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.premelc.templateproject", appContext.packageName)
+        assertEquals("com.premelc.tresetacounter", appContext.packageName)
     }
 }

@@ -5,19 +5,19 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".MainApplication"
+        android:name="com.premelc.tresetacounter.MainApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/treseta_launcher"
         android:label="@string/treseta_blok"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TemplateProject"
+        android:theme="@style/Theme.TresetaCounter"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="com.premelc.tresetacounter.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.TemplateProject">
+            android:theme="@style/Theme.TresetaCounter">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
