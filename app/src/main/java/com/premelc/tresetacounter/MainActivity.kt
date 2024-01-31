@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorScreen
@@ -19,6 +18,7 @@ import com.premelc.tresetacounter.domain.gameHistory.GameHistoryScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
 import com.premelc.tresetacounter.domain.tresetaGame.TresetaGameScreen
 import com.premelc.tresetacounter.navigation.NavRoutes
+import com.premelc.tresetacounter.navigation.composableWrapper
 import com.premelc.tresetacounter.ui.theme.TresetaBlokTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,17 +36,17 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = NavRoutes.TresetaGame.route,
                     ) {
-                        composable(route = NavRoutes.TresetaGame.route) {
+                        composableWrapper(route = NavRoutes.TresetaGame.route) {
                             TresetaGameScreen { route: String ->
                                 navController.tresetaNavigate(route)
                             }
                         }
-                        composable(route = NavRoutes.MainMenu.route) {
+                        composableWrapper(route = NavRoutes.MainMenu.route) {
                             MainMenuScreen { route: String ->
                                 navController.tresetaNavigate(route)
                             }
                         }
-                        composable(
+                        composableWrapper(
                             route = NavRoutes.GameCalculator.route.plus("/{setId}"),
                             arguments = listOf(
                                 navArgument("setId") {
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             GameCalculatorScreen(navController, it.arguments?.getInt("setId") ?: 0)
                         }
-                        composable(route = NavRoutes.GameHistory.route) {
+                        composableWrapper(route = NavRoutes.GameHistory.route) {
                             GameHistoryScreen(navController)
                         }
                     }
