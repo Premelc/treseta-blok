@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.gameCalculator
+package com.premelc.tresetacounter.domain.roundEdit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,67 +7,97 @@ import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team
+import com.premelc.tresetacounter.utils.combine
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val MAX_POINT_DIGITS = 2
 
-class GameCalculatorViewModel(
-    private val setId: Int,
+class RoundEditViewModel(
+    private val roundId: Int,
     private val tresetaService: TresetaService,
     private val navController: NavController,
 ) : ViewModel() {
+
+    private val oldRoundData = viewModelScope.async(start = CoroutineStart.LAZY) {
+        tresetaService.getSingleRound(roundId)
+    }
 
     private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val secondTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val deleteRoundDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    internal val viewState: StateFlow<GameCalculatorViewState> = combine(
+    internal val viewState: StateFlow<RoundEditViewState> = combine(
         selectedTeamFlow,
         firstTeamPointsFlow,
         secondTeamPointsFlow,
         firstTeamCallsFlow,
         secondTeamCallsFlow,
-    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls ->
-        GameCalculatorViewState(
-            firstTeamScore = firstTeamPoints,
-            secondTeamScore = secondTeamPoints,
-            firstTeamCalls = firstTeamCalls,
-            secondTeamCalls = secondTeamCalls,
+        deleteRoundDialogFlow,
+    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showDeleteRoundDialog ->
+        RoundEditViewState(
+            oldRoundData = RoundData(
+                firstTeamScore = oldRoundData.await().firstTeamPointsNoCalls,
+                firstTeamCalls = oldRoundData.await().firstTeamCalls,
+                secondTeamScore = oldRoundData.await().secondTeamPointsNoCalls,
+                secondTeamCalls = oldRoundData.await().secondTeamCalls,
+            ),
+            newRoundData = RoundData(
+                firstTeamScore = firstTeamPoints,
+                firstTeamCalls = firstTeamCalls,
+                secondTeamScore = secondTeamPoints,
+                secondTeamCalls = secondTeamCalls,
+            ),
             selectedTeam = selection,
             isSaveButtonEnabled = firstTeamPoints > 0 || secondTeamPoints > 0,
+            showDeleteRoundDialog = showDeleteRoundDialog
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        GameCalculatorViewState()
+        RoundEditViewState()
     )
 
-    internal fun onInteraction(interaction: GameCalculatorInteraction) {
+    internal fun onInteraction(interaction: RoundEditInteraction) {
         when (interaction) {
-            is GameCalculatorInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
+            is RoundEditInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
 
-            is GameCalculatorInteraction.TapOnTeamCard -> {
+            is RoundEditInteraction.TapOnTeamCard -> {
                 selectedTeamFlow.value = when (selectedTeamFlow.value) {
                     interaction.team -> Team.NONE
                     else -> interaction.team
                 }
             }
 
-            GameCalculatorInteraction.TapOnBackButton -> navController.popBackStack()
-            is GameCalculatorInteraction.TapOnRemovablePill -> {
+            RoundEditInteraction.TapOnBackButton -> navController.popBackStack()
+            is RoundEditInteraction.TapOnRemovablePill -> {
                 if (interaction.team == Team.FIRST) {
                     firstTeamCallsFlow.value =
                         firstTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
                 } else {
                     secondTeamCallsFlow.value =
                         secondTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
+                }
+            }
+
+            RoundEditInteraction.TapOnDeleteRound -> deleteRoundDialogFlow.value = true
+            RoundEditInteraction.TapOnDeleteRoundDialogNegative -> {
+                deleteRoundDialogFlow.value = false
+            }
+
+            RoundEditInteraction.TapOnDeleteRoundDialogPositive -> {
+                deleteRoundDialogFlow.value = false
+                viewModelScope.launch {
+                    tresetaService.deleteSingleRound(roundId)
+                    navController.popBackStack()
                 }
             }
         }
@@ -88,25 +118,21 @@ class GameCalculatorViewModel(
 
             NumPadInteraction.TapOnSaveButton -> {
                 viewModelScope.launch {
-                    tresetaService.insertRound(
-                        setId = setId,
+                    tresetaService.editRound(
+                        roundId = roundId,
+                        setId = oldRoundData.await().setId,
                         firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
                         firstTeamPointsNoCalls = firstTeamPointsFlow.value,
                         secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
                         secondTeamPointsNoCalls = secondTeamPointsFlow.value,
+                        timestamp = oldRoundData.await().timestamp,
                         firstTeamCalls = firstTeamCallsFlow.value,
-                        secondTeamCalls = secondTeamCallsFlow.value,
+                        secondTeamCalls = secondTeamCallsFlow.value
                     )
                 }
                 navController.popBackStack()
             }
         }
-    }
-
-    private fun calculatePointsPlusCalls(team: Team) = when (team) {
-        Team.FIRST -> firstTeamPointsFlow.value + firstTeamCallsFlow.value.sumOf { it.value }
-        Team.SECOND -> secondTeamPointsFlow.value + secondTeamCallsFlow.value.sumOf { it.value }
-        else -> 0
     }
 
     private fun addCallToSelectedTeam(call: Call) {
@@ -133,6 +159,12 @@ class GameCalculatorViewModel(
 
             Team.NONE -> Unit
         }
+    }
+
+    private fun calculatePointsPlusCalls(team: Team) = when (team) {
+        Team.FIRST -> firstTeamPointsFlow.value + firstTeamCallsFlow.value.sumOf { it.value }
+        Team.SECOND -> secondTeamPointsFlow.value + secondTeamCallsFlow.value.sumOf { it.value }
+        else -> 0
     }
 
     private fun String.parseTeamPoints() =

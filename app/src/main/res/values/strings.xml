@@ -27,4 +27,8 @@
     <string name="calls_napola">Napola</string>
     <string name="calls_x3">X3</string>
     <string name="calls_x4">X4</string>
+    <string name="edit_round_delete_dialog_title">Zelite li zaista obrisati rundu?</string>
+    <string name="edit_round_delete_dialog_button_positive">Obrisi</string>
+    <string name="edit_round_delete_dialog_button_negative">Odustani</string>
+    <string name="edit_round_toolbar_title">Uredi rundu</string>
 </resources>

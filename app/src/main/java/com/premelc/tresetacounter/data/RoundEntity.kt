@@ -10,6 +10,8 @@ class RoundEntity(
     @ColumnInfo(name = "timestamp") val timestamp: Long,
     @ColumnInfo(name = "setId") val setId: Int,
     @ColumnInfo(name = "firstTeamPoints") val firstTeamPoints: Int,
+    @ColumnInfo(name = "firstTeamPointsNoCalls") val firstTeamPointsNoCalls: Int,
     @ColumnInfo(name = "secondTeamPoints") val secondTeamPoints: Int,
+    @ColumnInfo(name = "secondTeamPointsNoCalls") val secondTeamPointsNoCalls: Int,
 )
 

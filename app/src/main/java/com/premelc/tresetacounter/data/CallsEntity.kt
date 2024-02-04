@@ -3,8 +3,8 @@ package com.premelc.tresetacounter.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.premelc.tresetacounter.domain.gameCalculator.Call
-import com.premelc.tresetacounter.domain.gameCalculator.Team
+import com.premelc.tresetacounter.utils.Call
+import com.premelc.tresetacounter.utils.Team
 
 @Entity(tableName = "call")
 class CallsEntity(

@@ -5,11 +5,11 @@ import com.premelc.tresetacounter.data.GameEntity
 import com.premelc.tresetacounter.data.RoundEntity
 import com.premelc.tresetacounter.data.SetEntity
 import com.premelc.tresetacounter.data.TresetaDatabase
-import com.premelc.tresetacounter.domain.gameCalculator.Call
-import com.premelc.tresetacounter.domain.gameCalculator.Team
 import com.premelc.tresetacounter.service.data.GameSet
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.utils.Call
+import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -114,10 +114,60 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
         }
     }
 
+    suspend fun getSingleRound(roundId: Int) =
+        tresetaDatabase.roundDao().getSingleRound(roundId).toRound()
+
+    suspend fun deleteSingleRound(roundId: Int) {
+        tresetaDatabase.callsDao().deleteCallsFromRound(roundId)
+        tresetaDatabase.roundDao().deleteSingleRound(roundId)
+    }
+
+    suspend fun editRound(
+        roundId: Int,
+        setId: Int,
+        firstTeamPoints: Int,
+        firstTeamPointsNoCalls: Int,
+        secondTeamPoints: Int,
+        secondTeamPointsNoCalls: Int,
+        timestamp: Long,
+        firstTeamCalls: List<Call>,
+        secondTeamCalls: List<Call>,
+    ) {
+        tresetaDatabase.roundDao().insertRound(
+            RoundEntity(
+                id = roundId,
+                setId = setId,
+                timestamp = timestamp,
+                firstTeamPoints = firstTeamPoints,
+                firstTeamPointsNoCalls = firstTeamPointsNoCalls,
+                secondTeamPoints = secondTeamPoints,
+                secondTeamPointsNoCalls = secondTeamPointsNoCalls,
+            )
+        )
+        tresetaDatabase.callsDao().deleteCallsFromRound(roundId)
+        tresetaDatabase.callsDao().insertCalls(firstTeamCalls.map {
+            CallsEntity(
+                id = 0,
+                roundId = roundId,
+                team = Team.FIRST,
+                call = it
+            )
+        } + (secondTeamCalls.map {
+            CallsEntity(
+                id = 0,
+                roundId = roundId,
+                team = Team.SECOND,
+                call = it
+            )
+        }))
+    }
+
     suspend fun insertRound(
         setId: Int,
         firstTeamPoints: Int,
+        firstTeamPointsNoCalls: Int,
         secondTeamPoints: Int,
+        secondTeamPointsNoCalls: Int,
         firstTeamCalls: List<Call>,
         secondTeamCalls: List<Call>,
     ) {
@@ -128,7 +178,9 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
                 setId = setId,
                 timestamp = newTimestamp,
                 firstTeamPoints = firstTeamPoints,
+                firstTeamPointsNoCalls = firstTeamPointsNoCalls,
                 secondTeamPoints = secondTeamPoints,
+                secondTeamPointsNoCalls = secondTeamPointsNoCalls,
             )
         )
         updateGameTimestamp(
@@ -247,9 +299,12 @@ class TresetaService(private val tresetaDatabase: TresetaDatabase) {
         val calls = tresetaDatabase.callsDao().getCallsInRound(this.id)
         return Round(
             id = this.id,
+            setId = this.setId,
             timestamp = this.timestamp,
             firstTeamPoints = this.firstTeamPoints,
+            firstTeamPointsNoCalls = this.firstTeamPointsNoCalls,
             secondTeamPoints = this.secondTeamPoints,
+            secondTeamPointsNoCalls = this.secondTeamPointsNoCalls,
             firstTeamCalls = calls.filter { it.team == Team.FIRST }.map { it.call },
             secondTeamCalls = calls.filter { it.team == Team.SECOND }.map { it.call },
         )

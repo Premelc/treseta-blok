@@ -5,4 +5,5 @@ sealed class NavRoutes(val route: String) {
     data object TresetaGame : NavRoutes("tresetaGame")
     data object GameCalculator : NavRoutes("gameCalculator")
     data object GameHistory : NavRoutes("gameHistory")
+    data object RoundEdit : NavRoutes("roundEdit")
 }

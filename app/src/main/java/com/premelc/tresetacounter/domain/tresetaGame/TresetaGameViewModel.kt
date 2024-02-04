@@ -2,12 +2,10 @@ package com.premelc.tresetacounter.domain.tresetaGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import com.premelc.tresetacounter.domain.gameCalculator.Team
-import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -76,16 +74,11 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
 
     internal fun onInteraction(interaction: TresetaGameInteraction) {
         when (interaction) {
-            TresetaGameInteraction.TapOnBackButton -> {
-                //navController.popBackStack()
-            }
-
-            TresetaGameInteraction.TapOnNewRound -> {
-                // navController.navigate(NavRoutes.GameCalculator.route.plus("/${currentSetId.value}"))
-            }
-
-            TresetaGameInteraction.TapOnHistoryButton -> Unit// navController.navigate(NavRoutes.GameHistory.route)
-            TresetaGameInteraction.TapOnMenuButton -> Unit //navController.navigate(NavRoutes.MainMenu.route)
+            TresetaGameInteraction.TapOnBackButton -> Unit
+            TresetaGameInteraction.TapOnNewRound -> Unit
+            TresetaGameInteraction.TapOnHistoryButton -> Unit
+            TresetaGameInteraction.TapOnMenuButton -> Unit
+            is TresetaGameInteraction.TapOnRoundScore -> Unit
         }
     }
 
