@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.gameCalculator.Call
+import com.premelc.tresetacounter.utils.Call
 
 @Composable
 fun CallsPill(

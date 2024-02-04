@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
@@ -15,10 +14,14 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.premelc.tresetacounter.ads.BannerAd
 
@@ -44,7 +47,7 @@ internal fun TresetaToolbarScaffold(
                             modifier = Modifier
                                 .size(32.dp)
                                 .clickable { it() },
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
                         )
                     }
@@ -63,9 +66,32 @@ internal fun TresetaToolbarScaffold(
 }
 
 @Composable
-internal fun TresetaGameScaffold(
+internal fun NoActionToolbar(
+    content: @Composable () -> Unit,
+) {
+    Scaffold(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .windowInsetsPadding(WindowInsets.navigationBars),
+        topBar = {
+            BannerAd()
+        },
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+internal fun TresetaFullActionToolbar(
     leftAction: @Composable () -> Unit,
     rightAction: @Composable () -> Unit,
+    title: String? = null,
     content: @Composable () -> Unit,
 ) {
     Scaffold(
@@ -76,11 +102,19 @@ internal fun TresetaGameScaffold(
             Column {
                 BannerAd()
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
+                        .padding(horizontal = 20.dp , vertical = 12.dp),
                 ) {
                     leftAction()
+                    title?.let {
+                        Text(
+                            text = it,
+                            modifier = Modifier.padding(start = 8.dp),
+                            style = TextStyle(fontWeight = FontWeight.Bold),
+                        )
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End

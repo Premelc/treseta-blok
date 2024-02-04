@@ -1,8 +1,7 @@
 package com.premelc.tresetacounter.domain.tresetaGame
 
-import com.premelc.tresetacounter.data.RoundEntity
-import com.premelc.tresetacounter.domain.gameCalculator.Team
 import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.utils.Team
 
 
 internal sealed interface TresetaGameViewState {

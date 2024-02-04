@@ -17,6 +17,7 @@ import com.google.android.gms.ads.MobileAds
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorScreen
 import com.premelc.tresetacounter.domain.gameHistory.GameHistoryScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
+import com.premelc.tresetacounter.domain.roundEdit.RoundEditScreen
 import com.premelc.tresetacounter.domain.tresetaGame.TresetaGameScreen
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.navigation.composableWrapper
@@ -57,6 +58,17 @@ class MainActivity : ComponentActivity() {
                             ),
                         ) {
                             GameCalculatorScreen(navController, it.arguments?.getInt("setId") ?: 0)
+                        }
+                        composableWrapper(
+                            route = NavRoutes.RoundEdit.route.plus("/{roundId}"),
+                            arguments = listOf(
+                                navArgument("roundId") {
+                                    type = NavType.IntType
+                                    defaultValue = 0
+                                }
+                            ),
+                        ) {
+                            RoundEditScreen(navController, it.arguments?.getInt("roundId") ?: 0)
                         }
                         composableWrapper(route = NavRoutes.GameHistory.route) {
                             GameHistoryScreen(navController)

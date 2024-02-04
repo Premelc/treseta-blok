@@ -30,10 +30,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.gameCalculator.Team
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.Typography
-import com.premelc.tresetacounter.uiComponents.TresetaGameScaffold
+import com.premelc.tresetacounter.uiComponents.TresetaFullActionToolbar
+import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -51,7 +51,7 @@ internal fun TresetaGameContent(
     onInteraction: (TresetaGameInteraction) -> Unit,
     navigate: (String) -> Unit
 ) {
-    TresetaGameScaffold(
+    TresetaFullActionToolbar(
         leftAction = {
             if (viewState.showHistoryButton) {
                 Icon(
@@ -76,7 +76,7 @@ internal fun TresetaGameContent(
         },
     ) {
         Column {
-            PointListColumn(viewState)
+            PointListColumn(viewState, navigate)
             Divider(
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 8.dp)
@@ -123,6 +123,7 @@ internal fun TresetaGameContent(
 @Composable
 internal fun ColumnScope.PointListColumn(
     viewState: TresetaGameViewState.GameReady,
+    navigate: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -188,7 +189,11 @@ internal fun ColumnScope.PointListColumn(
                 LazyColumn {
                     items(viewState.rounds) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navigate(NavRoutes.RoundEdit.route.plus("/${it.id}"))
+                                },
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             Text(

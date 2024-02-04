@@ -13,4 +13,7 @@ interface CallsDao {
 
     @Query("SELECT * FROM call WHERE roundId IS :roundId")
     suspend fun getCallsInRound(roundId: Int): List<CallsEntity>
+
+    @Query("DELETE FROM call where roundId is :roundId")
+    suspend fun deleteCallsFromRound(roundId: Int)
 }

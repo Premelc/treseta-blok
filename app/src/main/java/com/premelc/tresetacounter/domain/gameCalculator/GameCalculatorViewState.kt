@@ -1,5 +1,8 @@
 package com.premelc.tresetacounter.domain.gameCalculator
 
+import com.premelc.tresetacounter.utils.Call
+import com.premelc.tresetacounter.utils.Team
+
 internal data class GameCalculatorViewState(
     val firstTeamScore: Int? = null,
     val firstTeamCalls: List<Call> = emptyList(),
@@ -8,15 +11,3 @@ internal data class GameCalculatorViewState(
     val selectedTeam: Team? = null,
     val isSaveButtonEnabled: Boolean = false,
 )
-
-enum class Team {
-    FIRST,
-    SECOND,
-    NONE,
-}
-
-enum class Call(val value: Int) {
-    NAPOLITANA(3),
-    X3(3),
-    X4(4),
-}

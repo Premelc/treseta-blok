@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.premelc.tresetacounter.domain.gameCalculator.Team
 import com.premelc.tresetacounter.service.data.GameSet
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.Accordion
@@ -48,6 +47,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import com.premelc.tresetacounter.R
+import com.premelc.tresetacounter.utils.Team
 
 @Composable
 fun GameHistoryScreen(navController: NavController) {
