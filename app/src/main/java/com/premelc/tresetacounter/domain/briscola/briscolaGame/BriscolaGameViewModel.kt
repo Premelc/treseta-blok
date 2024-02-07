@@ -1,7 +1,8 @@
-package com.premelc.tresetacounter.domain.tresetaGame
+package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.premelc.tresetacounter.service.BriscolaService
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
@@ -13,12 +14,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewModel() {
+class BriscolaGameViewModel(
+    private val briscolaService: BriscolaService
+) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            if (tresetaService.selectedGameFlow().first() is GameState.NoActiveGames) {
-                tresetaService.startNewGame()
+            if (briscolaService.selectedGameFlow().first() is GameState.NoActiveGames) {
+                briscolaService.startNewGame()
             }
         }
     }
@@ -26,10 +29,10 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
     private val currentSetId = MutableStateFlow(0)
 
     internal val viewState =
-        tresetaService.selectedGameFlow().map { game ->
+        briscolaService.selectedGameFlow().map { game ->
             when (game) {
                 GameState.NoActiveGames -> {
-                    TresetaGameViewState.GameReady(
+                    BriscolaGameViewState.GameReady(
                         rounds = emptyList(),
                         firstTeamScore = 0,
                         secondTeamScore = 0,
@@ -41,7 +44,7 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
                 is GameState.GameReady -> {
                     currentSetId.value = game.setList.firstOrNull()?.id ?: 0
                     game.checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
-                    TresetaGameViewState.GameReady(
+                    BriscolaGameViewState.GameReady(
                         rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
                         firstTeamScore = game.firstTeamScore,
                         secondTeamScore = game.secondTeamScore,
@@ -58,12 +61,12 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            TresetaGameViewState.GameLoading
+            BriscolaGameViewState.GameLoading
         )
 
     private suspend fun GameState.GameReady.checkIfSetIsOver(roundsList: List<Round>) {
         if (roundsList.sumOf { it.firstTeamPoints } >= 41 || roundsList.sumOf { it.secondTeamPoints } >= 41) {
-            tresetaService.updateCurrentGame(
+            briscolaService.updateCurrentGame(
                 if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST
                 else if (roundsList.sumOf { it.secondTeamPoints } > roundsList.sumOf { it.firstTeamPoints }) Team.SECOND
                 else Team.NONE,
@@ -72,13 +75,13 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
         }
     }
 
-    internal fun onInteraction(interaction: TresetaGameInteraction) {
+    internal fun onInteraction(interaction: BriscolaGameInteraction) {
         when (interaction) {
-            TresetaGameInteraction.TapOnBackButton -> Unit
-            TresetaGameInteraction.TapOnNewRound -> Unit
-            TresetaGameInteraction.TapOnHistoryButton -> Unit
-            TresetaGameInteraction.TapOnMenuButton -> Unit
-            is TresetaGameInteraction.TapOnRoundScore -> Unit
+            BriscolaGameInteraction.TapOnBackButton -> Unit
+            BriscolaGameInteraction.TapOnNewRound -> Unit
+            BriscolaGameInteraction.TapOnHistoryButton -> Unit
+            BriscolaGameInteraction.TapOnMenuButton -> Unit
+            is BriscolaGameInteraction.TapOnRoundScore -> Unit
         }
     }
 

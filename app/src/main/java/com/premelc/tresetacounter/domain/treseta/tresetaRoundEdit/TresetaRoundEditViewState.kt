@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.roundEdit
+package com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit
 
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team

@@ -1,10 +1,10 @@
-package com.premelc.tresetacounter.domain.briscolaGame
+package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
 
 
-internal sealed interface BriscolaGameViewState {
+internal sealed interface TresetaGameViewState {
     data class GameReady(
         val gameId: Int = 0,
         val rounds: List<Round> = emptyList(),
@@ -13,7 +13,7 @@ internal sealed interface BriscolaGameViewState {
         val winningTeam: Team = Team.NONE,
         val showHistoryButton: Boolean = false,
         val currentSetId: Int = 0,
-    ) : BriscolaGameViewState
+    ) : TresetaGameViewState
 
-    data object GameLoading : BriscolaGameViewState
+    data object GameLoading : TresetaGameViewState
 }

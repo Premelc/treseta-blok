@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 private const val MAX_POINT_DIGITS = 2
 
-class GameCalculatorViewModel(
+class TresetaCalculatorViewModel(
     private val setId: Int,
     private val tresetaService: TresetaService,
     private val navController: NavController,
@@ -28,14 +28,14 @@ class GameCalculatorViewModel(
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    internal val viewState: StateFlow<GameCalculatorViewState> = combine(
+    internal val viewState: StateFlow<TresetaCalculatorViewState> = combine(
         selectedTeamFlow,
         firstTeamPointsFlow,
         secondTeamPointsFlow,
         firstTeamCallsFlow,
         secondTeamCallsFlow,
     ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls ->
-        GameCalculatorViewState(
+        TresetaCalculatorViewState(
             firstTeamScore = firstTeamPoints,
             secondTeamScore = secondTeamPoints,
             firstTeamCalls = firstTeamCalls,
@@ -46,22 +46,22 @@ class GameCalculatorViewModel(
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        GameCalculatorViewState()
+        TresetaCalculatorViewState()
     )
 
-    internal fun onInteraction(interaction: GameCalculatorInteraction) {
+    internal fun onInteraction(interaction: TresetaCalculatorInteraction) {
         when (interaction) {
-            is GameCalculatorInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
+            is TresetaCalculatorInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
 
-            is GameCalculatorInteraction.TapOnTeamCard -> {
+            is TresetaCalculatorInteraction.TapOnTeamCard -> {
                 selectedTeamFlow.value = when (selectedTeamFlow.value) {
                     interaction.team -> Team.NONE
                     else -> interaction.team
                 }
             }
 
-            GameCalculatorInteraction.TapOnBackButton -> navController.popBackStack()
-            is GameCalculatorInteraction.TapOnRemovablePill -> {
+            TresetaCalculatorInteraction.TapOnBackButton -> navController.popBackStack()
+            is TresetaCalculatorInteraction.TapOnRemovablePill -> {
                 if (interaction.team == Team.FIRST) {
                     firstTeamCallsFlow.value =
                         firstTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }

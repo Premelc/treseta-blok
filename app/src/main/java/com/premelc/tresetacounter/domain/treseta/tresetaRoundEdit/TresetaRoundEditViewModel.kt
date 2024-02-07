@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.roundEdit
+package com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 private const val MAX_POINT_DIGITS = 2
 
-class RoundEditViewModel(
+class TresetaRoundEditViewModel(
     private val roundId: Int,
     private val tresetaService: TresetaService,
     private val navController: NavController,
@@ -66,19 +66,19 @@ class RoundEditViewModel(
         RoundEditViewState()
     )
 
-    internal fun onInteraction(interaction: RoundEditInteraction) {
+    internal fun onInteraction(interaction: TresetaRoundEditInteraction) {
         when (interaction) {
-            is RoundEditInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
+            is TresetaRoundEditInteraction.TapOnCallButton -> addCallToSelectedTeam(interaction.call)
 
-            is RoundEditInteraction.TapOnTeamCard -> {
+            is TresetaRoundEditInteraction.TapOnTeamCard -> {
                 selectedTeamFlow.value = when (selectedTeamFlow.value) {
                     interaction.team -> Team.NONE
                     else -> interaction.team
                 }
             }
 
-            RoundEditInteraction.TapOnBackButton -> navController.popBackStack()
-            is RoundEditInteraction.TapOnRemovablePill -> {
+            TresetaRoundEditInteraction.TapOnBackButton -> navController.popBackStack()
+            is TresetaRoundEditInteraction.TapOnRemovablePill -> {
                 if (interaction.team == Team.FIRST) {
                     firstTeamCallsFlow.value =
                         firstTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
@@ -88,12 +88,12 @@ class RoundEditViewModel(
                 }
             }
 
-            RoundEditInteraction.TapOnDeleteRound -> deleteRoundDialogFlow.value = true
-            RoundEditInteraction.TapOnDeleteRoundDialogNegative -> {
+            TresetaRoundEditInteraction.TapOnDeleteRound -> deleteRoundDialogFlow.value = true
+            TresetaRoundEditInteraction.TapOnDeleteRoundDialogNegative -> {
                 deleteRoundDialogFlow.value = false
             }
 
-            RoundEditInteraction.TapOnDeleteRoundDialogPositive -> {
+            TresetaRoundEditInteraction.TapOnDeleteRoundDialogPositive -> {
                 deleteRoundDialogFlow.value = false
                 viewModelScope.launch {
                     tresetaService.deleteSingleRound(roundId)

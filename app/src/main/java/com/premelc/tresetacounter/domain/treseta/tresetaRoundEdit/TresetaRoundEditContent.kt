@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.roundEdit
+package com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -53,7 +53,7 @@ internal fun RoundEditScreen(
     navController: NavController,
     roundId: Int,
 ) {
-    val viewModel: RoundEditViewModel = koinViewModel { parametersOf(navController, roundId) }
+    val viewModel: TresetaRoundEditViewModel = koinViewModel { parametersOf(navController, roundId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     RoundEditContent(viewState, viewModel::onInteraction, viewModel::onNumPadInteraction)
 }
@@ -61,13 +61,13 @@ internal fun RoundEditScreen(
 @Composable
 private fun RoundEditContent(
     viewState: RoundEditViewState,
-    onInteraction: (RoundEditInteraction) -> Unit,
+    onInteraction: (TresetaRoundEditInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
     TresetaFullActionToolbar(
         leftAction = {
             Icon(
-                modifier = Modifier.clickable { onInteraction(RoundEditInteraction.TapOnBackButton) },
+                modifier = Modifier.clickable { onInteraction(TresetaRoundEditInteraction.TapOnBackButton) },
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null
             )
@@ -75,7 +75,7 @@ private fun RoundEditContent(
         rightAction = {
             Icon(
                 modifier = Modifier
-                    .clickable { onInteraction(RoundEditInteraction.TapOnDeleteRound) }
+                    .clickable { onInteraction(TresetaRoundEditInteraction.TapOnDeleteRound) }
                     .size(24.dp),
                 painter = painterResource(R.drawable.trash),
                 contentDescription = null
@@ -125,7 +125,7 @@ private fun RoundEditContent(
 @Composable
 private fun NewRoundDataContent(
     viewState: RoundEditViewState,
-    onInteraction: (RoundEditInteraction) -> Unit,
+    onInteraction: (TresetaRoundEditInteraction) -> Unit,
 ) {
     Column {
         Row(Modifier.padding(horizontal = 20.dp)) {
@@ -134,7 +134,7 @@ private fun NewRoundDataContent(
                 calls = viewState.newRoundData.firstTeamCalls,
                 onClick = { index ->
                     onInteraction(
-                        RoundEditInteraction.TapOnRemovablePill(
+                        TresetaRoundEditInteraction.TapOnRemovablePill(
                             index = index,
                             team = Team.FIRST
                         )
@@ -146,7 +146,7 @@ private fun NewRoundDataContent(
                 calls = viewState.newRoundData.secondTeamCalls,
                 onClick = { index ->
                     onInteraction(
-                        RoundEditInteraction.TapOnRemovablePill(
+                        TresetaRoundEditInteraction.TapOnRemovablePill(
                             index = index,
                             team = Team.SECOND
                         )
@@ -162,7 +162,7 @@ private fun NewRoundDataContent(
                     callsValue = viewState.newRoundData.firstTeamCalls.sumOf { it.value },
                     isSelected = viewState.selectedTeam == Team.FIRST,
                     onClick = {
-                        onInteraction(RoundEditInteraction.TapOnTeamCard(Team.FIRST))
+                        onInteraction(TresetaRoundEditInteraction.TapOnTeamCard(Team.FIRST))
                     },
                 )
                 TeamPointCard(
@@ -171,7 +171,7 @@ private fun NewRoundDataContent(
                     callsValue = viewState.newRoundData.secondTeamCalls.sumOf { it.value },
                     isSelected = viewState.selectedTeam == Team.SECOND,
                     onClick = {
-                        onInteraction(RoundEditInteraction.TapOnTeamCard(Team.SECOND))
+                        onInteraction(TresetaRoundEditInteraction.TapOnTeamCard(Team.SECOND))
                     },
                 )
             }
@@ -182,7 +182,7 @@ private fun NewRoundDataContent(
             )
             Calls(
                 onInteraction = { call ->
-                    onInteraction(RoundEditInteraction.TapOnCallButton(call))
+                    onInteraction(TresetaRoundEditInteraction.TapOnCallButton(call))
                 },
             )
         }
@@ -227,7 +227,7 @@ private fun OldRoundDataContent(
 
 @Composable
 private fun DeleteRoundDialog(
-    onInteraction: (RoundEditInteraction) -> Unit
+    onInteraction: (TresetaRoundEditInteraction) -> Unit
 ) {
     Dialog(
         onDismissRequest = { /*TODO*/ },
@@ -255,7 +255,7 @@ private fun DeleteRoundDialog(
                     .height(60.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    onInteraction(RoundEditInteraction.TapOnDeleteRoundDialogPositive)
+                    onInteraction(TresetaRoundEditInteraction.TapOnDeleteRoundDialogPositive)
                 },
             ) {
                 Text(text = stringResource(R.string.edit_round_delete_dialog_button_positive))
@@ -270,7 +270,7 @@ private fun DeleteRoundDialog(
                 ),
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.onBackground),
                 onClick = {
-                    onInteraction(RoundEditInteraction.TapOnDeleteRoundDialogNegative)
+                    onInteraction(TresetaRoundEditInteraction.TapOnDeleteRoundDialogNegative)
                 },
             ) {
                 Text(text = stringResource(R.string.edit_round_delete_dialog_button_negative))

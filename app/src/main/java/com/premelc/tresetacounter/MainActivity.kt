@@ -14,12 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.android.gms.ads.MobileAds
-import com.premelc.tresetacounter.domain.briscolaGame.BriscolaGameScreen
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorScreen
-import com.premelc.tresetacounter.domain.gameHistory.GameHistoryScreen
+import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameScreen
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.GameCalculatorScreen
+import com.premelc.tresetacounter.domain.treseta.tresetaHistory.GameHistoryScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
-import com.premelc.tresetacounter.domain.roundEdit.RoundEditScreen
-import com.premelc.tresetacounter.domain.tresetaGame.TresetaGameScreen
+import com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit.RoundEditScreen
+import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameScreen
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.navigation.composableWrapper
 import com.premelc.tresetacounter.ui.theme.TresetaBlokTheme

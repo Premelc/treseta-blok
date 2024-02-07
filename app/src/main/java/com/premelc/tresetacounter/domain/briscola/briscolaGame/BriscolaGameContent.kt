@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.briscolaGame
+package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

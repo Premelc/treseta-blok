@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.tresetaGame
+package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
