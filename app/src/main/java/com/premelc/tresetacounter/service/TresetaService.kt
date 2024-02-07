@@ -215,7 +215,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                     timestamp = null,
                     firstTeamPoints = 0,
                     secondTeamPoints = 0,
-                            gameType = GameType.TRESETA,
+                    gameType = GameType.TRESETA,
                 )
             )
         )
@@ -294,7 +294,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                         timestamp = newTimestamp,
                         firstTeamPoints = it.firstTeamPoints,
                         secondTeamPoints = it.secondTeamPoints,
-                        gameType = GameType.TRESETA,
+                        gameType = it.gameType,
                     )
                 )
             )

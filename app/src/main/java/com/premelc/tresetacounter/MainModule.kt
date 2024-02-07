@@ -3,11 +3,11 @@ package com.premelc.tresetacounter
 import androidx.room.Room
 import com.premelc.tresetacounter.data.CardGameDatabase
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuViewModel
-import com.premelc.tresetacounter.domain.tresetaGame.TresetaGameViewModel
-import com.premelc.tresetacounter.domain.briscolaGame.BriscolaGameViewModel
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorViewModel
-import com.premelc.tresetacounter.domain.roundEdit.RoundEditViewModel
-import com.premelc.tresetacounter.domain.gameHistory.GameHistoryViewModel
+import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameViewModel
+import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameViewModel
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaCalculatorViewModel
+import com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit.TresetaRoundEditViewModel
+import com.premelc.tresetacounter.domain.treseta.tresetaHistory.TresetaHistoryViewModel
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.BriscolaService
 import org.koin.android.ext.koin.androidContext
@@ -27,9 +27,9 @@ val appModule = module {
     viewModelOf(::MainMenuViewModel)
     viewModelOf(::TresetaGameViewModel)
     viewModelOf(::BriscolaGameViewModel)
-    viewModelOf(::GameCalculatorViewModel)
-    viewModelOf(::GameHistoryViewModel)
-    viewModelOf(::RoundEditViewModel)
+    viewModelOf(::TresetaCalculatorViewModel)
+    viewModelOf(::TresetaHistoryViewModel)
+    viewModelOf(::TresetaRoundEditViewModel)
     singleOf(::TresetaService)
     singleOf(::BriscolaService)
 }

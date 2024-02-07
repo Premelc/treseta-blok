@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.tresetaGame
+package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
 internal sealed interface TresetaGameInteraction {
     data object TapOnNewRound : TresetaGameInteraction

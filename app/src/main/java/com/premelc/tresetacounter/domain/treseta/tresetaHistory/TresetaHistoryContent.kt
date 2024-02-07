@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.gameHistory
+package com.premelc.tresetacounter.domain.treseta.tresetaHistory
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -51,19 +51,19 @@ import com.premelc.tresetacounter.utils.Team
 
 @Composable
 fun GameHistoryScreen(navController: NavController) {
-    val viewModel: GameHistoryViewModel = getViewModel { parametersOf(navController) }
+    val viewModel: TresetaHistoryViewModel = getViewModel { parametersOf(navController) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameHistoryContent(viewState, viewModel::onInteraction)
 }
 
 @Composable
 private fun GameHistoryContent(
-    viewState: GameHistoryViewState,
-    onInteraction: (GameHistoryInteraction) -> Unit
+    viewState: TresetaHistoryViewState,
+    onInteraction: (TresetaHistoryInteraction) -> Unit
 ) {
     TresetaToolbarScaffold(
         backAction = {
-            onInteraction(GameHistoryInteraction.OnBackButtonClicked)
+            onInteraction(TresetaHistoryInteraction.OnBackButtonClicked)
         }
     ) {
         val listState = rememberLazyListState()

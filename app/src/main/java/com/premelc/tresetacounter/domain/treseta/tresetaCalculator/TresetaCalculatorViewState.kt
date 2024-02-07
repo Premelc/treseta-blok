@@ -1,9 +1,9 @@
-package com.premelc.tresetacounter.domain.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
 
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team
 
-internal data class GameCalculatorViewState(
+internal data class TresetaCalculatorViewState(
     val firstTeamScore: Int? = null,
     val firstTeamCalls: List<Call> = emptyList(),
     val secondTeamScore: Int? = null,

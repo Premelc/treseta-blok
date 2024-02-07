@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.gameHistory
+package com.premelc.tresetacounter.domain.treseta.tresetaHistory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,12 +8,11 @@ import com.premelc.tresetacounter.service.data.GameState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GameHistoryViewModel(
+class TresetaHistoryViewModel(
     tresetaService: TresetaService,
     private val navController: NavController,
 ) : ViewModel() {
@@ -22,24 +21,24 @@ class GameHistoryViewModel(
         tresetaService.selectedGameFlow().flatMapLatest {
             if (it is GameState.GameReady) {
                 MutableStateFlow(
-                    GameHistoryViewState(
+                    TresetaHistoryViewState(
                         firstTeamScore = it.firstTeamScore,
                         secondTeamScore = it.secondTeamScore,
                         sets = it.setList,
                     ),
                 )
             } else {
-                MutableStateFlow(GameHistoryViewState())
+                MutableStateFlow(TresetaHistoryViewState())
             }
         }.stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            GameHistoryViewState(),
+            TresetaHistoryViewState(),
         )
 
-    fun onInteraction(interaction: GameHistoryInteraction) {
+    fun onInteraction(interaction: TresetaHistoryInteraction) {
         when (interaction) {
-            GameHistoryInteraction.OnBackButtonClicked -> navController.popBackStack()
+            TresetaHistoryInteraction.OnBackButtonClicked -> navController.popBackStack()
         }
     }
 }

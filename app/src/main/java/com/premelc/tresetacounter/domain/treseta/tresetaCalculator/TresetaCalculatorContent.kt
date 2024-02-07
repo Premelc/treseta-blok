@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnCallButton
-import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorInteraction.TapOnTeamCard
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaCalculatorInteraction.TapOnCallButton
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaCalculatorInteraction.TapOnTeamCard
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
 import com.premelc.tresetacounter.uiComponents.Calls
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction
@@ -37,18 +37,18 @@ internal fun GameCalculatorScreen(
     navController: NavController,
     setId: Int,
 ) {
-    val viewModel: GameCalculatorViewModel = koinViewModel { parametersOf(navController, setId) }
+    val viewModel: TresetaCalculatorViewModel = koinViewModel { parametersOf(navController, setId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameCalculatorContent(viewState, viewModel::onInteraction , viewModel::onNumPadInteraction)
 }
 
 @Composable
 private fun GameCalculatorContent(
-    viewState: GameCalculatorViewState,
-    onInteraction: (GameCalculatorInteraction) -> Unit,
+    viewState: TresetaCalculatorViewState,
+    onInteraction: (TresetaCalculatorInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
-    TresetaToolbarScaffold(backAction = { onInteraction(GameCalculatorInteraction.TapOnBackButton) }) {
+    TresetaToolbarScaffold(backAction = { onInteraction(TresetaCalculatorInteraction.TapOnBackButton) }) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -61,7 +61,7 @@ private fun GameCalculatorContent(
                     calls = viewState.firstTeamCalls,
                     onClick = { index ->
                         onInteraction(
-                            GameCalculatorInteraction.TapOnRemovablePill(
+                            TresetaCalculatorInteraction.TapOnRemovablePill(
                                 index = index,
                                 team = Team.FIRST
                             )
@@ -73,7 +73,7 @@ private fun GameCalculatorContent(
                     calls = viewState.secondTeamCalls,
                     onClick = { index ->
                         onInteraction(
-                            GameCalculatorInteraction.TapOnRemovablePill(
+                            TresetaCalculatorInteraction.TapOnRemovablePill(
                                 index = index,
                                 team = Team.SECOND
                             )
