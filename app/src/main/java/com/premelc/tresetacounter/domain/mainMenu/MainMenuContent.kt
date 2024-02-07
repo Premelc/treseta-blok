@@ -19,8 +19,14 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,6 +48,7 @@ import com.premelc.tresetacounter.ui.theme.ColorPalette
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.parseTimestamp
+import com.premelc.tresetacounter.utils.GameType
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -57,6 +64,7 @@ private fun MainMenuContent(
     onInteraction: (MainMenuInteraction) -> Unit,
     navigate: (String) -> Unit,
 ) {
+    var tabIndex by remember { mutableStateOf(0) }
     TresetaToolbarScaffold {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -83,55 +91,130 @@ private fun MainMenuContent(
                             contentDescription = null,
                         )
                     }
-                    Text(
-                        text = stringResource(R.string.main_menu_continue_game_title),
-                        style = Typography.h6,
-                        modifier = Modifier.padding(bottom = 4.dp, start = 20.dp)
-                    )
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+                }
+                item {
+                    GameTypeTabs(
+                        viewState = viewState,
+                        selectedIndex = tabIndex,
+                        onTabSelection = { selectedIndex ->
+                            tabIndex = selectedIndex
+                        },
+                        onInteraction = onInteraction,
+                        navigate = navigate
                     )
                 }
-                if (viewState.games.isEmpty()) {
-                    item {
-                        Column(
-                            modifier = Modifier.fillMaxSize(1f),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(top = 150.dp),
-                                text = stringResource(R.string.main_menu_no_previous_games_label),
-                                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                } else {
-                    item {
-                        PastGameContent(
-                            games = viewState.games,
-                            onInteraction = onInteraction,
-                            navigate = navigate,
-                        )
-                    }
-                }
             }
-            Button(
-                onClick = {
-                    onInteraction(MainMenuInteraction.OnNewGameClicked)
-                    navigate(NavRoutes.TresetaGame.route)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .height(60.dp),
-            ) {
-                Text(text = stringResource(R.string.main_menu_new_game_button))
-            }
+            NewGameButton(
+                onInteraction = onInteraction,
+                navigate = navigate,
+                selectedIndex = tabIndex
+            )
         }
+    }
+}
+
+@Composable
+private fun NewGameButton(
+    onInteraction: (MainMenuInteraction) -> Unit,
+    navigate: (String) -> Unit,
+    selectedIndex: Int,
+) {
+    Button(
+        onClick = {
+            onInteraction(
+                MainMenuInteraction.OnNewGameClicked(
+                    if (selectedIndex == 0) GameType.TRESETA else GameType.BRISCOLA
+                )
+            )
+            navigate(
+                if (selectedIndex == 0) {
+                    NavRoutes.TresetaGame.route
+                } else {
+                    NavRoutes.BriscolaGame.route
+                }
+            )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .height(60.dp),
+    ) {
+        Text(text = stringResource(R.string.main_menu_new_game_button))
+    }
+}
+
+@Composable
+private fun GameTypeTabs(
+    viewState: MainMenuViewState,
+    selectedIndex: Int,
+    onTabSelection: (Int) -> Unit,
+    onInteraction: (MainMenuInteraction) -> Unit,
+    navigate: (String) -> Unit,
+) {
+    val tabs = listOf(
+        R.string.main_menu_treseta_tab_title,
+        R.string.main_menu_briscola_tab_title,
+    )
+    TabRow(
+        modifier = Modifier.padding(bottom = 24.dp),
+        selectedTabIndex = selectedIndex,
+        backgroundColor = MaterialTheme.colors.background,
+        contentColor = MaterialTheme.colors.onBackground,
+    ) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(stringResource(title)) },
+                selected = selectedIndex == index,
+                onClick = {
+                    onTabSelection(index)
+                }
+            )
+        }
+    }
+    when (selectedIndex) {
+        0 -> TabContent(
+            gameList = viewState.tresetaGames,
+            onInteraction = onInteraction,
+            navigate = {
+                navigate(NavRoutes.TresetaGame.route)
+            },
+        )
+
+        1 -> TabContent(
+            gameList = viewState.briscolaGames,
+            onInteraction = onInteraction,
+            navigate = {
+                navigate(NavRoutes.BriscolaGame.route)
+            },
+        )
+    }
+}
+
+@Composable
+private fun TabContent(
+    gameList: List<GameEntity>,
+    onInteraction: (MainMenuInteraction) -> Unit,
+    navigate: () -> Unit,
+) {
+    if (gameList.isEmpty()) {
+        Column(
+            modifier = Modifier.fillMaxSize(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier.padding(top = 150.dp),
+                text = stringResource(R.string.main_menu_no_previous_games_label),
+                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        PastGameContent(
+            games = gameList,
+            onInteraction = onInteraction,
+            navigate = navigate,
+        )
     }
 }
 
@@ -139,9 +222,19 @@ private fun MainMenuContent(
 private fun PastGameContent(
     games: List<GameEntity>,
     onInteraction: (MainMenuInteraction) -> Unit,
-    navigate: (String) -> Unit,
+    navigate: () -> Unit,
 ) {
     Column {
+        Text(
+            text = stringResource(R.string.main_menu_continue_game_title),
+            style = Typography.h6,
+            modifier = Modifier.padding(bottom = 4.dp, start = 20.dp)
+        )
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp, start = 8.dp, end = 8.dp)
+        )
         if (games.any { it.isFavorite }) {
             Text(
                 text = stringResource(R.string.main_menu_favourite_label),
@@ -186,7 +279,7 @@ private fun PastGameContent(
 private fun PastGameCard(
     game: GameEntity,
     onInteraction: (MainMenuInteraction) -> Unit,
-    navigate: (String) -> Unit,
+    navigate: () -> Unit,
 ) {
     Row(
         Modifier
@@ -199,8 +292,8 @@ private fun PastGameCard(
             modifier = Modifier
                 .fillMaxSize()
                 .clickable {
-                    navigate(NavRoutes.TresetaGame.route)
-                    onInteraction(MainMenuInteraction.TapOnGameCard(game.id))
+                    navigate()
+                    onInteraction(MainMenuInteraction.TapOnGameCard(game.id, game.gameType))
                 },
             elevation = 10.dp,
             shape = RoundedCornerShape(5.dp)

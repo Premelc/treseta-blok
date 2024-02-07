@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.tresetaGame
+package com.premelc.tresetacounter.domain.briscolaGame
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -37,28 +37,28 @@ import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun TresetaGameScreen(navigate: (String) -> Unit) {
-    val viewModel: TresetaGameViewModel = koinViewModel()
+internal fun BriscolaGameScreen(navigate: (String) -> Unit) {
+    val viewModel: BriscolaGameViewModel = koinViewModel()
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
-    if (viewState is TresetaGameViewState.GameReady) {
-        TresetaGameContent(viewState, viewModel::onInteraction, navigate)
+    if (viewState is BriscolaGameViewState.GameReady) {
+        BriscolaGameContent(viewState, viewModel::onInteraction, navigate)
     }
 }
 
 @Composable
-internal fun TresetaGameContent(
-    viewState: TresetaGameViewState.GameReady,
-    onInteraction: (TresetaGameInteraction) -> Unit,
+internal fun BriscolaGameContent(
+    viewState: BriscolaGameViewState.GameReady,
+    onInteraction: (BriscolaGameInteraction) -> Unit,
     navigate: (String) -> Unit
 ) {
     TresetaFullActionToolbar(
-        title = stringResource(R.string.treseta_game_title),
+        title = stringResource(R.string.briscola_game_title),
         leftAction = {
             if (viewState.showHistoryButton) {
                 Icon(
                     modifier = Modifier.clickable {
                         navigate(NavRoutes.GameHistory.route)
-                        onInteraction(TresetaGameInteraction.TapOnHistoryButton)
+                        onInteraction(BriscolaGameInteraction.TapOnHistoryButton)
                     },
                     painter = painterResource(R.drawable.history),
                     contentDescription = null,
@@ -69,7 +69,7 @@ internal fun TresetaGameContent(
             Icon(
                 modifier = Modifier.clickable {
                     navigate(NavRoutes.MainMenu.route)
-                    onInteraction(TresetaGameInteraction.TapOnMenuButton)
+                    onInteraction(BriscolaGameInteraction.TapOnMenuButton)
                 },
                 painter = painterResource(org.koin.android.R.drawable.abc_ic_menu_overflow_material),
                 contentDescription = null,
@@ -112,7 +112,7 @@ internal fun TresetaGameContent(
                     .fillMaxWidth(),
                 onClick = {
                     navigate(NavRoutes.GameCalculator.route.plus("/${viewState.currentSetId}"))
-                    onInteraction(TresetaGameInteraction.TapOnNewRound)
+                    onInteraction(BriscolaGameInteraction.TapOnNewRound)
                 },
             ) {
                 Text(text = stringResource(R.string.game_add_new_round_button_label))
@@ -123,7 +123,7 @@ internal fun TresetaGameContent(
 
 @Composable
 internal fun ColumnScope.PointListColumn(
-    viewState: TresetaGameViewState.GameReady,
+    viewState: BriscolaGameViewState.GameReady,
     navigate: (String) -> Unit,
 ) {
     Column(
