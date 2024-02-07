@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TresetaService(private val cardGameDatabase: CardGameDatabase) {
+class BriscolaService(private val database: CardGameDatabase) {
 
     private val selectedGameId = MutableStateFlow<Int?>(null)
 
@@ -28,7 +28,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
             selectedOrFirstGameFlow(it)
         }
 
-    fun gamesFlow() = cardGameDatabase.gameDao().getAllGames(GameType.TRESETA)
+    fun gamesFlow() = database.gameDao().getAllGames(GameType.BRISCOLA)
 
     fun setSelectedGame(gameId: Int) {
         selectedGameId.value = gameId
@@ -37,9 +37,9 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     private fun selectedOrFirstGameFlow(gameId: Int?) =
         if (gameId != null) {
             combine(
-                cardGameDatabase.gameDao().getSingleGame(gameId),
-                cardGameDatabase.setDao().getAllSets(gameId),
-                cardGameDatabase.roundDao().getRounds(),
+                database.gameDao().getSingleGame(gameId),
+                database.setDao().getAllSets(gameId),
+                database.roundDao().getRounds(),
             ) { game, sets, rounds ->
                 GameState.GameReady(
                     gameId = game.id,
@@ -61,13 +61,13 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
         }
 
     private fun latestGameFlow() =
-        cardGameDatabase.gameDao().getLatestGame().flatMapLatest { game ->
+        database.gameDao().getLatestGame().flatMapLatest { game ->
             if (game == null) {
                 flowOf(GameState.NoActiveGames)
             } else {
                 combine(
-                    cardGameDatabase.setDao().getAllSets(game.id),
-                    cardGameDatabase.roundDao().getRounds(),
+                    database.setDao().getAllSets(game.id),
+                    database.roundDao().getRounds(),
                 ) { sets, rounds ->
                     setSelectedGame(game.id)
                     GameState.GameReady(
@@ -90,18 +90,18 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
 
     suspend fun deleteGame(gameId: Int) {
         if (selectedGameId.value == gameId) selectedGameId.value = null
-        cardGameDatabase.gameDao().deleteGameById(gameId)
-        cardGameDatabase.setDao().getAllSets(gameId).collect {
+        database.gameDao().deleteGameById(gameId)
+        database.setDao().getAllSets(gameId).collect {
             it.map { set ->
-                cardGameDatabase.roundDao().deleteRounds(set.id)
+                database.roundDao().deleteRounds(set.id)
             }
         }
-        cardGameDatabase.setDao().deleteSets(gameId)
+        database.setDao().deleteSets(gameId)
     }
 
     suspend fun toggleGameFavoriteState(gameId: Int) {
-        cardGameDatabase.gameDao().getSingleGame(gameId).first().let {
-            cardGameDatabase.gameDao().insertGame(
+        database.gameDao().getSingleGame(gameId).first().let {
+            database.gameDao().insertGame(
                 listOf(
                     GameEntity(
                         id = it.id,
@@ -109,7 +109,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                         timestamp = it.timestamp,
                         firstTeamPoints = it.firstTeamPoints,
                         secondTeamPoints = it.secondTeamPoints,
-                        gameType = GameType.TRESETA,
+                        gameType = GameType.BRISCOLA,
                     )
                 )
             )
@@ -117,11 +117,11 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     }
 
     suspend fun getSingleRound(roundId: Int) =
-        cardGameDatabase.roundDao().getSingleRound(roundId).toRound()
+        database.roundDao().getSingleRound(roundId).toRound()
 
     suspend fun deleteSingleRound(roundId: Int) {
-        cardGameDatabase.callsDao().deleteCallsFromRound(roundId)
-        cardGameDatabase.roundDao().deleteSingleRound(roundId)
+        database.callsDao().deleteCallsFromRound(roundId)
+        database.roundDao().deleteSingleRound(roundId)
     }
 
     suspend fun editRound(
@@ -135,7 +135,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
         firstTeamCalls: List<Call>,
         secondTeamCalls: List<Call>,
     ) {
-        cardGameDatabase.roundDao().insertRound(
+        database.roundDao().insertRound(
             RoundEntity(
                 id = roundId,
                 setId = setId,
@@ -146,8 +146,8 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                 secondTeamPointsNoCalls = secondTeamPointsNoCalls,
             )
         )
-        cardGameDatabase.callsDao().deleteCallsFromRound(roundId)
-        cardGameDatabase.callsDao().insertCalls(firstTeamCalls.map {
+        database.callsDao().deleteCallsFromRound(roundId)
+        database.callsDao().insertCalls(firstTeamCalls.map {
             CallsEntity(
                 id = 0,
                 roundId = roundId,
@@ -174,7 +174,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
         secondTeamCalls: List<Call>,
     ) {
         val newTimestamp = System.currentTimeMillis()
-        val roundId = cardGameDatabase.roundDao().insertRound(
+        val roundId = database.roundDao().insertRound(
             RoundEntity(
                 id = 0,
                 setId = setId,
@@ -186,10 +186,10 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
             )
         )
         updateGameTimestamp(
-            cardGameDatabase.setDao().getSingleSet(setId).first().gameId,
+            database.setDao().getSingleSet(setId).first().gameId,
             newTimestamp
         )
-        cardGameDatabase.callsDao().insertCalls(firstTeamCalls.map {
+        database.callsDao().insertCalls(firstTeamCalls.map {
             CallsEntity(
                 id = 0,
                 roundId = roundId.toInt(),
@@ -207,7 +207,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     }
 
     suspend fun startNewGame() {
-        cardGameDatabase.gameDao().insertGame(
+        database.gameDao().insertGame(
             listOf(
                 GameEntity(
                     id = 0,
@@ -215,12 +215,12 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                     timestamp = null,
                     firstTeamPoints = 0,
                     secondTeamPoints = 0,
-                            gameType = GameType.TRESETA,
+                    gameType = GameType.BRISCOLA,
                 )
             )
         )
-        val newGameId = cardGameDatabase.gameDao().getNewGame().id
-        cardGameDatabase.setDao().insertSet(
+        val newGameId = database.gameDao().getNewGame().id
+        database.setDao().insertSet(
             listOf(
                 SetEntity(
                     id = 0,
@@ -235,7 +235,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     suspend fun updateCurrentGame(winningTeam: Team, game: GameState.GameReady) {
         when (winningTeam) {
             Team.FIRST -> {
-                cardGameDatabase.setDao().insertSet(
+                database.setDao().insertSet(
                     listOf(
                         SetEntity(
                             id = 0,
@@ -243,7 +243,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                         )
                     )
                 )
-                cardGameDatabase.gameDao().insertGame(
+                database.gameDao().insertGame(
                     listOf(
                         GameEntity(
                             id = game.gameId,
@@ -251,14 +251,14 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                             timestamp = System.currentTimeMillis(),
                             firstTeamPoints = game.firstTeamScore + 1,
                             secondTeamPoints = game.secondTeamScore,
-                            gameType = GameType.TRESETA,
+                            gameType = GameType.BRISCOLA,
                         )
                     )
                 )
             }
 
             Team.SECOND -> {
-                cardGameDatabase.setDao().insertSet(
+                database.setDao().insertSet(
                     listOf(
                         SetEntity(
                             id = 0,
@@ -266,7 +266,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                         )
                     )
                 )
-                cardGameDatabase.gameDao().insertGame(
+                database.gameDao().insertGame(
                     listOf(
                         GameEntity(
                             id = game.gameId,
@@ -274,7 +274,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                             timestamp = System.currentTimeMillis(),
                             firstTeamPoints = game.firstTeamScore,
                             secondTeamPoints = game.secondTeamScore + 1,
-                            gameType = GameType.TRESETA,
+                            gameType = GameType.BRISCOLA,
                         )
                     )
                 )
@@ -285,8 +285,8 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     }
 
     private suspend fun updateGameTimestamp(gameId: Int, newTimestamp: Long) {
-        cardGameDatabase.gameDao().getSingleGame(gameId).first().let {
-            cardGameDatabase.gameDao().insertGame(
+        database.gameDao().getSingleGame(gameId).first().let {
+            database.gameDao().insertGame(
                 listOf(
                     GameEntity(
                         id = it.id,
@@ -294,7 +294,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
                         timestamp = newTimestamp,
                         firstTeamPoints = it.firstTeamPoints,
                         secondTeamPoints = it.secondTeamPoints,
-                        gameType = GameType.TRESETA,
+                        gameType = GameType.BRISCOLA,
                     )
                 )
             )
@@ -302,7 +302,7 @@ class TresetaService(private val cardGameDatabase: CardGameDatabase) {
     }
 
     private suspend fun RoundEntity.toRound(): Round {
-        val calls = cardGameDatabase.callsDao().getCallsInRound(this.id)
+        val calls = database.callsDao().getCallsInRound(this.id)
         return Round(
             id = this.id,
             setId = this.setId,

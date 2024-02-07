@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.android.gms.ads.MobileAds
+import com.premelc.tresetacounter.domain.briscolaGame.BriscolaGameScreen
 import com.premelc.tresetacounter.domain.gameCalculator.GameCalculatorScreen
 import com.premelc.tresetacounter.domain.gameHistory.GameHistoryScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
@@ -40,6 +41,11 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composableWrapper(route = NavRoutes.TresetaGame.route) {
                             TresetaGameScreen { route: String ->
+                                navController.tresetaNavigate(route)
+                            }
+                        }
+                        composableWrapper(route = NavRoutes.BriscolaGame.route) {
+                            BriscolaGameScreen { route: String ->
                                 navController.tresetaNavigate(route)
                             }
                         }

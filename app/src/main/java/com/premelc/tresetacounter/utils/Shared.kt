@@ -11,3 +11,8 @@ enum class Call(val value: Int) {
     X3(3),
     X4(4),
 }
+
+enum class GameType{
+    TRESETA,
+    BRISCOLA,
+}
