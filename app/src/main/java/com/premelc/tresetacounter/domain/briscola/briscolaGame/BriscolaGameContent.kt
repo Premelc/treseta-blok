@@ -25,14 +25,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.navigation.NavRoutes
+import com.premelc.tresetacounter.service.data.BriscolaRound
 import com.premelc.tresetacounter.ui.theme.Typography
-import com.premelc.tresetacounter.uiComponents.TresetaFullActionToolbar
+import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,20 +56,9 @@ internal fun BriscolaGameContent(
     onInteraction: (BriscolaGameInteraction) -> Unit,
     navigate: (String) -> Unit
 ) {
-    TresetaFullActionToolbar(
+    FullActionToolbar(
         title = stringResource(R.string.briscola_game_title),
-        leftAction = {
-            if (viewState.showHistoryButton) {
-                Icon(
-                    modifier = Modifier.clickable {
-                        navigate(NavRoutes.GameHistory.route)
-                        onInteraction(BriscolaGameInteraction.TapOnHistoryButton)
-                    },
-                    painter = painterResource(R.drawable.history),
-                    contentDescription = null,
-                )
-            }
-        },
+        leftAction = {},
         rightAction = {
             Icon(
                 modifier = Modifier.clickable {
@@ -111,7 +105,7 @@ internal fun BriscolaGameContent(
                     .height(64.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    navigate(NavRoutes.GameCalculator.route.plus("/${viewState.currentSetId}"))
+                    navigate(NavRoutes.BriscolaGameCalculator.route.plus("/${viewState.currentSetId}"))
                     onInteraction(BriscolaGameInteraction.TapOnNewRound)
                 },
             ) {
@@ -193,15 +187,32 @@ internal fun ColumnScope.PointListColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    navigate(NavRoutes.RoundEdit.route.plus("/${it.id}"))
+                                    navigate(NavRoutes.BriscolaRoundEdit.route.plus("/${it.id}"))
                                 },
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.Bottom,
                         ) {
                             Text(
                                 text = it.firstTeamPoints.toString(),
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 style = Typography.body1
                             )
+                            if (it is BriscolaRound) {
+                                Text(
+                                    modifier = Modifier.padding(vertical = 8.dp),
+                                    text = stringResource(
+                                        R.string.treseta_score,
+                                        it.firstTeamPointsCollected,
+                                        it.secondTeamPointsCollected
+                                    ),
+                                    style = TextStyle(
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 12.sp,
+                                        fontStyle = FontStyle.Italic,
+                                        letterSpacing = 0.25.sp,
+                                    ),
+                                )
+                            }
                             Text(
                                 text = it.secondTeamPoints.toString(),
                                 modifier = Modifier.padding(vertical = 8.dp),

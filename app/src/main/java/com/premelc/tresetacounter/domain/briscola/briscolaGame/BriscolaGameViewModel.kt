@@ -3,7 +3,6 @@ package com.premelc.tresetacounter.domain.briscola.briscolaGame
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.premelc.tresetacounter.service.BriscolaService
-import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
@@ -18,14 +17,6 @@ class BriscolaGameViewModel(
     private val briscolaService: BriscolaService
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            if (briscolaService.selectedGameFlow().first() is GameState.NoActiveGames) {
-                briscolaService.startNewGame()
-            }
-        }
-    }
-
     private val currentSetId = MutableStateFlow(0)
 
     internal val viewState =
@@ -37,7 +28,7 @@ class BriscolaGameViewModel(
                         firstTeamScore = 0,
                         secondTeamScore = 0,
                         winningTeam = Team.NONE,
-                        showHistoryButton = true
+                        showHistoryButton = false
                     )
                 }
 
@@ -65,7 +56,7 @@ class BriscolaGameViewModel(
         )
 
     private suspend fun GameState.GameReady.checkIfSetIsOver(roundsList: List<Round>) {
-        if (roundsList.sumOf { it.firstTeamPoints } >= 41 || roundsList.sumOf { it.secondTeamPoints } >= 41) {
+        if (roundsList.sumOf { it.firstTeamPoints } >= 4 || roundsList.sumOf { it.secondTeamPoints } >= 4) {
             briscolaService.updateCurrentGame(
                 if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST
                 else if (roundsList.sumOf { it.secondTeamPoints } > roundsList.sumOf { it.firstTeamPoints }) Team.SECOND

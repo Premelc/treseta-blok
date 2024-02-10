@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.Typography
-import com.premelc.tresetacounter.uiComponents.TresetaFullActionToolbar
+import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,13 +51,13 @@ internal fun TresetaGameContent(
     onInteraction: (TresetaGameInteraction) -> Unit,
     navigate: (String) -> Unit
 ) {
-    TresetaFullActionToolbar(
+    FullActionToolbar(
         title = stringResource(R.string.treseta_game_title),
         leftAction = {
             if (viewState.showHistoryButton) {
                 Icon(
                     modifier = Modifier.clickable {
-                        navigate(NavRoutes.GameHistory.route)
+                        navigate(NavRoutes.TresetaGameHistory.route)
                         onInteraction(TresetaGameInteraction.TapOnHistoryButton)
                     },
                     painter = painterResource(R.drawable.history),
@@ -111,7 +111,7 @@ internal fun TresetaGameContent(
                     .height(64.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    navigate(NavRoutes.GameCalculator.route.plus("/${viewState.currentSetId}"))
+                    navigate(NavRoutes.TresetaGameCalculator.route.plus("/${viewState.currentSetId}"))
                     onInteraction(TresetaGameInteraction.TapOnNewRound)
                 },
             ) {
@@ -193,7 +193,7 @@ internal fun ColumnScope.PointListColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    navigate(NavRoutes.RoundEdit.route.plus("/${it.id}"))
+                                    navigate(NavRoutes.TresetaRoundEdit.route.plus("/${it.id}"))
                                 },
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {

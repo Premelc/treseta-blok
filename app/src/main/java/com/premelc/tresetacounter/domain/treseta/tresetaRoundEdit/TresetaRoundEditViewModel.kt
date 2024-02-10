@@ -44,13 +44,13 @@ class TresetaRoundEditViewModel(
         deleteRoundDialogFlow,
     ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showDeleteRoundDialog ->
         RoundEditViewState(
-            oldRoundData = RoundData(
+            oldRoundData = TresetaRoundData(
                 firstTeamScore = oldRoundData.await().firstTeamPointsNoCalls,
                 firstTeamCalls = oldRoundData.await().firstTeamCalls,
                 secondTeamScore = oldRoundData.await().secondTeamPointsNoCalls,
                 secondTeamCalls = oldRoundData.await().secondTeamCalls,
             ),
-            newRoundData = RoundData(
+            newRoundData = TresetaRoundData(
                 firstTeamScore = firstTeamPoints,
                 firstTeamCalls = firstTeamCalls,
                 secondTeamScore = secondTeamPoints,

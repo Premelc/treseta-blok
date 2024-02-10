@@ -38,7 +38,7 @@ fun RowScope.TeamPointCard(
     team: String,
     isSelected: Boolean,
     pointValue: Int?,
-    callsValue: Int?,
+    callsValue: Int? = null,
     isEnabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {

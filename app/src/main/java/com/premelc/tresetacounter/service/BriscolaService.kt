@@ -1,14 +1,14 @@
 package com.premelc.tresetacounter.service
 
-import com.premelc.tresetacounter.data.CallsEntity
+import com.premelc.tresetacounter.data.BriscolaRoundEntity
 import com.premelc.tresetacounter.data.GameEntity
 import com.premelc.tresetacounter.data.RoundEntity
 import com.premelc.tresetacounter.data.SetEntity
 import com.premelc.tresetacounter.data.CardGameDatabase
+import com.premelc.tresetacounter.service.data.BriscolaRound
 import com.premelc.tresetacounter.service.data.GameSet
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
-import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.GameType
 import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,22 +39,26 @@ class BriscolaService(private val database: CardGameDatabase) {
             combine(
                 database.gameDao().getSingleGame(gameId),
                 database.setDao().getAllSets(gameId),
-                database.roundDao().getRounds(),
+                database.briscolaRoundDao().getRounds(),
             ) { game, sets, rounds ->
-                GameState.GameReady(
-                    gameId = game.id,
-                    isFavorite = game.isFavorite,
-                    firstTeamScore = game.firstTeamPoints,
-                    secondTeamScore = game.secondTeamPoints,
-                    setList = sets.map { setEntity ->
-                        GameSet(
-                            id = setEntity.id,
-                            roundsList = rounds.filter {
-                                it.setId == setEntity.id
-                            }.map { it.toRound() }
-                        )
-                    }.sortedByDescending { it.id }
-                )
+                if(game != null){
+                    GameState.GameReady(
+                        gameId = game.id,
+                        isFavorite = game.isFavorite,
+                        firstTeamScore = game.firstTeamPoints,
+                        secondTeamScore = game.secondTeamPoints,
+                        setList = sets.map { setEntity ->
+                            GameSet(
+                                id = setEntity.id,
+                                roundsList = rounds.filter {
+                                    it.setId == setEntity.id
+                                }.map { it.toRound() }
+                            )
+                        }.sortedByDescending { it.id }
+                    )
+                }else{
+                 GameState.NoActiveGames
+                }
             }
         } else {
             latestGameFlow()
@@ -67,7 +71,7 @@ class BriscolaService(private val database: CardGameDatabase) {
             } else {
                 combine(
                     database.setDao().getAllSets(game.id),
-                    database.roundDao().getRounds(),
+                    database.briscolaRoundDao().getRounds(),
                 ) { sets, rounds ->
                     setSelectedGame(game.id)
                     GameState.GameReady(
@@ -93,14 +97,14 @@ class BriscolaService(private val database: CardGameDatabase) {
         database.gameDao().deleteGameById(gameId)
         database.setDao().getAllSets(gameId).collect {
             it.map { set ->
-                database.roundDao().deleteRounds(set.id)
+                database.briscolaRoundDao().deleteRounds(set.id)
             }
         }
         database.setDao().deleteSets(gameId)
     }
 
     suspend fun toggleGameFavoriteState(gameId: Int) {
-        database.gameDao().getSingleGame(gameId).first().let {
+        database.gameDao().getSingleGame(gameId).first()?.let {
             database.gameDao().insertGame(
                 listOf(
                     GameEntity(
@@ -117,93 +121,53 @@ class BriscolaService(private val database: CardGameDatabase) {
     }
 
     suspend fun getSingleRound(roundId: Int) =
-        database.roundDao().getSingleRound(roundId).toRound()
+        database.briscolaRoundDao().getSingleRound(roundId).toRound()
 
     suspend fun deleteSingleRound(roundId: Int) {
-        database.callsDao().deleteCallsFromRound(roundId)
-        database.roundDao().deleteSingleRound(roundId)
+        database.briscolaRoundDao().deleteSingleRound(roundId)
     }
 
     suspend fun editRound(
         roundId: Int,
         setId: Int,
         firstTeamPoints: Int,
-        firstTeamPointsNoCalls: Int,
         secondTeamPoints: Int,
-        secondTeamPointsNoCalls: Int,
         timestamp: Long,
-        firstTeamCalls: List<Call>,
-        secondTeamCalls: List<Call>,
     ) {
-        database.roundDao().insertRound(
-            RoundEntity(
+        database.briscolaRoundDao().insertRound(
+            BriscolaRoundEntity(
                 id = roundId,
                 setId = setId,
                 timestamp = timestamp,
-                firstTeamPoints = firstTeamPoints,
-                firstTeamPointsNoCalls = firstTeamPointsNoCalls,
-                secondTeamPoints = secondTeamPoints,
-                secondTeamPointsNoCalls = secondTeamPointsNoCalls,
+                firstTeamPoints = if(firstTeamPoints > secondTeamPoints) 1 else 0,
+                firstTeamPointsCollected = firstTeamPoints,
+                secondTeamPoints = if(secondTeamPoints > firstTeamPoints) 1 else 0,
+                secondTeamPointsCollected = secondTeamPoints,
             )
         )
-        database.callsDao().deleteCallsFromRound(roundId)
-        database.callsDao().insertCalls(firstTeamCalls.map {
-            CallsEntity(
-                id = 0,
-                roundId = roundId,
-                team = Team.FIRST,
-                call = it
-            )
-        } + (secondTeamCalls.map {
-            CallsEntity(
-                id = 0,
-                roundId = roundId,
-                team = Team.SECOND,
-                call = it
-            )
-        }))
     }
 
     suspend fun insertRound(
         setId: Int,
         firstTeamPoints: Int,
-        firstTeamPointsNoCalls: Int,
         secondTeamPoints: Int,
-        secondTeamPointsNoCalls: Int,
-        firstTeamCalls: List<Call>,
-        secondTeamCalls: List<Call>,
     ) {
         val newTimestamp = System.currentTimeMillis()
-        val roundId = database.roundDao().insertRound(
-            RoundEntity(
+        database.briscolaRoundDao().insertRound(
+            BriscolaRoundEntity(
                 id = 0,
                 setId = setId,
                 timestamp = newTimestamp,
-                firstTeamPoints = firstTeamPoints,
-                firstTeamPointsNoCalls = firstTeamPointsNoCalls,
-                secondTeamPoints = secondTeamPoints,
-                secondTeamPointsNoCalls = secondTeamPointsNoCalls,
+                firstTeamPoints = if (firstTeamPoints > secondTeamPoints) 1 else 0,
+                firstTeamPointsCollected = firstTeamPoints,
+                secondTeamPoints = if (secondTeamPoints > firstTeamPoints) 1 else 0,
+                secondTeamPointsCollected = secondTeamPoints,
             )
         )
         updateGameTimestamp(
             database.setDao().getSingleSet(setId).first().gameId,
             newTimestamp
         )
-        database.callsDao().insertCalls(firstTeamCalls.map {
-            CallsEntity(
-                id = 0,
-                roundId = roundId.toInt(),
-                team = Team.FIRST,
-                call = it
-            )
-        } + (secondTeamCalls.map {
-            CallsEntity(
-                id = 0,
-                roundId = roundId.toInt(),
-                team = Team.SECOND,
-                call = it
-            )
-        }))
     }
 
     suspend fun startNewGame() {
@@ -231,7 +195,6 @@ class BriscolaService(private val database: CardGameDatabase) {
         setSelectedGame(newGameId)
     }
 
-
     suspend fun updateCurrentGame(winningTeam: Team, game: GameState.GameReady) {
         when (winningTeam) {
             Team.FIRST -> {
@@ -247,7 +210,7 @@ class BriscolaService(private val database: CardGameDatabase) {
                     listOf(
                         GameEntity(
                             id = game.gameId,
-                            isFavorite = false,
+                            isFavorite = game.isFavorite,
                             timestamp = System.currentTimeMillis(),
                             firstTeamPoints = game.firstTeamScore + 1,
                             secondTeamPoints = game.secondTeamScore,
@@ -285,7 +248,7 @@ class BriscolaService(private val database: CardGameDatabase) {
     }
 
     private suspend fun updateGameTimestamp(gameId: Int, newTimestamp: Long) {
-        database.gameDao().getSingleGame(gameId).first().let {
+        database.gameDao().getSingleGame(gameId).first()?.let {
             database.gameDao().insertGame(
                 listOf(
                     GameEntity(
@@ -301,18 +264,15 @@ class BriscolaService(private val database: CardGameDatabase) {
         }
     }
 
-    private suspend fun RoundEntity.toRound(): Round {
-        val calls = database.callsDao().getCallsInRound(this.id)
-        return Round(
+    private fun BriscolaRoundEntity.toRound(): BriscolaRound {
+        return BriscolaRound(
             id = this.id,
             setId = this.setId,
             timestamp = this.timestamp,
             firstTeamPoints = this.firstTeamPoints,
-            firstTeamPointsNoCalls = this.firstTeamPointsNoCalls,
+            firstTeamPointsCollected = this.firstTeamPointsCollected,
             secondTeamPoints = this.secondTeamPoints,
-            secondTeamPointsNoCalls = this.secondTeamPointsNoCalls,
-            firstTeamCalls = calls.filter { it.team == Team.FIRST }.map { it.call },
-            secondTeamCalls = calls.filter { it.team == Team.SECOND }.map { it.call },
+            secondTeamPointsCollected = this.secondTeamPointsCollected,
         )
     }
 }

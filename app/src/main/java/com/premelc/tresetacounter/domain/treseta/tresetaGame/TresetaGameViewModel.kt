@@ -8,20 +8,10 @@ import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewModel() {
-
-    init {
-        viewModelScope.launch {
-            if (tresetaService.selectedGameFlow().first() is GameState.NoActiveGames) {
-                tresetaService.startNewGame()
-            }
-        }
-    }
 
     private val currentSetId = MutableStateFlow(0)
 
@@ -34,7 +24,7 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
                         firstTeamScore = 0,
                         secondTeamScore = 0,
                         winningTeam = Team.NONE,
-                        showHistoryButton = true
+                        showHistoryButton = false
                     )
                 }
 

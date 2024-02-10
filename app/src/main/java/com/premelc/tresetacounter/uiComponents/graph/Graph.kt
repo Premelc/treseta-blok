@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 
 private val paddingSpace = 16.dp
 private const val VERTICAL_STEP = 5f
-private val yValues = (0..10).toList().map { it * 5 }
 
 @Composable
 fun Graph(
@@ -33,6 +32,7 @@ fun Graph(
     xValues: List<Int>,
     firstTeamPoints: List<Int>,
     secondTeamPoints: List<Int>,
+    yValues: List<Int>,
 ) {
     val density = LocalDensity.current
     val textColor = if (isSystemInDarkTheme()) WHITE else BLACK

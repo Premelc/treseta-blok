@@ -19,21 +19,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaCalculatorInteraction.TapOnCallButton
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaCalculatorInteraction.TapOnTeamCard
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction.TapOnCallButton
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction.TapOnTeamCard
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorViewModel
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorViewState
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
 import com.premelc.tresetacounter.uiComponents.Calls
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction
 import com.premelc.tresetacounter.uiComponents.RemovableCallsList
 import com.premelc.tresetacounter.uiComponents.TeamPointCard
-import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
+import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.animatePlacement
 import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-internal fun GameCalculatorScreen(
+internal fun TresetaGameCalculatorScreen(
     navController: NavController,
     setId: Int,
 ) {
@@ -48,7 +51,7 @@ private fun GameCalculatorContent(
     onInteraction: (TresetaCalculatorInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
-    TresetaToolbarScaffold(backAction = { onInteraction(TresetaCalculatorInteraction.TapOnBackButton) }) {
+    ToolbarScaffold(backAction = { onInteraction(TresetaCalculatorInteraction.TapOnBackButton) }) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()

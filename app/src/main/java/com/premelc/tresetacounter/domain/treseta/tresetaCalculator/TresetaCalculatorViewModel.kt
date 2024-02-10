@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

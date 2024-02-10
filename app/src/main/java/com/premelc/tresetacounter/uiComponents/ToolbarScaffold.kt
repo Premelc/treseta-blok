@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.premelc.tresetacounter.ads.BannerAd
 
 @Composable
-internal fun TresetaToolbarScaffold(
+internal fun ToolbarScaffold(
     backAction: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
@@ -88,7 +88,7 @@ internal fun NoActionToolbar(
 }
 
 @Composable
-internal fun TresetaFullActionToolbar(
+internal fun FullActionToolbar(
     leftAction: @Composable () -> Unit,
     rightAction: @Composable () -> Unit,
     title: String? = null,

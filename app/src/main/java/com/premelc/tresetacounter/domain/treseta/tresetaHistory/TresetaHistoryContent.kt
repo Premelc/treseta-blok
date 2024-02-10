@@ -39,7 +39,7 @@ import com.premelc.tresetacounter.service.data.GameSet
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.Accordion
 import com.premelc.tresetacounter.uiComponents.CallsList
-import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
+import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.getItemViewportOffset
 import com.premelc.tresetacounter.uiComponents.graph.Graph
 import com.premelc.tresetacounter.uiComponents.parseTimestamp
@@ -47,10 +47,12 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import com.premelc.tresetacounter.R
+import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.service.data.TresetaRound
 import com.premelc.tresetacounter.utils.Team
 
 @Composable
-fun GameHistoryScreen(navController: NavController) {
+fun TresetaGameHistoryScreen(navController: NavController) {
     val viewModel: TresetaHistoryViewModel = getViewModel { parametersOf(navController) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     GameHistoryContent(viewState, viewModel::onInteraction)
@@ -61,7 +63,7 @@ private fun GameHistoryContent(
     viewState: TresetaHistoryViewState,
     onInteraction: (TresetaHistoryInteraction) -> Unit
 ) {
-    TresetaToolbarScaffold(
+    ToolbarScaffold(
         backAction = {
             onInteraction(TresetaHistoryInteraction.OnBackButtonClicked)
         }
@@ -208,6 +210,7 @@ private fun SetHistoryContent(
                 xValues = (0..set.roundsList.size.coerceAtLeast(6) + 1).toList(),
                 firstTeamPoints = pointsAfterRoundFirstTeam,
                 secondTeamPoints = pointsAfterRoundSecondTeam,
+                yValues = (0..10).toList().map { it * 5 },
             )
             Text(
                 text = stringResource(
@@ -222,7 +225,7 @@ private fun SetHistoryContent(
                 ),
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             )
-            set.roundsList.forEachIndexed { index, round ->
+            set.roundsList.forEachIndexed { index, round: Round ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -230,7 +233,9 @@ private fun SetHistoryContent(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = CenterVertically
                 ) {
-                    CallsList(horizontalArrangement = Arrangement.End, calls = round.firstTeamCalls)
+                    if (round is TresetaRound) {
+                        CallsList(horizontalArrangement = Arrangement.End, calls = round.firstTeamCalls)
+                    }
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -265,10 +270,12 @@ private fun SetHistoryContent(
                             maxLines = 1,
                         )
                     }
-                    CallsList(
-                        horizontalArrangement = Arrangement.Start,
-                        calls = round.secondTeamCalls
-                    )
+                    if (round is TresetaRound) {
+                        CallsList(
+                            horizontalArrangement = Arrangement.Start,
+                            calls = round.secondTeamCalls
+                        )
+                    }
                 }
                 Divider(
                     modifier = Modifier

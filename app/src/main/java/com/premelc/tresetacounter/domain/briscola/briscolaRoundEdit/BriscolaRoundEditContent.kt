@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit
+package com.premelc.tresetacounter.domain.briscola.briscolaRoundEdit
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -37,10 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
-import com.premelc.tresetacounter.uiComponents.Calls
-import com.premelc.tresetacounter.uiComponents.CallsList
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction
-import com.premelc.tresetacounter.uiComponents.RemovableCallsList
 import com.premelc.tresetacounter.uiComponents.TeamPointCard
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.uiComponents.animatePlacement
@@ -49,25 +45,25 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-internal fun TresetaRoundEditScreen(
+internal fun BriscolaRoundEditScreen(
     navController: NavController,
     roundId: Int,
 ) {
-    val viewModel: TresetaRoundEditViewModel = koinViewModel { parametersOf(navController, roundId) }
+    val viewModel: BriscolaRoundEditViewModel = koinViewModel { parametersOf(navController, roundId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     RoundEditContent(viewState, viewModel::onInteraction, viewModel::onNumPadInteraction)
 }
 
 @Composable
 private fun RoundEditContent(
-    viewState: RoundEditViewState,
-    onInteraction: (TresetaRoundEditInteraction) -> Unit,
+    viewState: BriscolaRoundEditViewState,
+    onInteraction: (BriscolaRoundEditInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
     FullActionToolbar(
         leftAction = {
             Icon(
-                modifier = Modifier.clickable { onInteraction(TresetaRoundEditInteraction.TapOnBackButton) },
+                modifier = Modifier.clickable { onInteraction(BriscolaRoundEditInteraction.TapOnBackButton) },
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null
             )
@@ -75,7 +71,7 @@ private fun RoundEditContent(
         rightAction = {
             Icon(
                 modifier = Modifier
-                    .clickable { onInteraction(TresetaRoundEditInteraction.TapOnDeleteRound) }
+                    .clickable { onInteraction(BriscolaRoundEditInteraction.TapOnDeleteRound) }
                     .size(24.dp),
                 painter = painterResource(R.drawable.trash),
                 contentDescription = null
@@ -124,99 +120,49 @@ private fun RoundEditContent(
 
 @Composable
 private fun NewRoundDataContent(
-    viewState: RoundEditViewState,
-    onInteraction: (TresetaRoundEditInteraction) -> Unit,
+    viewState: BriscolaRoundEditViewState,
+    onInteraction: (BriscolaRoundEditInteraction) -> Unit,
 ) {
     Column {
-        Row(Modifier.padding(horizontal = 20.dp)) {
-            RemovableCallsList(
-                horizontalArrangement = Arrangement.Start,
-                calls = viewState.newRoundData.firstTeamCalls,
-                onClick = { index ->
-                    onInteraction(
-                        TresetaRoundEditInteraction.TapOnRemovablePill(
-                            index = index,
-                            team = Team.FIRST
-                        )
-                    )
-                },
-            )
-            RemovableCallsList(
-                horizontalArrangement = Arrangement.End,
-                calls = viewState.newRoundData.secondTeamCalls,
-                onClick = { index ->
-                    onInteraction(
-                        TresetaRoundEditInteraction.TapOnRemovablePill(
-                            index = index,
-                            team = Team.SECOND
-                        )
-                    )
-                },
-            )
-        }
         Column(modifier = Modifier.animatePlacement()) {
             Row(Modifier.padding(20.dp)) {
                 TeamPointCard(
                     team = stringResource(R.string.game_calculator_first_team_title),
                     pointValue = viewState.newRoundData.firstTeamScore,
-                    callsValue = viewState.newRoundData.firstTeamCalls.sumOf { it.value },
                     isSelected = viewState.selectedTeam == Team.FIRST,
                     onClick = {
-                        onInteraction(TresetaRoundEditInteraction.TapOnTeamCard(Team.FIRST))
+                        onInteraction(BriscolaRoundEditInteraction.TapOnTeamCard(Team.FIRST))
                     },
                 )
                 TeamPointCard(
                     team = stringResource(R.string.game_calculator_second_team_title),
                     pointValue = viewState.newRoundData.secondTeamScore,
-                    callsValue = viewState.newRoundData.secondTeamCalls.sumOf { it.value },
                     isSelected = viewState.selectedTeam == Team.SECOND,
                     onClick = {
-                        onInteraction(TresetaRoundEditInteraction.TapOnTeamCard(Team.SECOND))
+                        onInteraction(BriscolaRoundEditInteraction.TapOnTeamCard(Team.SECOND))
                     },
                 )
             }
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.game_calculator_calls_title),
-            )
-            Calls(
-                onInteraction = { call ->
-                    onInteraction(TresetaRoundEditInteraction.TapOnCallButton(call))
-                },
-            )
         }
     }
 }
 
 @Composable
 private fun OldRoundDataContent(
-    roundData: TresetaRoundData,
+    roundData: BriscolaRoundData,
 ) {
     Column {
-        Row(Modifier.padding(horizontal = 20.dp)) {
-            CallsList(
-                horizontalArrangement = Arrangement.Start,
-                calls = roundData.firstTeamCalls,
-            )
-            CallsList(
-                horizontalArrangement = Arrangement.End,
-                calls = roundData.secondTeamCalls,
-            )
-        }
         Column(modifier = Modifier.animatePlacement()) {
             Row(Modifier.padding(20.dp)) {
                 TeamPointCard(
                     team = stringResource(R.string.game_calculator_first_team_title),
                     pointValue = roundData.firstTeamScore,
-                    callsValue = roundData.firstTeamCalls.sumOf { it.value },
                     isEnabled = false,
                     isSelected = false,
                 )
                 TeamPointCard(
                     team = stringResource(R.string.game_calculator_second_team_title),
                     pointValue = roundData.secondTeamScore,
-                    callsValue = roundData.secondTeamCalls.sumOf { it.value },
                     isEnabled = false,
                     isSelected = false,
                 )
@@ -227,7 +173,7 @@ private fun OldRoundDataContent(
 
 @Composable
 private fun DeleteRoundDialog(
-    onInteraction: (TresetaRoundEditInteraction) -> Unit
+    onInteraction: (BriscolaRoundEditInteraction) -> Unit
 ) {
     Dialog(
         onDismissRequest = { /*TODO*/ },
@@ -255,7 +201,7 @@ private fun DeleteRoundDialog(
                     .height(60.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    onInteraction(TresetaRoundEditInteraction.TapOnDeleteRoundDialogPositive)
+                    onInteraction(BriscolaRoundEditInteraction.TapOnDeleteRoundDialogPositive)
                 },
             ) {
                 Text(text = stringResource(R.string.edit_round_delete_dialog_button_positive))
@@ -270,7 +216,7 @@ private fun DeleteRoundDialog(
                 ),
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.onBackground),
                 onClick = {
-                    onInteraction(TresetaRoundEditInteraction.TapOnDeleteRoundDialogNegative)
+                    onInteraction(BriscolaRoundEditInteraction.TapOnDeleteRoundDialogNegative)
                 },
             ) {
                 Text(text = stringResource(R.string.edit_round_delete_dialog_button_negative))
