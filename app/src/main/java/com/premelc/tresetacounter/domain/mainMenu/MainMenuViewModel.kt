@@ -5,15 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.premelc.tresetacounter.service.BriscolaService
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.utils.GameType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class MainMenuViewModel(
     private val tresetaService: TresetaService,
     private val briscolaService: BriscolaService,
@@ -39,7 +35,6 @@ class MainMenuViewModel(
                 viewModelScope.launch {
                     when (interaction.gameTypeSelected) {
                         GameType.TRESETA -> tresetaService.startNewGame()
-
                         GameType.BRISCOLA -> briscolaService.startNewGame()
                     }
                 }
@@ -47,7 +42,11 @@ class MainMenuViewModel(
 
             is MainMenuInteraction.TapOnDeleteButton -> {
                 viewModelScope.launch {
-                    tresetaService.deleteGame(interaction.gameId)
+                    when (interaction.gameType) {
+                        GameType.TRESETA -> tresetaService.deleteGame(interaction.gameId)
+                        GameType.BRISCOLA -> briscolaService.deleteGame(interaction.gameId)
+                    }
+
                 }
             }
 
@@ -60,9 +59,11 @@ class MainMenuViewModel(
 
             is MainMenuInteraction.TapOnFavoriteButton ->
                 viewModelScope.launch {
-                    tresetaService.toggleGameFavoriteState(
-                        interaction.gameId
-                    )
+                    when (interaction.gameType) {
+                        GameType.TRESETA -> tresetaService.toggleGameFavoriteState(interaction.gameId)
+                        GameType.BRISCOLA -> briscolaService.toggleGameFavoriteState(interaction.gameId)
+                    }
+
                 }
 
         }

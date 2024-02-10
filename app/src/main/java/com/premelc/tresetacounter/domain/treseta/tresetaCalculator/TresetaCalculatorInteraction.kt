@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator
 
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team

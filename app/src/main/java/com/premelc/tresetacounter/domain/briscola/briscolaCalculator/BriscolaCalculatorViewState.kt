@@ -1,13 +1,11 @@
-package com.premelc.tresetacounter.domain.treseta.tresetaCalculator
+package com.premelc.tresetacounter.domain.briscola.briscolaCalculator
 
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team
 
-internal data class TresetaCalculatorViewState(
+internal data class BriscolaCalculatorViewState(
     val firstTeamScore: Int? = null,
-    val firstTeamCalls: List<Call> = emptyList(),
     val secondTeamScore: Int? = null,
-    val secondTeamCalls: List<Call> = emptyList(),
     val selectedTeam: Team? = null,
     val isSaveButtonEnabled: Boolean = false,
 )

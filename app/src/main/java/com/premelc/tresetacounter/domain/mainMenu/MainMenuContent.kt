@@ -46,7 +46,7 @@ import com.premelc.tresetacounter.data.GameEntity
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.ColorPalette
 import com.premelc.tresetacounter.ui.theme.Typography
-import com.premelc.tresetacounter.uiComponents.TresetaToolbarScaffold
+import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.parseTimestamp
 import com.premelc.tresetacounter.utils.GameType
 import org.koin.androidx.compose.getViewModel
@@ -65,7 +65,7 @@ private fun MainMenuContent(
     navigate: (String) -> Unit,
 ) {
     var tabIndex by remember { mutableStateOf(0) }
-    TresetaToolbarScaffold {
+    ToolbarScaffold {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -274,7 +274,6 @@ private fun PastGameContent(
     }
 }
 
-
 @Composable
 private fun PastGameCard(
     game: GameEntity,
@@ -310,7 +309,8 @@ private fun PastGameCard(
                         .clickable {
                             onInteraction(
                                 MainMenuInteraction.TapOnFavoriteButton(
-                                    game.id
+                                    game.id,
+                                    game.gameType,
                                 )
                             )
                         },
@@ -398,7 +398,14 @@ private fun PastGameCard(
                     Icon(
                         modifier = Modifier
                             .size(34.dp)
-                            .clickable { onInteraction(MainMenuInteraction.TapOnDeleteButton(game.id)) },
+                            .clickable {
+                                onInteraction(
+                                    MainMenuInteraction.TapOnDeleteButton(
+                                        game.id,
+                                        game.gameType,
+                                    )
+                                )
+                            },
                         painter = painterResource(R.drawable.trash),
                         contentDescription = null,
                         tint = ColorPalette.richRed,

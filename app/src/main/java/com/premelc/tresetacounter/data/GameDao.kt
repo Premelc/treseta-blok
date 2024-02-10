@@ -16,7 +16,7 @@ interface GameDao {
     fun getAllGames(gameType: GameType): Flow<List<GameEntity>?>
 
     @Query("SELECT * FROM game WHERE id IS :id")
-    fun getSingleGame(id: Int): Flow<GameEntity>
+    fun getSingleGame(id: Int): Flow<GameEntity?>
 
     @Query("SELECT * FROM game WHERE id IS :id")
     suspend fun getCurrentGame(id: Int): GameEntity
