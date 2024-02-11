@@ -35,9 +35,9 @@
     <string name="edit_round_delete_dialog_button_negative">Cancel</string>
     <string name="edit_round_toolbar_title">Edit round</string>
     <string name="calls_napola">Napolitana</string>
-    <string name="briscola_game_set_finished_modal_positive">Continue</string>
-    <string name="briscola_game_set_finished_modal_text_first_team">We have won!</string>
-    <string name="briscola_game_set_finished_modal_text_second_team">They have won!</string>
+    <string name="game_set_finished_modal_positive">Continue</string>
+    <string name="game_set_finished_modal_text_first_team">We have won!</string>
+    <string name="game_set_finished_modal_text_second_team">They have won!</string>
     <string name="timestamp_right_now">Just now</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">a minute ago</item>

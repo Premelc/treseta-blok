@@ -35,9 +35,9 @@
     <string name="edit_round_delete_dialog_button_negative">Annulla</string>
     <string name="edit_round_toolbar_title">Modifica round</string>
     <string name="calls_napola">Napoli</string>
-    <string name="briscola_game_set_finished_modal_positive">Continua</string>
-    <string name="briscola_game_set_finished_modal_text_first_team">Noi abbiamo vinto!</string>
-    <string name="briscola_game_set_finished_modal_text_second_team">Loro hanno vinto!</string>
+    <string name="game_set_finished_modal_positive">Continua</string>
+    <string name="game_set_finished_modal_text_first_team">Noi abbiamo vinto!</string>
+    <string name="game_set_finished_modal_text_second_team">Loro hanno vinto!</string>
     <string name="timestamp_right_now">Ora</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">Un minuto fa</item>

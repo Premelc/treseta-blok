@@ -1,6 +1,7 @@
 package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
@@ -28,6 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.navigation.NavRoutes
@@ -116,6 +120,58 @@ internal fun TresetaGameContent(
                 },
             ) {
                 Text(text = stringResource(R.string.game_add_new_round_button_label))
+            }
+        }
+    }
+    if (viewState.showSetFinishedModal) {
+        SetFinishedDialog(
+            winningTeam = viewState.winningTeam,
+            onInteraction = onInteraction,
+        )
+    }
+}
+
+@Composable
+private fun SetFinishedDialog(
+    winningTeam: Team,
+    onInteraction: (TresetaGameInteraction) -> Unit
+) {
+    Dialog(
+        onDismissRequest = { /*TODO*/ },
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(MaterialTheme.colors.background)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                text = stringResource(
+                    if (winningTeam == Team.FIRST) {
+                        R.string.game_set_finished_modal_text_first_team
+                    } else {
+                        R.string.game_set_finished_modal_text_second_team
+                    }
+                )
+            )
+            Button(
+                modifier = Modifier
+                    .padding(vertical = 6.dp)
+                    .height(60.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    onInteraction(TresetaGameInteraction.TapOnSetFinishedModalConfirm)
+                },
+            ) {
+                Text(stringResource(R.string.game_set_finished_modal_positive))
             }
         }
     }

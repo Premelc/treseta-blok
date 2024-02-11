@@ -128,9 +128,9 @@ private fun SetFinishedDialog(
                     .padding(vertical = 20.dp),
                 text = stringResource(
                     if (winningTeam == Team.FIRST) {
-                        R.string.briscola_game_set_finished_modal_text_first_team
+                        R.string.game_set_finished_modal_text_first_team
                     } else {
-                        R.string.briscola_game_set_finished_modal_text_second_team
+                        R.string.game_set_finished_modal_text_second_team
                     }
                 )
             )
@@ -143,7 +143,7 @@ private fun SetFinishedDialog(
                     onInteraction(BriscolaGameInteraction.TapOnSetFinishedModalConfirm)
                 },
             ) {
-                Text(stringResource(R.string.briscola_game_set_finished_modal_positive))
+                Text(stringResource(R.string.game_set_finished_modal_positive))
             }
         }
     }

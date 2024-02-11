@@ -6,6 +6,7 @@ import com.premelc.tresetacounter.service.BriscolaService
 import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
+import com.premelc.tresetacounter.utils.checkWinningTeam
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -62,16 +63,6 @@ class BriscolaGameViewModel(
     private fun checkIfSetIsOver(roundsList: List<Round>) {
         if (roundsList.sumOf { it.firstTeamPoints } >= 4 || roundsList.sumOf { it.secondTeamPoints } >= 4) {
             setFinishedModalFlow.value = true
-        }
-    }
-
-    private fun List<Round>.checkWinningTeam(): Team {
-        val firstTeamPoints = this.sumOf { it.firstTeamPoints }
-        val secondTeamPoints = this.sumOf { it.secondTeamPoints }
-        return when {
-            firstTeamPoints > secondTeamPoints -> Team.FIRST
-            secondTeamPoints > firstTeamPoints -> Team.SECOND
-            else -> Team.NONE
         }
     }
 

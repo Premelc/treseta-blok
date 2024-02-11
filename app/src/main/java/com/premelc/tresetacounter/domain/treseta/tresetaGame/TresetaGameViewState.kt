@@ -13,6 +13,7 @@ internal sealed interface TresetaGameViewState {
         val winningTeam: Team = Team.NONE,
         val showHistoryButton: Boolean = false,
         val currentSetId: Int = 0,
+        val showSetFinishedModal: Boolean = false,
     ) : TresetaGameViewState
 
     data object GameLoading : TresetaGameViewState
