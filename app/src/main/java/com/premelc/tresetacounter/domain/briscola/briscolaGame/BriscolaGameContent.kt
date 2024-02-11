@@ -1,13 +1,14 @@
 package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
-import androidx.annotation.RequiresPermission
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -21,40 +22,38 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.navigation.NavRoutes
-import com.premelc.tresetacounter.service.data.BriscolaRound
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
@@ -90,54 +89,136 @@ internal fun BriscolaGameContent(
         },
     ) {
         Column {
-            PointListColumn(viewState, navigate)
-            Divider(
+            PointsList(viewState)
+            Spacer(Modifier)
+            IncreasePointsButtons(onInteraction)
+            CurrentSetResult(viewState)
+        }
+    }
+    if (viewState.showSetFinishedModal) {
+        SetFinishedDialog(
+            winningTeam = viewState.winningTeam,
+            onInteraction = onInteraction
+        )
+    }
+}
+
+@Composable
+private fun SetFinishedDialog(
+    winningTeam: Team,
+    onInteraction: (BriscolaGameInteraction) -> Unit
+) {
+    Dialog(
+        onDismissRequest = { /*TODO*/ },
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(MaterialTheme.colors.background)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
                 modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colors.onBackground
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
-                    style = Typography.h6,
-                    textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                text = stringResource(
+                    if (winningTeam == Team.FIRST) {
+                        R.string.briscola_game_set_finished_modal_text_first_team
+                    } else {
+                        R.string.briscola_game_set_finished_modal_text_second_team
+                    }
                 )
-                Text(
-                    text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
-                    style = Typography.h6,
-                    textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
-                )
-            }
-            Divider(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colors.onBackground
             )
             Button(
                 modifier = Modifier
-                    .padding(20.dp)
-                    .height(64.dp)
+                    .padding(vertical = 6.dp)
+                    .height(60.dp)
                     .fillMaxWidth(),
                 onClick = {
-                    navigate(NavRoutes.BriscolaGameCalculator.route.plus("/${viewState.currentSetId}"))
-                    onInteraction(BriscolaGameInteraction.TapOnNewRound)
+                    onInteraction(BriscolaGameInteraction.TapOnSetFinishedModalConfirm)
                 },
             ) {
-                Text(text = stringResource(R.string.game_add_new_round_button_label))
+                Text(stringResource(R.string.briscola_game_set_finished_modal_positive))
             }
         }
     }
 }
 
 @Composable
-internal fun ColumnScope.PointListColumn(
+private fun IncreasePointsButtons(interaction: (BriscolaGameInteraction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 30.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+    ) {
+        AddPointButton {
+            interaction(BriscolaGameInteraction.TapOnAddPointButton(Team.FIRST))
+        }
+        AddPointButton {
+            interaction(BriscolaGameInteraction.TapOnAddPointButton(Team.SECOND))
+        }
+    }
+}
+
+@Composable
+private fun AddPointButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.size(80.dp),
+        shape = CircleShape,
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            modifier = Modifier.size(40.dp),
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+private fun CurrentSetResult(viewState: BriscolaGameViewState.GameReady) {
+    Column {
+        Divider(
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.onBackground
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
+                style = Typography.h6,
+                textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
+            )
+            Text(
+                text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
+                style = Typography.h6,
+                textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
+            )
+        }
+        Divider(
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.onBackground
+        )
+    }
+}
+
+@Composable
+internal fun ColumnScope.PointsList(
     viewState: BriscolaGameViewState.GameReady,
-    navigate: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -197,7 +278,6 @@ internal fun ColumnScope.PointListColumn(
             )
         }
     }
-    Spacer(Modifier)
 }
 
 @Composable
@@ -231,15 +311,12 @@ private fun GridItem(drawPoint: Boolean, cellNumber: Int) {
             .size(80.dp)
             .height(IntrinsicSize.Min),
     ) {
-        if (drawPoint) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .align(Alignment.Center)
-                    .clip(CircleShape)
-                    .background(color = MaterialTheme.colors.primary),
-            )
+        var shouldAnimate by remember { mutableStateOf(false) }
+
+        LaunchedEffect(drawPoint) {
+            shouldAnimate = drawPoint
         }
+        PointCircle(shouldAnimate)
         if (!listOf(6, 7).contains(cellNumber)) {
             Divider(
                 modifier = Modifier
@@ -258,6 +335,20 @@ private fun GridItem(drawPoint: Boolean, cellNumber: Int) {
             )
         }
     }
+}
+
+@Composable
+private fun BoxScope.PointCircle(shouldAnimate: Boolean) {
+    val scale by animateFloatAsState(if (shouldAnimate) 1f else 0f, label = "")
+
+    Box(
+        modifier = Modifier
+            .size((40 * scale).dp) // scale the size based on the animation value
+            .align(Alignment.Center)
+            .clip(CircleShape)
+            .background(color = MaterialTheme.colors.primary)
+            .animateContentSize() // animate size changes
+    )
 }
 
 @ReadOnlyComposable

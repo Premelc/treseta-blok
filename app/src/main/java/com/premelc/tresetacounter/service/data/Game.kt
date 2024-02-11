@@ -8,7 +8,7 @@ sealed interface GameState {
         val isFavorite: Boolean,
         val firstTeamScore: Int,
         val secondTeamScore: Int,
-        val setList: List<GameSet>
+        val setList: List<GameSet>,
     ) : GameState
 
     data object NoActiveGames : GameState

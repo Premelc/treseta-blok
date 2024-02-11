@@ -8,8 +8,10 @@ import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,34 +20,36 @@ class BriscolaGameViewModel(
 ) : ViewModel() {
 
     private val currentSetId = MutableStateFlow(0)
+    private val setFinishedModalFlow = MutableStateFlow(false)
+
+    init {
+        viewModelScope.launch {
+            briscolaService.selectedGameFlow().filterIsInstance<GameState.GameReady>().collectLatest { game ->
+                checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
+            }
+        }
+    }
 
     internal val viewState =
-        briscolaService.selectedGameFlow().map { game ->
+        combine(
+            briscolaService.selectedGameFlow(),
+            setFinishedModalFlow,
+        ) { game, showSetFinishedModal ->
             when (game) {
                 GameState.NoActiveGames -> {
-                    BriscolaGameViewState.GameReady(
-                        rounds = emptyList(),
-                        firstTeamScore = 0,
-                        secondTeamScore = 0,
-                        winningTeam = Team.NONE,
-                        showHistoryButton = false
-                    )
+                    BriscolaGameViewState.GameLoading
                 }
 
                 is GameState.GameReady -> {
                     currentSetId.value = game.setList.firstOrNull()?.id ?: 0
-                    game.checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
                     BriscolaGameViewState.GameReady(
                         rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
                         firstTeamScore = game.firstTeamScore,
                         secondTeamScore = game.secondTeamScore,
-                        winningTeam = when {
-                            game.firstTeamScore > game.secondTeamScore -> Team.FIRST
-                            game.secondTeamScore > game.firstTeamScore -> Team.SECOND
-                            else -> Team.NONE
-                        },
+                        winningTeam = game.setList.first().roundsList.checkWinningTeam(),
                         showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() },
                         currentSetId = currentSetId.value,
+                        showSetFinishedModal = showSetFinishedModal,
                     )
                 }
             }
@@ -55,24 +59,50 @@ class BriscolaGameViewModel(
             BriscolaGameViewState.GameLoading
         )
 
-    private suspend fun GameState.GameReady.checkIfSetIsOver(roundsList: List<Round>) {
+    private fun checkIfSetIsOver(roundsList: List<Round>) {
         if (roundsList.sumOf { it.firstTeamPoints } >= 4 || roundsList.sumOf { it.secondTeamPoints } >= 4) {
-            briscolaService.updateCurrentGame(
-                if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST
-                else if (roundsList.sumOf { it.secondTeamPoints } > roundsList.sumOf { it.firstTeamPoints }) Team.SECOND
-                else Team.NONE,
-                this
-            )
+            setFinishedModalFlow.value = true
+        }
+    }
+
+    private fun List<Round>.checkWinningTeam(): Team {
+        val firstTeamPoints = this.sumOf { it.firstTeamPoints }
+        val secondTeamPoints = this.sumOf { it.secondTeamPoints }
+        return when {
+            firstTeamPoints > secondTeamPoints -> Team.FIRST
+            secondTeamPoints > firstTeamPoints -> Team.SECOND
+            else -> Team.NONE
         }
     }
 
     internal fun onInteraction(interaction: BriscolaGameInteraction) {
         when (interaction) {
             BriscolaGameInteraction.TapOnBackButton -> Unit
-            BriscolaGameInteraction.TapOnNewRound -> Unit
-            BriscolaGameInteraction.TapOnHistoryButton -> Unit
+            is BriscolaGameInteraction.TapOnAddPointButton -> {
+                viewModelScope.launch {
+                    briscolaService.insertRound(
+                        setId = currentSetId.value,
+                        firstTeamPoints = if (interaction.team == Team.FIRST) 1 else 0,
+                        secondTeamPoints = if (interaction.team == Team.SECOND) 1 else 0,
+                    )
+                }
+            }
+
             BriscolaGameInteraction.TapOnMenuButton -> Unit
-            is BriscolaGameInteraction.TapOnRoundScore -> Unit
+            BriscolaGameInteraction.TapOnSetFinishedModalConfirm -> {
+                viewModelScope.launch {
+                    briscolaService.selectedGameFlow().filterIsInstance<GameState.GameReady>().first().let { game ->
+                        val roundsList = game.setList.firstOrNull()?.roundsList ?: emptyList()
+                        briscolaService.updateCurrentGame(
+                            if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST
+                            else if (roundsList.sumOf { it.secondTeamPoints } > roundsList.sumOf { it.firstTeamPoints }) Team.SECOND
+                            else Team.NONE,
+                            game
+                        )
+                    }
+                    setFinishedModalFlow.value = false
+                }
+            }
         }
     }
 

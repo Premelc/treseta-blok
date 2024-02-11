@@ -1,9 +1,10 @@
 package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
+import com.premelc.tresetacounter.utils.Team
+
 internal sealed interface BriscolaGameInteraction {
-    data object TapOnNewRound : BriscolaGameInteraction
+    data class TapOnAddPointButton(val team: Team) : BriscolaGameInteraction
     data object TapOnBackButton : BriscolaGameInteraction
-    data object TapOnHistoryButton : BriscolaGameInteraction
     data object TapOnMenuButton : BriscolaGameInteraction
-    data class TapOnRoundScore(val roundId: Int) : BriscolaGameInteraction
+    data object TapOnSetFinishedModalConfirm : BriscolaGameInteraction
 }

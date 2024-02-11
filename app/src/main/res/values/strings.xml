@@ -35,6 +35,9 @@
     <string name="edit_round_delete_dialog_button_positive">Obriši</string>
     <string name="edit_round_delete_dialog_button_negative">Odustani</string>
     <string name="edit_round_toolbar_title">Uredi rundu</string>
+    <string name="briscola_game_set_finished_modal_positive">Nastavi</string>
+    <string name="briscola_game_set_finished_modal_text_first_team">Mi smo pobjedili!</string>
+    <string name="briscola_game_set_finished_modal_text_second_team">Vi ste pobjedili!</string>
     <string name="timestamp_right_now">Upravo</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">Prije jedne minute</item>
