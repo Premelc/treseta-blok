@@ -237,7 +237,7 @@ private fun GridItem(drawPoint: Boolean, cellNumber: Int) {
                     .size(40.dp)
                     .align(Alignment.Center)
                     .clip(CircleShape)
-                    .background(color = MaterialTheme.colors.onBackground),
+                    .background(color = MaterialTheme.colors.primary),
             )
         }
         if (!listOf(6, 7).contains(cellNumber)) {
