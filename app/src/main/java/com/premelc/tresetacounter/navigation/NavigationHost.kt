@@ -34,7 +34,9 @@ fun NavigationHost() {
 }
 
 private fun NavController.navigateWrapper(route: String) {
-    this.navigate(route)
+    if (this.currentDestination?.route != route) {
+        this.navigate(route)
+    }
 }
 
 private fun NavGraphBuilder.briscolaNavigation(navController: NavController) {
