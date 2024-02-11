@@ -8,7 +8,7 @@
     <string name="last_game_timestamp">Zadnja partija: %1$s</string>
     <string name="game_calculator_first_team_title">MI</string>
     <string name="game_calculator_second_team_title">VI</string>
-    <string name="game_calculator_calls_title">Zvanja</string>
+    <string name="game_calculator_calls_title">Akužavanje</string>
     <string name="game_calculator_calls_napola">Napola</string>
     <string name="game_calculator_calls_x3" translatable="false">x3</string>
     <string name="game_calculator_calls_x4" translatable="false">x4</string>

@@ -1,28 +1,47 @@
 package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
+import androidx.annotation.RequiresPermission
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -125,7 +144,6 @@ internal fun ColumnScope.PointListColumn(
             .fillMaxWidth()
             .weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Row(
@@ -164,71 +182,95 @@ internal fun ColumnScope.PointListColumn(
                 color = MaterialTheme.colors.onBackground
             )
         }
-        if (viewState.rounds.isEmpty()) {
-            Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.game_no_rounds_yet_label),
-                style = Typography.body1,
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
+
+        Box(Modifier.weight(1f)) {
+            Image(
+                modifier = Modifier
+                    .fillMaxSize(),
+                painter = painterResource(id = R.drawable.treseta_cards),
+                contentDescription = null,
+                alpha = 0.1f
             )
-        } else {
-            Box(Modifier.weight(1f)) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    painter = painterResource(id = R.drawable.treseta_cards),
-                    contentDescription = null,
-                    alpha = 0.1f
-                )
-                LazyColumn {
-                    items(viewState.rounds) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigate(NavRoutes.BriscolaRoundEdit.route.plus("/${it.id}"))
-                                },
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.Bottom,
-                        ) {
-                            Text(
-                                text = it.firstTeamPoints.toString(),
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                style = Typography.body1
-                            )
-                            if (it is BriscolaRound) {
-                                Text(
-                                    modifier = Modifier.padding(vertical = 8.dp),
-                                    text = stringResource(
-                                        R.string.treseta_score,
-                                        it.firstTeamPointsCollected,
-                                        it.secondTeamPointsCollected
-                                    ),
-                                    style = TextStyle(
-                                        fontWeight = FontWeight.Normal,
-                                        fontSize = 12.sp,
-                                        fontStyle = FontStyle.Italic,
-                                        letterSpacing = 0.25.sp,
-                                    ),
-                                )
-                            }
-                            Text(
-                                text = it.secondTeamPoints.toString(),
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                style = Typography.body1
-                            )
-                        }
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, bottom = 8.dp),
-                            color = Color.LightGray
-                        )
-                    }
-                }
-            }
+            BriscolaGrid(
+                firstTeamPoints = viewState.rounds.sumOf { it.firstTeamPoints },
+                secondTeamPoints = viewState.rounds.sumOf { it.secondTeamPoints },
+            )
         }
-        Spacer(Modifier)
+    }
+    Spacer(Modifier)
+}
+
+@Composable
+private fun BriscolaGrid(firstTeamPoints: Int, secondTeamPoints: Int) {
+    val gridState = rememberLazyGridState()
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 8.dp),
+        state = gridState,
+        verticalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        items(8) { cellNumber ->
+            GridItem(
+                drawPoint = shouldDrawPoint(
+                    noOfFirstTeamPoints = firstTeamPoints,
+                    noOfSecondTeamPoints = secondTeamPoints,
+                    fieldNumber = cellNumber
+                ),
+                cellNumber = cellNumber
+            )
+        }
     }
 }
+
+@Composable
+private fun GridItem(drawPoint: Boolean, cellNumber: Int) {
+    Box(
+        modifier = Modifier
+            .size(80.dp)
+            .height(IntrinsicSize.Min),
+    ) {
+        if (drawPoint) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .align(Alignment.Center)
+                    .clip(CircleShape)
+                    .background(color = MaterialTheme.colors.onBackground),
+            )
+        }
+        if (!listOf(6, 7).contains(cellNumber)) {
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
+                color = Color.LightGray
+            )
+        }
+        if (cellNumber % 2 == 0) {
+            Divider(
+                color = Color.LightGray,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .align(Alignment.TopEnd)
+                    .width(1.dp)
+            )
+        }
+    }
+}
+
+@ReadOnlyComposable
+@Composable
+private fun shouldDrawPoint(noOfFirstTeamPoints: Int, noOfSecondTeamPoints: Int, fieldNumber: Int) =
+    when (fieldNumber) {
+        0 -> noOfFirstTeamPoints >= 1
+        2 -> noOfFirstTeamPoints >= 2
+        4 -> noOfFirstTeamPoints >= 3
+        6 -> noOfFirstTeamPoints >= 4
+        1 -> noOfSecondTeamPoints >= 1
+        3 -> noOfSecondTeamPoints >= 2
+        5 -> noOfSecondTeamPoints >= 3
+        7 -> noOfSecondTeamPoints >= 4
+        else -> false
+    }

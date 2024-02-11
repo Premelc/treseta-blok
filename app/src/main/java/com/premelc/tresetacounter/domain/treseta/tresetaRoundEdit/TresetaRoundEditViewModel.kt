@@ -28,12 +28,17 @@ class TresetaRoundEditViewModel(
         tresetaService.getSingleRound(roundId)
     }
 
+    private var interactionsEnabled = true
     private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val secondTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val deleteRoundDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    init {
+        interactionsEnabled = true
+    }
 
     internal val viewState: StateFlow<RoundEditViewState> = combine(
         selectedTeamFlow,
@@ -117,20 +122,23 @@ class TresetaRoundEditViewModel(
             }
 
             NumPadInteraction.TapOnSaveButton -> {
-                viewModelScope.launch {
-                    tresetaService.editRound(
-                        roundId = roundId,
-                        setId = oldRoundData.await().setId,
-                        firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
-                        firstTeamPointsNoCalls = firstTeamPointsFlow.value,
-                        secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
-                        secondTeamPointsNoCalls = secondTeamPointsFlow.value,
-                        timestamp = oldRoundData.await().timestamp,
-                        firstTeamCalls = firstTeamCallsFlow.value,
-                        secondTeamCalls = secondTeamCallsFlow.value
-                    )
+                if (interactionsEnabled) {
+                    interactionsEnabled = false
+                    viewModelScope.launch {
+                        tresetaService.editRound(
+                            roundId = roundId,
+                            setId = oldRoundData.await().setId,
+                            firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
+                            firstTeamPointsNoCalls = firstTeamPointsFlow.value,
+                            secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
+                            secondTeamPointsNoCalls = secondTeamPointsFlow.value,
+                            timestamp = oldRoundData.await().timestamp,
+                            firstTeamCalls = firstTeamCallsFlow.value,
+                            secondTeamCalls = secondTeamCallsFlow.value
+                        )
+                    }
+                    navController.popBackStack()
                 }
-                navController.popBackStack()
             }
         }
     }

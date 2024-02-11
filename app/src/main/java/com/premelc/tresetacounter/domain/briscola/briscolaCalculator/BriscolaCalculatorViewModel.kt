@@ -21,9 +21,14 @@ class BriscolaCalculatorViewModel(
     private val navController: NavController,
 ) : ViewModel() {
 
+    private var interactionsEnabled = true
     private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+
+    init{
+        interactionsEnabled = true
+    }
 
     internal val viewState: StateFlow<BriscolaCalculatorViewState> = combine(
         selectedTeamFlow,
@@ -68,14 +73,17 @@ class BriscolaCalculatorViewModel(
             }
 
             NumPadInteraction.TapOnSaveButton -> {
-                viewModelScope.launch {
-                    briscolaService.insertRound(
-                        setId = setId,
-                        firstTeamPoints = firstTeamPointsFlow.value,
-                        secondTeamPoints = secondTeamPointsFlow.value,
-                    )
+                if(interactionsEnabled){
+                    interactionsEnabled = false
+                    viewModelScope.launch {
+                        briscolaService.insertRound(
+                            setId = setId,
+                            firstTeamPoints = firstTeamPointsFlow.value,
+                            secondTeamPoints = secondTeamPointsFlow.value,
+                        )
+                    }
+                    navController.popBackStack()
                 }
-                navController.popBackStack()
             }
         }
     }

@@ -43,8 +43,8 @@ fun Long?.parseTimestamp(): String {
         )
         in 3600001..14400000 -> pluralStringResource(
             R.plurals.timestamp_hours_ago,
-            (difference / 60000).toInt(),
-            (difference / 60000).toInt()
+            (difference / 3600000).toInt(),
+            (difference / 3600000).toInt()
         )
         in 14400001..Long.MAX_VALUE -> {
             val milliseconds = this // Example milliseconds

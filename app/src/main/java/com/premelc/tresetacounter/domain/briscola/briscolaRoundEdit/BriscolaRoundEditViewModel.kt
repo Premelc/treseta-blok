@@ -26,11 +26,15 @@ class BriscolaRoundEditViewModel(
     private val oldRoundData = viewModelScope.async(start = CoroutineStart.LAZY) {
         briscolaService.getSingleRound(roundId)
     }
-
+    private var interactionsEnabled = true
     private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val deleteRoundDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    init{
+        interactionsEnabled = true
+    }
 
     internal val viewState: StateFlow<BriscolaRoundEditViewState> = combine(
         selectedTeamFlow,
@@ -96,16 +100,19 @@ class BriscolaRoundEditViewModel(
             }
 
             NumPadInteraction.TapOnSaveButton -> {
-                viewModelScope.launch {
-                    briscolaService.editRound(
-                        roundId = roundId,
-                        setId = oldRoundData.await().setId,
-                        firstTeamPoints = firstTeamPointsFlow.value,
-                        secondTeamPoints = secondTeamPointsFlow.value,
-                        timestamp = oldRoundData.await().timestamp,
-                    )
+                if(interactionsEnabled){
+                    interactionsEnabled = false
+                    viewModelScope.launch {
+                        briscolaService.editRound(
+                            roundId = roundId,
+                            setId = oldRoundData.await().setId,
+                            firstTeamPoints = firstTeamPointsFlow.value,
+                            secondTeamPoints = secondTeamPointsFlow.value,
+                            timestamp = oldRoundData.await().timestamp,
+                        )
+                    }
+                    navController.popBackStack()
                 }
-                navController.popBackStack()
             }
         }
     }

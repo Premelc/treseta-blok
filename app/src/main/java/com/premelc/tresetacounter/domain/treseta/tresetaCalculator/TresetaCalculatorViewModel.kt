@@ -22,11 +22,16 @@ class TresetaCalculatorViewModel(
     private val navController: NavController,
 ) : ViewModel() {
 
+    private var interactionsEnabled = true
     private val selectedTeamFlow: MutableStateFlow<Team> = MutableStateFlow(Team.FIRST)
     private val firstTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val secondTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+
+    init {
+        interactionsEnabled = true
+    }
 
     internal val viewState: StateFlow<TresetaCalculatorViewState> = combine(
         selectedTeamFlow,
@@ -87,18 +92,21 @@ class TresetaCalculatorViewModel(
             }
 
             NumPadInteraction.TapOnSaveButton -> {
-                viewModelScope.launch {
-                    tresetaService.insertRound(
-                        setId = setId,
-                        firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
-                        firstTeamPointsNoCalls = firstTeamPointsFlow.value,
-                        secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
-                        secondTeamPointsNoCalls = secondTeamPointsFlow.value,
-                        firstTeamCalls = firstTeamCallsFlow.value,
-                        secondTeamCalls = secondTeamCallsFlow.value,
-                    )
+                if (interactionsEnabled) {
+                    interactionsEnabled = false
+                    viewModelScope.launch {
+                        tresetaService.insertRound(
+                            setId = setId,
+                            firstTeamPoints = calculatePointsPlusCalls(Team.FIRST),
+                            firstTeamPointsNoCalls = firstTeamPointsFlow.value,
+                            secondTeamPoints = calculatePointsPlusCalls(Team.SECOND),
+                            secondTeamPointsNoCalls = secondTeamPointsFlow.value,
+                            firstTeamCalls = firstTeamCallsFlow.value,
+                            secondTeamCalls = secondTeamCallsFlow.value,
+                        )
+                    }
+                    navController.popBackStack()
                 }
-                navController.popBackStack()
             }
         }
     }
