@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_title">Triestine Block</string>
+    <string name="game_history_title">Game History</string>
+    <string name="game_history_first_team_title">US</string>
+    <string name="game_history_second_team_title">THEM</string>
+    <string name="treseta_score" translatable="false">%1$d : %2$d</string>
+    <string name="game_history_set_number">Set %1$d</string>
+    <string name="last_game_timestamp">Last game: %1$s</string>
+    <string name="game_calculator_first_team_title">US</string>
+    <string name="game_calculator_second_team_title">THEM</string>
+    <string name="game_calculator_calls_title">Calls</string>
+    <string name="game_calculator_calls_napola">Napolitana</string>
+    <string name="game_calculator_calls_x3" translatable="false">x3</string>
+    <string name="game_calculator_calls_x4" translatable="false">x4</string>
+    <string name="game_calculator_delete_label">Delete</string>
+    <string name="game_calculator_save_label">Save</string>
+    <string name="main_menu_continue_game_title">Continue previous game</string>
+    <string name="main_menu_no_previous_games_label">No previous games\nStart a new game by pressing the button</string>
+    <string name="main_menu_treseta_tab_title">Treseta</string>
+    <string name="main_menu_briscola_tab_title">Briscola</string>
+    <string name="main_menu_new_game_button">New game</string>
+    <string name="main_menu_favourite_label">Favorites</string>
+    <string name="main_menu_first_team_label">Us</string>
+    <string name="main_menu_second_team_label">Them</string>
+    <string name="treseta_game_title">TRESETA</string>
+    <string name="briscola_game_title">BRISCOLA</string>
+    <string name="game_add_new_round_button_label">Add new round</string>
+    <string name="game_first_team_title">US</string>
+    <string name="game_second_team_title">THEM</string>
+    <string name="game_no_rounds_yet_label">"No rounds played yet, press the button to add a round"</string>
+    <string name="calls_x3" translatable="false">x3</string>
+    <string name="calls_x4" translatable="false">x4</string>
+    <string name="edit_round_delete_dialog_title">Do you really want to delete the round?</string>
+    <string name="edit_round_delete_dialog_button_positive">Delete</string>
+    <string name="edit_round_delete_dialog_button_negative">Cancel</string>
+    <string name="edit_round_toolbar_title">Edit round</string>
+    <string name="calls_napola">Napolitana</string>
+</resources>
