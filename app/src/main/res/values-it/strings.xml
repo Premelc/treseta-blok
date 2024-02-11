@@ -2,12 +2,12 @@
     <string name="app_title">Contatore Tresette</string>
     <string name="game_history_title">Storia della partita</string>
     <string name="game_history_first_team_title">NOI</string>
-    <string name="game_history_second_team_title">LORO</string>
+    <string name="game_history_second_team_title">VOI</string>
     <string name="treseta_score" translatable="false">%1$d : %2$d</string>
     <string name="game_history_set_number">Set %1$d</string>
     <string name="last_game_timestamp">Ultima partita: %1$s</string>
     <string name="game_calculator_first_team_title">NOI</string>
-    <string name="game_calculator_second_team_title">LORO</string>
+    <string name="game_calculator_second_team_title">VOI</string>
     <string name="game_calculator_calls_title">L\'accusa</string>
     <string name="game_calculator_calls_napola">Napoli</string>
     <string name="game_calculator_calls_x3" translatable="false">x3</string>
@@ -21,12 +21,12 @@
     <string name="main_menu_new_game_button">Nuova partita</string>
     <string name="main_menu_favourite_label">Preferiti</string>
     <string name="main_menu_first_team_label">Noi\u0020</string>
-    <string name="main_menu_second_team_label">\u0020Loro</string>
+    <string name="main_menu_second_team_label">\u0020Voi</string>
     <string name="treseta_game_title">TRESETTE</string>
     <string name="briscola_game_title">BRISCOLA</string>
     <string name="game_add_new_round_button_label">Aggiungi nuovo round</string>
     <string name="game_first_team_title">NOI</string>
-    <string name="game_second_team_title">LORO</string>
+    <string name="game_second_team_title">VOI</string>
     <string name="game_no_rounds_yet_label">"Nessun round giocato ancora, premi il pulsante per aggiungere un round"</string>
     <string name="calls_x3" translatable="false">x3</string>
     <string name="calls_x4" translatable="false">x4</string>
