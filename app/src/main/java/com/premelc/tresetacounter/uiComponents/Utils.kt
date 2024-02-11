@@ -4,9 +4,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
@@ -18,16 +16,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
+import com.premelc.tresetacounter.R
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
@@ -40,10 +35,17 @@ import java.util.Locale
 fun Long?.parseTimestamp(): String {
     return if (this == null) " - "
     else when (val difference = System.currentTimeMillis() - this) {
-        in Long.MIN_VALUE..60000 -> "Upravo"
-        in 60001..3600000 -> "Prije ${difference / 60000} minuta"
-        in 3600001..4000000 -> "Prije sat vremena"
-        in 4000001..14400000 -> "Prije ${difference / 3600000} sata"
+        in Long.MIN_VALUE..60000 -> stringResource(R.string.timestamp_right_now)
+        in 60001..3600000 -> pluralStringResource(
+            R.plurals.timestamp_minutes_ago,
+            (difference / 60000).toInt(),
+            (difference / 60000).toInt()
+        )
+        in 3600001..14400000 -> pluralStringResource(
+            R.plurals.timestamp_hours_ago,
+            (difference / 60000).toInt(),
+            (difference / 60000).toInt()
+        )
         in 14400001..Long.MAX_VALUE -> {
             val milliseconds = this // Example milliseconds
 

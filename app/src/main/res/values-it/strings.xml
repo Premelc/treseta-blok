@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_title">Triestine Blocco</string>
+    <string name="app_title">Contatore Tresette</string>
     <string name="game_history_title">Storia della partita</string>
     <string name="game_history_first_team_title">NOI</string>
     <string name="game_history_second_team_title">LORO</string>
@@ -16,13 +16,13 @@
     <string name="game_calculator_save_label">Salva</string>
     <string name="main_menu_continue_game_title">Continua partita precedente</string>
     <string name="main_menu_no_previous_games_label">Nessuna partita precedente\nInizia una nuova partita premendo il pulsante</string>
-    <string name="main_menu_treseta_tab_title">Treseta</string>
+    <string name="main_menu_treseta_tab_title">Tresette</string>
     <string name="main_menu_briscola_tab_title">Briscola</string>
     <string name="main_menu_new_game_button">Nuova partita</string>
     <string name="main_menu_favourite_label">Preferiti</string>
-    <string name="main_menu_first_team_label">Noi</string>
-    <string name="main_menu_second_team_label">Loro</string>
-    <string name="treseta_game_title">TRESETA</string>
+    <string name="main_menu_first_team_label">Noi\u0020</string>
+    <string name="main_menu_second_team_label">\u0020Loro</string>
+    <string name="treseta_game_title">TRESETTE</string>
     <string name="briscola_game_title">BRISCOLA</string>
     <string name="game_add_new_round_button_label">Aggiungi nuovo round</string>
     <string name="game_first_team_title">NOI</string>
@@ -35,4 +35,15 @@
     <string name="edit_round_delete_dialog_button_negative">Annulla</string>
     <string name="edit_round_toolbar_title">Modifica round</string>
     <string name="calls_napola">Napoli</string>
+    <string name="timestamp_right_now">Ora</string>
+    <plurals name="timestamp_minutes_ago">
+        <item quantity="one">Un minuto fa</item>
+        <item quantity="many">%1$d minuti fa</item>
+        <item quantity="other">%1$d minuti fa</item>
+    </plurals>
+    <plurals name="timestamp_hours_ago">
+        <item quantity="one">Un\'ora fa</item>
+        <item quantity="many">%1$d ore fa</item>
+        <item quantity="other">%1$d ore fa</item>
+    </plurals>
 </resources>

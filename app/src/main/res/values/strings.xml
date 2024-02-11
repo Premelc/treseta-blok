@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_title">Triestine Blok</string>
+    <string name="app_title">Treseta brojac</string>
     <string name="game_history_title">Povijest igre</string>
     <string name="game_history_first_team_title">MI</string>
     <string name="game_history_second_team_title">VI</string>
@@ -35,4 +35,17 @@
     <string name="edit_round_delete_dialog_button_positive">Obriši</string>
     <string name="edit_round_delete_dialog_button_negative">Odustani</string>
     <string name="edit_round_toolbar_title">Uredi rundu</string>
+    <string name="timestamp_right_now">Upravo</string>
+    <plurals name="timestamp_minutes_ago">
+        <item quantity="one">Prije jedne minute</item>
+        <item quantity="few">Prije %1$d minute</item>
+        <item quantity="many">Prije %1$d minuta</item>
+        <item quantity="other">Prije %1$d minuta</item>
+    </plurals>
+    <plurals name="timestamp_hours_ago">
+        <item quantity="one">Prije jedan sat</item>
+        <item quantity="few">Prije %1$d sata</item>
+        <item quantity="many">Prije %1$d sati</item>
+        <item quantity="other">Prije %1$d sati</item>
+    </plurals>
 </resources>
