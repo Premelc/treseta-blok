@@ -39,6 +39,8 @@
     <string name="game_set_finished_modal_text_first_team">Mi smo pobjedili!</string>
     <string name="game_set_finished_modal_text_second_team">Vi ste pobjedili!</string>
     <string name="timestamp_right_now">Upravo</string>
+    <string name="treseta_calls_snackbar">Maksimalan broj odabranih akužanja dostignut</string>
+    <string name="treseta_calls_snackbar_action">Uredu</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">Prije jedne minute</item>
         <item quantity="few">Prije %1$d minute</item>

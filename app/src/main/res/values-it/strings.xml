@@ -39,6 +39,8 @@
     <string name="game_set_finished_modal_text_first_team">Noi abbiamo vinto!</string>
     <string name="game_set_finished_modal_text_second_team">Loro hanno vinto!</string>
     <string name="timestamp_right_now">Ora</string>
+    <string name="treseta_calls_snackbar">È stato raggiunto il numero massimo di accusa selezionate.</string>
+    <string name="treseta_calls_snackbar_action">OK</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">Un minuto fa</item>
         <item quantity="many">%1$d minuti fa</item>

@@ -7,10 +7,10 @@ import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.Team
+import com.premelc.tresetacounter.utils.combine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -28,6 +28,7 @@ class TresetaCalculatorViewModel(
     private val secondTeamCallsFlow: MutableStateFlow<List<Call>> = MutableStateFlow(listOf())
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val showCallsSnackarFlow = MutableStateFlow(false)
 
     init {
         interactionsEnabled = true
@@ -39,7 +40,8 @@ class TresetaCalculatorViewModel(
         secondTeamPointsFlow,
         firstTeamCallsFlow,
         secondTeamCallsFlow,
-    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls ->
+        showCallsSnackarFlow
+    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showCallsSnackbar ->
         TresetaCalculatorViewState(
             firstTeamScore = firstTeamPoints,
             secondTeamScore = secondTeamPoints,
@@ -47,6 +49,7 @@ class TresetaCalculatorViewModel(
             secondTeamCalls = secondTeamCalls,
             selectedTeam = selection,
             isSaveButtonEnabled = firstTeamPoints > 0 || secondTeamPoints > 0,
+            showCallsSnackbar = showCallsSnackbar,
         )
     }.stateIn(
         viewModelScope,
@@ -75,6 +78,7 @@ class TresetaCalculatorViewModel(
                         secondTeamCallsFlow.value.filterIndexed { index, _ -> index != interaction.index }
                 }
             }
+            TresetaCalculatorInteraction.DismissCallsSnackbar -> showCallsSnackarFlow.value = false
         }
     }
 
@@ -118,10 +122,22 @@ class TresetaCalculatorViewModel(
     }
 
     private fun addCallToSelectedTeam(call: Call) {
-        when (selectedTeamFlow.value) {
-            Team.FIRST -> firstTeamCallsFlow.value += call
-            Team.SECOND -> secondTeamCallsFlow.value += call
-            else -> Unit
+        if (checkIfMaxCallsReached(call)) {
+            when (selectedTeamFlow.value) {
+                Team.FIRST -> firstTeamCallsFlow.value += call
+                Team.SECOND -> secondTeamCallsFlow.value += call
+                else -> Unit
+            }
+        } else {
+            showCallsSnackarFlow.value = true
+        }
+    }
+
+    private fun checkIfMaxCallsReached(call: Call): Boolean {
+        val totalCalls = firstTeamCallsFlow.value + secondTeamCallsFlow.value
+        return when (call) {
+            Call.NAPOLITANA -> totalCalls.count { it == Call.NAPOLITANA } < 4
+            Call.X3, Call.X4 -> totalCalls.count { it == Call.X3 } + totalCalls.count { it == Call.X4 } < 3
         }
     }
 

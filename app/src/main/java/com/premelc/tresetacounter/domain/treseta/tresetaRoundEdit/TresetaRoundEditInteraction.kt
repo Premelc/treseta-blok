@@ -11,4 +11,5 @@ internal sealed interface TresetaRoundEditInteraction {
     data object TapOnDeleteRound : TresetaRoundEditInteraction
     data object TapOnDeleteRoundDialogPositive : TresetaRoundEditInteraction
     data object TapOnDeleteRoundDialogNegative : TresetaRoundEditInteraction
+    data object DismissCallsSnackbar: TresetaRoundEditInteraction
 }

@@ -9,6 +9,7 @@ internal data class RoundEditViewState(
     val selectedTeam: Team? = null,
     val isSaveButtonEnabled: Boolean = false,
     val showDeleteRoundDialog: Boolean = false,
+    val showCallsSnackbar: Boolean = false,
 )
 
 data class TresetaRoundData(

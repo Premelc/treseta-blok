@@ -35,6 +35,7 @@ class TresetaRoundEditViewModel(
     private val firstTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val secondTeamPointsFlow: MutableStateFlow<Int> = MutableStateFlow(0)
     private val deleteRoundDialogFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val showCallsSnackarFlow = MutableStateFlow(false)
 
     init {
         interactionsEnabled = true
@@ -47,7 +48,8 @@ class TresetaRoundEditViewModel(
         firstTeamCallsFlow,
         secondTeamCallsFlow,
         deleteRoundDialogFlow,
-    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showDeleteRoundDialog ->
+        showCallsSnackarFlow,
+    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showDeleteRoundDialog, showCallsSnackbar ->
         RoundEditViewState(
             oldRoundData = TresetaRoundData(
                 firstTeamScore = oldRoundData.await().firstTeamPointsNoCalls,
@@ -63,7 +65,8 @@ class TresetaRoundEditViewModel(
             ),
             selectedTeam = selection,
             isSaveButtonEnabled = firstTeamPoints > 0 || secondTeamPoints > 0,
-            showDeleteRoundDialog = showDeleteRoundDialog
+            showDeleteRoundDialog = showDeleteRoundDialog,
+            showCallsSnackbar = showCallsSnackbar,
         )
     }.stateIn(
         viewModelScope,
@@ -105,6 +108,7 @@ class TresetaRoundEditViewModel(
                     navController.popBackStack()
                 }
             }
+            TresetaRoundEditInteraction.DismissCallsSnackbar -> showCallsSnackarFlow.value = false
         }
     }
 
@@ -144,10 +148,14 @@ class TresetaRoundEditViewModel(
     }
 
     private fun addCallToSelectedTeam(call: Call) {
-        when (selectedTeamFlow.value) {
-            Team.FIRST -> firstTeamCallsFlow.value += call
-            Team.SECOND -> secondTeamCallsFlow.value += call
-            else -> Unit
+        if (checkIfMaxCallsReached(call)) {
+            when (selectedTeamFlow.value) {
+                Team.FIRST -> firstTeamCallsFlow.value += call
+                Team.SECOND -> secondTeamCallsFlow.value += call
+                else -> Unit
+            }
+        } else {
+            showCallsSnackarFlow.value = true
         }
     }
 
@@ -166,6 +174,14 @@ class TresetaRoundEditViewModel(
             }
 
             Team.NONE -> Unit
+        }
+    }
+
+    private fun checkIfMaxCallsReached(call: Call): Boolean {
+        val totalCalls = firstTeamCallsFlow.value + secondTeamCallsFlow.value
+        return when (call) {
+            Call.NAPOLITANA -> totalCalls.count { it == Call.NAPOLITANA } < 4
+            Call.X3, Call.X4 -> totalCalls.count { it == Call.X3 } + totalCalls.count { it == Call.X4 } < 3
         }
     }
 

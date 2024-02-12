@@ -8,4 +8,5 @@ internal sealed interface TresetaCalculatorInteraction {
     data class TapOnTeamCard(val team: Team) : TresetaCalculatorInteraction
     data class TapOnRemovablePill(val index: Int, val team: Team) : TresetaCalculatorInteraction
     data object TapOnBackButton : TresetaCalculatorInteraction
+    data object DismissCallsSnackbar: TresetaCalculatorInteraction
 }

@@ -10,4 +10,5 @@ internal data class TresetaCalculatorViewState(
     val secondTeamCalls: List<Call> = emptyList(),
     val selectedTeam: Team? = null,
     val isSaveButtonEnabled: Boolean = false,
+    val showCallsSnackbar: Boolean = false,
 )

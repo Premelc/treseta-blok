@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,12 +29,14 @@ import com.premelc.tresetacounter.ads.BannerAd
 @Composable
 internal fun ToolbarScaffold(
     backAction: (() -> Unit)? = null,
+    snackbarHostState: @Composable (SnackbarHostState) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.statusBars)
             .windowInsetsPadding(WindowInsets.navigationBars),
+        snackbarHost = snackbarHostState,
         topBar = {
             Column {
                 BannerAd()
@@ -92,12 +95,14 @@ internal fun FullActionToolbar(
     leftAction: @Composable () -> Unit,
     rightAction: @Composable () -> Unit,
     title: String? = null,
+    snackbarHostState: @Composable (SnackbarHostState) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.statusBars)
             .windowInsetsPadding(WindowInsets.navigationBars),
+        snackbarHost = snackbarHostState,
         topBar = {
             Column {
                 BannerAd()
@@ -105,7 +110,7 @@ internal fun FullActionToolbar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp , vertical = 12.dp),
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
                 ) {
                     leftAction()
                     title?.let {

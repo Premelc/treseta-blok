@@ -9,8 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,6 +39,7 @@ import com.premelc.tresetacounter.uiComponents.TeamPointCard
 import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.animatePlacement
 import com.premelc.tresetacounter.utils.Team
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -42,7 +50,7 @@ internal fun TresetaGameCalculatorScreen(
 ) {
     val viewModel: TresetaCalculatorViewModel = koinViewModel { parametersOf(navController, setId) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
-    GameCalculatorContent(viewState, viewModel::onInteraction , viewModel::onNumPadInteraction)
+    GameCalculatorContent(viewState, viewModel::onInteraction, viewModel::onNumPadInteraction)
 }
 
 @Composable
@@ -51,7 +59,16 @@ private fun GameCalculatorContent(
     onInteraction: (TresetaCalculatorInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
-    ToolbarScaffold(backAction = { onInteraction(TresetaCalculatorInteraction.TapOnBackButton) }) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarMessage = stringResource(R.string.treseta_calls_snackbar)
+    val snackbarAction = stringResource(R.string.treseta_calls_snackbar_action)
+    ToolbarScaffold(
+        backAction = { onInteraction(TresetaCalculatorInteraction.TapOnBackButton) },
+        snackbarHostState = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -121,6 +138,22 @@ private fun GameCalculatorContent(
                 onInteraction = onNumPadInteraction,
                 isSaveButtonEnabled = viewState.isSaveButtonEnabled,
             )
+        }
+    }
+    LaunchedEffect(viewState.showCallsSnackbar) {
+        if (viewState.showCallsSnackbar) {
+            scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = snackbarMessage,
+                    actionLabel = snackbarAction,
+                    duration = SnackbarDuration.Short
+                )
+                when (result) {
+                    SnackbarResult.Dismissed, SnackbarResult.ActionPerformed -> {
+                        onInteraction(TresetaCalculatorInteraction.DismissCallsSnackbar)
+                    }
+                }
+            }
         }
     }
 }

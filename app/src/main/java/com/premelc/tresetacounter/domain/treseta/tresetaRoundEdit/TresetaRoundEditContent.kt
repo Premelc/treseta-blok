@@ -19,11 +19,18 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -36,6 +43,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
 import com.premelc.tresetacounter.uiComponents.Calls
 import com.premelc.tresetacounter.uiComponents.CallsList
@@ -45,6 +53,7 @@ import com.premelc.tresetacounter.uiComponents.TeamPointCard
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.uiComponents.animatePlacement
 import com.premelc.tresetacounter.utils.Team
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -64,7 +73,14 @@ private fun RoundEditContent(
     onInteraction: (TresetaRoundEditInteraction) -> Unit,
     onNumPadInteraction: (NumPadInteraction) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarMessage = stringResource(R.string.treseta_calls_snackbar)
+    val snackbarAction = stringResource(R.string.treseta_calls_snackbar_action)
     FullActionToolbar(
+        snackbarHostState = {
+            SnackbarHost(snackbarHostState)
+        },
         leftAction = {
             Icon(
                 modifier = Modifier.clickable { onInteraction(TresetaRoundEditInteraction.TapOnBackButton) },
@@ -119,6 +135,22 @@ private fun RoundEditContent(
     }
     if (viewState.showDeleteRoundDialog) {
         DeleteRoundDialog(onInteraction)
+    }
+    LaunchedEffect(viewState.showCallsSnackbar) {
+        if (viewState.showCallsSnackbar) {
+            scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = snackbarMessage,
+                    actionLabel = snackbarAction,
+                    duration = SnackbarDuration.Short
+                )
+                when (result) {
+                    SnackbarResult.Dismissed, SnackbarResult.ActionPerformed -> {
+                        onInteraction(TresetaRoundEditInteraction.DismissCallsSnackbar)
+                    }
+                }
+            }
+        }
     }
 }
 
