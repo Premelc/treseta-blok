@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.service.TresetaService
-import com.premelc.tresetacounter.service.data.GameState
+import com.premelc.tresetacounter.service.data.TresetaGameState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +19,7 @@ class TresetaHistoryViewModel(
 
     val viewState =
         tresetaService.selectedGameFlow().flatMapLatest {
-            if (it is GameState.GameReady) {
+            if (it is TresetaGameState.GameReady) {
                 MutableStateFlow(
                     TresetaHistoryViewState(
                         firstTeamScore = it.firstTeamScore,

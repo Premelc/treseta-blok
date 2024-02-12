@@ -7,9 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.premelc.tresetacounter.domain.briscola.briscolaCalculator.BriscolaGameCalculatorScreen
 import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameScreen
-import com.premelc.tresetacounter.domain.briscola.briscolaRoundEdit.BriscolaRoundEditScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
 import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaGameCalculatorScreen
 import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameScreen
@@ -40,32 +38,10 @@ private fun NavController.navigateWrapper(route: String) {
 }
 
 private fun NavGraphBuilder.briscolaNavigation(navController: NavController) {
-    composableWrapper(
-        route = NavRoutes.BriscolaGameCalculator.route.plus("/{setId}"),
-        arguments = listOf(
-            navArgument("setId") {
-                type = NavType.IntType
-                defaultValue = 0
-            }
-        ),
-    ) {
-        BriscolaGameCalculatorScreen(navController, it.arguments?.getInt("setId") ?: 0)
-    }
     composableWrapper(NavRoutes.BriscolaGame.route) {
         BriscolaGameScreen { route: String ->
             navController.navigateWrapper(route)
         }
-    }
-    composableWrapper(
-        route = NavRoutes.BriscolaRoundEdit.route.plus("/{roundId}"),
-        arguments = listOf(
-            navArgument("roundId") {
-                type = NavType.IntType
-                defaultValue = 0
-            }
-        ),
-    ) {
-        BriscolaRoundEditScreen(navController, it.arguments?.getInt("roundId") ?: 0)
     }
 }
 

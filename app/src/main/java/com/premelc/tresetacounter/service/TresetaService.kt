@@ -5,8 +5,8 @@ import com.premelc.tresetacounter.data.GameEntity
 import com.premelc.tresetacounter.data.RoundEntity
 import com.premelc.tresetacounter.data.SetEntity
 import com.premelc.tresetacounter.data.CardGameDatabase
-import com.premelc.tresetacounter.service.data.GameSet
-import com.premelc.tresetacounter.service.data.GameState
+import com.premelc.tresetacounter.service.data.TresetaGameSet
+import com.premelc.tresetacounter.service.data.TresetaGameState
 import com.premelc.tresetacounter.service.data.TresetaRound
 import com.premelc.tresetacounter.utils.Call
 import com.premelc.tresetacounter.utils.GameType
@@ -42,13 +42,13 @@ class TresetaService(private val database: CardGameDatabase) {
                 database.roundDao().getRounds(),
             ) { game, sets, rounds ->
                 if (game != null) {
-                    GameState.GameReady(
+                    TresetaGameState.GameReady(
                         gameId = game.id,
                         isFavorite = game.isFavorite,
                         firstTeamScore = game.firstTeamPoints,
                         secondTeamScore = game.secondTeamPoints,
                         setList = sets.map { setEntity ->
-                            GameSet(
+                            TresetaGameSet(
                                 id = setEntity.id,
                                 roundsList = rounds.filter {
                                     it.setId == setEntity.id
@@ -57,7 +57,7 @@ class TresetaService(private val database: CardGameDatabase) {
                         }.sortedByDescending { it.id }
                     )
                 } else {
-                    GameState.NoActiveGames
+                    TresetaGameState.NoActiveGames
                 }
             }
         } else {
@@ -67,20 +67,20 @@ class TresetaService(private val database: CardGameDatabase) {
     private fun latestGameFlow() =
         database.gameDao().getLatestGame().flatMapLatest { game ->
             if (game == null) {
-                flowOf(GameState.NoActiveGames)
+                flowOf(TresetaGameState.NoActiveGames)
             } else {
                 combine(
                     database.setDao().getAllSets(game.id),
                     database.roundDao().getRounds(),
                 ) { sets, rounds ->
                     setSelectedGame(game.id)
-                    GameState.GameReady(
+                    TresetaGameState.GameReady(
                         gameId = game.id,
                         isFavorite = game.isFavorite,
                         firstTeamScore = game.firstTeamPoints,
                         secondTeamScore = game.secondTeamPoints,
                         setList = sets.map { setEntity ->
-                            GameSet(
+                            TresetaGameSet(
                                 id = setEntity.id,
                                 roundsList = rounds.filter {
                                     it.setId == setEntity.id
@@ -235,7 +235,7 @@ class TresetaService(private val database: CardGameDatabase) {
         setSelectedGame(newGameId)
     }
 
-    suspend fun updateCurrentGame(winningTeam: Team, game: GameState.GameReady) {
+    suspend fun updateCurrentGame(winningTeam: Team, game: TresetaGameState.GameReady) {
         when (winningTeam) {
             Team.FIRST -> {
                 database.setDao().insertSet(

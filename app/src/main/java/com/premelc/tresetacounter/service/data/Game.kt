@@ -2,21 +2,39 @@ package com.premelc.tresetacounter.service.data
 
 import com.premelc.tresetacounter.utils.Call
 
-sealed interface GameState {
+sealed interface TresetaGameState {
     data class GameReady(
         val gameId: Int,
         val isFavorite: Boolean,
         val firstTeamScore: Int,
         val secondTeamScore: Int,
-        val setList: List<GameSet>,
-    ) : GameState
+        val setList: List<TresetaGameSet>,
+    ) : TresetaGameState
 
-    data object NoActiveGames : GameState
+    data object NoActiveGames : TresetaGameState
 }
 
-data class GameSet(
+sealed interface BriscolaGameState {
+    data class GameReady(
+        val gameId: Int,
+        val isFavorite: Boolean,
+        val firstTeamScore: Int,
+        val secondTeamScore: Int,
+        val setList: List<BriscolaGameSet>,
+    ) : BriscolaGameState
+
+    data object NoActiveGames : BriscolaGameState
+}
+
+data class TresetaGameSet(
     val id: Int,
-    val roundsList: List<Round>
+    val roundsList: List<Round>,
+)
+
+data class BriscolaGameSet(
+    val id: Int,
+    val firstTeamPoints: Int,
+    val secondTeamPoints: Int,
 )
 
 abstract class Round(
@@ -37,22 +55,6 @@ data class TresetaRound(
     val secondTeamPointsNoCalls: Int,
     val firstTeamCalls: List<Call>,
     val secondTeamCalls: List<Call>,
-) : Round(
-    id = id,
-    setId = setId,
-    timestamp = timestamp,
-    firstTeamPoints = firstTeamPoints,
-    secondTeamPoints = secondTeamPoints
-)
-
-data class BriscolaRound(
-    override val id: Int,
-    override val setId: Int,
-    override val timestamp: Long,
-    override val firstTeamPoints: Int,
-    override val secondTeamPoints: Int,
-    val firstTeamPointsCollected: Int,
-    val secondTeamPointsCollected: Int,
 ) : Round(
     id = id,
     setId = setId,

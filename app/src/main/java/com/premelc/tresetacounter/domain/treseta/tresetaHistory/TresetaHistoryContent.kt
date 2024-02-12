@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.premelc.tresetacounter.service.data.GameSet
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.Accordion
 import com.premelc.tresetacounter.uiComponents.CallsList
@@ -48,6 +47,7 @@ import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.service.data.TresetaGameSet
 import com.premelc.tresetacounter.service.data.TresetaRound
 import com.premelc.tresetacounter.utils.Team
 
@@ -159,7 +159,7 @@ private fun GameHistoryContent(
 
 @Composable
 private fun SetHistoryContent(
-    set: GameSet
+    set: TresetaGameSet
 ) {
     val pointsAfterRoundFirstTeam = set.getTeamTotalPointsPerRound(Team.FIRST)
     val pointsAfterRoundSecondTeam = set.getTeamTotalPointsPerRound(Team.SECOND)
@@ -287,7 +287,7 @@ private fun SetHistoryContent(
     }
 }
 
-private fun GameSet.getTeamTotalPointsPerRound(team: Team): List<Int> {
+private fun TresetaGameSet.getTeamTotalPointsPerRound(team: Team): List<Int> {
     var totalPoints = 0
     val list = mutableListOf(totalPoints)
     this@getTeamTotalPointsPerRound.roundsList.forEachIndexed { index, round ->

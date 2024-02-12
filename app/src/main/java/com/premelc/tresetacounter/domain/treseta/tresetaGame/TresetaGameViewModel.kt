@@ -3,8 +3,8 @@ package com.premelc.tresetacounter.domain.treseta.tresetaGame
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.premelc.tresetacounter.service.TresetaService
-import com.premelc.tresetacounter.service.data.GameState
 import com.premelc.tresetacounter.service.data.Round
+import com.premelc.tresetacounter.service.data.TresetaGameState
 import com.premelc.tresetacounter.utils.Team
 import com.premelc.tresetacounter.utils.checkWinningTeam
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
 
     init {
         viewModelScope.launch {
-            tresetaService.selectedGameFlow().filterIsInstance<GameState.GameReady>().collectLatest { game ->
+            tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>().collectLatest { game ->
                 checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
             }
         }
@@ -34,9 +34,9 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
         setFinishedModalFlow,
     ) { game, setFinishedModal ->
         when (game) {
-            GameState.NoActiveGames -> TresetaGameViewState.GameLoading
+            TresetaGameState.NoActiveGames -> TresetaGameViewState.GameLoading
 
-            is GameState.GameReady -> {
+            is TresetaGameState.GameReady -> {
                 currentSetId.value = game.setList.firstOrNull()?.id ?: 0
                 TresetaGameViewState.GameReady(
                     rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
@@ -70,7 +70,7 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
             is TresetaGameInteraction.TapOnRoundScore -> Unit
             TresetaGameInteraction.TapOnSetFinishedModalConfirm -> {
                 viewModelScope.launch {
-                    tresetaService.selectedGameFlow().filterIsInstance<GameState.GameReady>().first().let { game ->
+                    tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>().first().let { game ->
                         val roundsList = game.setList.firstOrNull()?.roundsList ?: emptyList()
                         tresetaService.updateCurrentGame(
                             if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST

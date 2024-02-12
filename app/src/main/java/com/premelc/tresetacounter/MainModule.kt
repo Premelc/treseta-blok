@@ -6,9 +6,7 @@ import com.premelc.tresetacounter.domain.mainMenu.MainMenuViewModel
 import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameViewModel
 import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameViewModel
 import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorViewModel
-import com.premelc.tresetacounter.domain.briscola.briscolaCalculator.BriscolaCalculatorViewModel
 import com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit.TresetaRoundEditViewModel
-import com.premelc.tresetacounter.domain.briscola.briscolaRoundEdit.BriscolaRoundEditViewModel
 import com.premelc.tresetacounter.domain.treseta.tresetaHistory.TresetaHistoryViewModel
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.BriscolaService
@@ -30,8 +28,6 @@ val appModule = module {
     viewModelOf(::MainMenuViewModel)
 
     viewModelOf(::BriscolaGameViewModel)
-    viewModelOf(::BriscolaRoundEditViewModel)
-    viewModelOf(::BriscolaCalculatorViewModel)
     singleOf(::BriscolaService)
 
     viewModelOf(::TresetaGameViewModel)

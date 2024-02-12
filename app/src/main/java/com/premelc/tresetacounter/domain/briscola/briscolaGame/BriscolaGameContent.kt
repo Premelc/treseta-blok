@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -157,26 +159,76 @@ private fun IncreasePointsButtons(interaction: (BriscolaGameInteraction) -> Unit
             .padding(horizontal = 20.dp, vertical = 30.dp),
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        AddPointButton {
-            interaction(BriscolaGameInteraction.TapOnAddPointButton(Team.FIRST))
-        }
-        AddPointButton {
-            interaction(BriscolaGameInteraction.TapOnAddPointButton(Team.SECOND))
+        AddSubtractButtons(modifier = Modifier.padding(end = 4.dp), team = Team.FIRST, interaction = interaction)
+        AddSubtractButtons(modifier = Modifier.padding(start = 4.dp), team = Team.SECOND, interaction = interaction)
+    }
+}
+
+@Composable
+private fun RowScope.AddSubtractButtons(
+    modifier: Modifier = Modifier,
+    team: Team,
+    interaction: (BriscolaGameInteraction) -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .weight(1f)
+            .border(
+                width = 1.dp,
+                shape = CircleShape,
+                color = MaterialTheme.colors.primary
+            ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            IncreasePointButton {
+                interaction(BriscolaGameInteraction.TapOnAddPointButton(team))
+            }
+            DecreasePointButton {
+                interaction(BriscolaGameInteraction.TapOnSubtractPointButton(team))
+            }
         }
     }
 }
 
 @Composable
-private fun AddPointButton(onClick: () -> Unit) {
+private fun IncreasePointButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(80.dp),
+        modifier = modifier.size(80.dp),
         shape = CircleShape,
         border = BorderStroke(1.dp, MaterialTheme.colors.primary),
         contentPadding = PaddingValues(0.dp),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
+            modifier = Modifier.size(40.dp),
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+private fun DecreasePointButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.size(80.dp),
+        shape = CircleShape,
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.minus),
             modifier = Modifier.size(40.dp),
             contentDescription = null
         )
@@ -197,12 +249,12 @@ private fun CurrentSetResult(viewState: BriscolaGameViewState.GameReady) {
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
+                text = viewState.firstTeamCurrentSetScore.toString(),
                 style = Typography.h6,
                 textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
             )
             Text(
-                text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
+                text = viewState.secondTeamScore.toString(),
                 style = Typography.h6,
                 textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
             )
@@ -273,8 +325,8 @@ internal fun ColumnScope.PointsList(
                 alpha = 0.1f
             )
             BriscolaGrid(
-                firstTeamPoints = viewState.rounds.sumOf { it.firstTeamPoints },
-                secondTeamPoints = viewState.rounds.sumOf { it.secondTeamPoints },
+                firstTeamPoints = viewState.firstTeamCurrentSetScore,
+                secondTeamPoints = viewState.secondTeamCurrentSetScore,
             )
         }
     }
