@@ -42,7 +42,7 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
                     rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
                     firstTeamScore = game.firstTeamScore,
                     secondTeamScore = game.secondTeamScore,
-                    winningTeam = game.setList.first().roundsList.checkWinningTeam(),
+                    winningTeam = game.setList.firstOrNull()?.roundsList?.checkWinningTeam()?: Team.NONE,
                     showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() },
                     currentSetId = currentSetId.value,
                     showSetFinishedModal = setFinishedModal,
