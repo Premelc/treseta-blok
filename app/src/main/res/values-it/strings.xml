@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_title">Contatore Tresette</string>
+    <string name="app_title">Tresette contatore</string>
     <string name="game_history_title">Storia della partita</string>
     <string name="game_history_first_team_title">NOI</string>
     <string name="game_history_second_team_title">VOI</string>
@@ -9,7 +9,7 @@
     <string name="game_calculator_first_team_title">NOI</string>
     <string name="game_calculator_second_team_title">VOI</string>
     <string name="game_calculator_calls_title">L\'accusa</string>
-    <string name="game_calculator_calls_napola">Napoli</string>
+    <string name="game_calculator_calls_napola">Napolitana</string>
     <string name="game_calculator_calls_x3" translatable="false">x3</string>
     <string name="game_calculator_calls_x4" translatable="false">x4</string>
     <string name="game_calculator_delete_label">Elimina</string>
@@ -34,7 +34,7 @@
     <string name="edit_round_delete_dialog_button_positive">Elimina</string>
     <string name="edit_round_delete_dialog_button_negative">Annulla</string>
     <string name="edit_round_toolbar_title">Modifica round</string>
-    <string name="calls_napola">Napoli</string>
+    <string name="calls_napola">Napolitana</string>
     <string name="game_set_finished_modal_positive">Continua</string>
     <string name="game_set_finished_modal_text_first_team">Noi abbiamo vinto!</string>
     <string name="game_set_finished_modal_text_second_team">Loro hanno vinto!</string>

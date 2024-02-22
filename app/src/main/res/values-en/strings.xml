@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_title">Tressetta Counter</string>
+    <string name="app_title">Tressette Counter</string>
     <string name="game_history_title">Game History</string>
     <string name="game_history_first_team_title">US</string>
     <string name="game_history_second_team_title">THEM</string>
@@ -16,13 +16,13 @@
     <string name="game_calculator_save_label">Save</string>
     <string name="main_menu_continue_game_title">Continue previous game</string>
     <string name="main_menu_no_previous_games_label">No previous games\nStart a new game by pressing the button</string>
-    <string name="main_menu_treseta_tab_title">Tressetta</string>
+    <string name="main_menu_treseta_tab_title">Tressette</string>
     <string name="main_menu_briscola_tab_title">Briscola</string>
     <string name="main_menu_new_game_button">New game</string>
     <string name="main_menu_favourite_label">Favorites</string>
     <string name="main_menu_first_team_label">Us\u0020</string>
     <string name="main_menu_second_team_label">\u0020Them</string>
-    <string name="treseta_game_title">TRESSETTA</string>
+    <string name="treseta_game_title">TRESSETTE</string>
     <string name="briscola_game_title">BRISCOLA</string>
     <string name="game_add_new_round_button_label">Add new round</string>
     <string name="game_first_team_title">US</string>
