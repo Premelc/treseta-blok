@@ -213,11 +213,7 @@ private fun PastGameContent(
     navigate: () -> Unit,
 ) {
     Column {
-        Text(
-            text = stringResource(R.string.main_menu_continue_game_title),
-            style = Typography.h6,
-            modifier = Modifier.padding(bottom = 4.dp, start = 20.dp)
-        )
+        Text(text = stringResource(R.string.main_menu_continue_game_title), style = Typography.h6, modifier = Modifier.padding(bottom = 4.dp, start = 20.dp))
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
