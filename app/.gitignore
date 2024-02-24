@@ -12,3 +12,4 @@ local.properties
 gradleChecks.sh
 .idea/workspace.xml
 .idea/tasks.xml
+.github/keystore
