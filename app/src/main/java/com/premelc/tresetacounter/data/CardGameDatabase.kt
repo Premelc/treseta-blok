@@ -11,7 +11,8 @@ import androidx.room.RoomDatabase
         CallsEntity::class,
         BriscolaSetEntity::class,
     ],
-    version = 20
+    version = 20,
+    exportSchema = false,
 )
 abstract class CardGameDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
