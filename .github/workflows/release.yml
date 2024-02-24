@@ -1,4 +1,4 @@
-name: Deploy to Alpha
+name: Deploy to Internal track
 
 on:
   push:
@@ -16,6 +16,18 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 17
+
+      - name: Extract branch name
+        shell: bash
+        run: |
+          branch="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          branch_version="${branch##*/}"
+          echo "branch_version=$branch_version" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Test extracted
+        run: echo ${{ steps.extract_branch.outputs.branch_version }}
+
       - name: Build
         run: ./gradlew build
 
@@ -43,9 +55,9 @@ jobs:
       - name: Deploy to Alpha
         uses: r0adkll/upload-google-play@v1
         with:
-          releaseName: ${GITHUB_REF##*/}
+          releaseName: ${{ steps.extract_branch.outputs.branch_version }}
           serviceAccountJson: service_account.json
           packageName: com.premelc.tresetacounter
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: alpha
+          track: internal
           whatsNewDirectory: whatsnew/
