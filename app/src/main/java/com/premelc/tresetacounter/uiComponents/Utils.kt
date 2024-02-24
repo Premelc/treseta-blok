@@ -30,33 +30,42 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+internal const val DEFAULT_ANIMATION_DURATION = 500
+
 @Composable
 @ReadOnlyComposable
+@Suppress("MagicNumber")
 fun Long?.parseTimestamp(): String {
-    return if (this == null) " - "
-    else when (val difference = System.currentTimeMillis() - this) {
-        in Long.MIN_VALUE..60000 -> stringResource(R.string.timestamp_right_now)
-        in 60001..3600000 -> pluralStringResource(
-            R.plurals.timestamp_minutes_ago,
-            (difference / 60000).toInt(),
-            (difference / 60000).toInt()
-        )
-        in 3600001..14400000 -> pluralStringResource(
-            R.plurals.timestamp_hours_ago,
-            (difference / 3600000).toInt(),
-            (difference / 3600000).toInt()
-        )
-        in 14400001..Long.MAX_VALUE -> {
-            val milliseconds = this // Example milliseconds
+    return if (this == null) {
+        " - "
+    } else {
+        when (val difference = System.currentTimeMillis() - this) {
+            in Long.MIN_VALUE..60000 -> stringResource(R.string.timestamp_right_now)
+            in 60001..3600000 -> pluralStringResource(
+                R.plurals.timestamp_minutes_ago,
+                (difference / 60000).toInt(),
+                (difference / 60000).toInt()
+            )
 
-            val instant = Instant.ofEpochMilli(milliseconds)
-            val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+            in 3600001..14400000 -> pluralStringResource(
+                R.plurals.timestamp_hours_ago,
+                (difference / 3600000).toInt(),
+                (difference / 3600000).toInt()
+            )
 
-            val formatter = DateTimeFormatter.ofPattern("dd. MMMM yyyy. HH:mm", Locale.getDefault())
-            date.format(formatter)
+            in 14400001..Long.MAX_VALUE -> {
+                val milliseconds = this // Example milliseconds
+
+                val instant = Instant.ofEpochMilli(milliseconds)
+                val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+
+                val formatter =
+                    DateTimeFormatter.ofPattern("dd. MMMM yyyy. HH:mm", Locale.getDefault())
+                date.format(formatter)
+            }
+
+            else -> ""
         }
-
-        else -> ""
     }
 }
 

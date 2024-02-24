@@ -23,9 +23,10 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
 
     init {
         viewModelScope.launch {
-            tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>().collectLatest { game ->
-                checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
-            }
+            tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>()
+                .collectLatest { game ->
+                    checkIfSetIsOver(game.setList.firstOrNull()?.roundsList ?: emptyList())
+                }
         }
     }
 
@@ -42,7 +43,8 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
                     rounds = game.setList.firstOrNull()?.roundsList ?: emptyList(),
                     firstTeamScore = game.firstTeamScore,
                     secondTeamScore = game.secondTeamScore,
-                    winningTeam = game.setList.firstOrNull()?.roundsList?.checkWinningTeam()?: Team.NONE,
+                    winningTeam = game.setList.firstOrNull()?.roundsList?.checkWinningTeam()
+                        ?: Team.NONE,
                     showHistoryButton = game.setList.any { it.roundsList.isNotEmpty() },
                     currentSetId = currentSetId.value,
                     showSetFinishedModal = setFinishedModal,
@@ -70,19 +72,26 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
             is TresetaGameInteraction.TapOnRoundScore -> Unit
             TresetaGameInteraction.TapOnSetFinishedModalConfirm -> {
                 viewModelScope.launch {
-                    tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>().first().let { game ->
-                        val roundsList = game.setList.firstOrNull()?.roundsList ?: emptyList()
-                        tresetaService.updateCurrentGame(
-                            if (roundsList.sumOf { it.firstTeamPoints } > roundsList.sumOf { it.secondTeamPoints }) Team.FIRST
-                            else if (roundsList.sumOf { it.secondTeamPoints } > roundsList.sumOf { it.firstTeamPoints }) Team.SECOND
-                            else Team.NONE,
-                            game
-                        )
-                    }
+                    tresetaService.selectedGameFlow().filterIsInstance<TresetaGameState.GameReady>()
+                        .first().let { game ->
+                            val roundsList = game.setList.firstOrNull()?.roundsList ?: emptyList()
+                            tresetaService.updateCurrentGame(
+                                winningTeam = roundsList.getWinningTeam(),
+                                game = game,
+                            )
+                        }
                     setFinishedModalFlow.value = false
                 }
             }
         }
     }
 
+    private fun List<Round>.getWinningTeam() =
+        if (this.sumOf { it.firstTeamPoints } > this.sumOf { it.secondTeamPoints }) {
+            Team.FIRST
+        } else if (this.sumOf { it.secondTeamPoints } > this.sumOf { it.firstTeamPoints }) {
+            Team.SECOND
+        } else {
+            Team.NONE
+        }
 }

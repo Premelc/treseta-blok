@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -6,6 +7,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.devtools.ksp'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
+    id 'io.gitlab.arturbosch.detekt' version '1.23.3'
 }
 
 android {
@@ -51,6 +53,10 @@ android {
     }
 }
 
+detekt {
+    config = files("detekt.yml")
+}
+
 dependencies {
     implementation 'androidx.core:core-splashscreen:1.1.0-alpha02'
 
@@ -59,9 +65,9 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.8.2'
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
-    implementation 'androidx.compose.material:material:1.6.1'
+    implementation 'androidx.compose.material:material:1.6.2'
     implementation "androidx.navigation:navigation-compose:2.7.7"
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0-alpha01")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0-alpha02")
 
     //koin
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -87,4 +93,5 @@ dependencies {
     //Ads
     implementation 'com.google.android.gms:play-services-ads:22.6.0'
 
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
 }

@@ -13,4 +13,3 @@ class CallsEntity(
     @ColumnInfo(name = "team") val team: Team,
     @ColumnInfo(name = "call") val call: Call,
 )
-

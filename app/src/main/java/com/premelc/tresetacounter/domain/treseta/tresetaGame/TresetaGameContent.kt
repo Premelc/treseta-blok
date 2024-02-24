@@ -82,33 +82,7 @@ internal fun TresetaGameContent(
     ) {
         Column {
             PointListColumn(viewState, navigate)
-            Divider(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colors.onBackground
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
-                    style = Typography.h6,
-                    textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
-                )
-                Text(
-                    text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
-                    style = Typography.h6,
-                    textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
-                )
-            }
-            Divider(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colors.onBackground
-            )
+            CurrentScoreContent(viewState)
             Button(
                 modifier = Modifier
                     .padding(20.dp)
@@ -127,6 +101,39 @@ internal fun TresetaGameContent(
         SetFinishedDialog(
             winningTeam = viewState.winningTeam,
             onInteraction = onInteraction,
+        )
+    }
+}
+
+@Composable
+private fun CurrentScoreContent(viewState: TresetaGameViewState.GameReady) {
+    Column {
+        Divider(
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.onBackground
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = viewState.rounds.sumOf { it.firstTeamPoints }.toString(),
+                style = Typography.h6,
+                textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
+            )
+            Text(
+                text = viewState.rounds.sumOf { it.secondTeamPoints }.toString(),
+                style = Typography.h6,
+                textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
+            )
+        }
+        Divider(
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.onBackground
         )
     }
 }
@@ -189,43 +196,7 @@ internal fun ColumnScope.PointListColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = viewState.firstTeamScore.toString(), style = Typography.h6)
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = ":",
-                    style = Typography.h6
-                )
-                Text(text = viewState.secondTeamScore.toString(), style = Typography.h6)
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Text(
-                    text = stringResource(R.string.game_first_team_title),
-                    style = Typography.h6,
-                )
-                Text(
-                    text = stringResource(R.string.game_second_team_title),
-                    style = Typography.h6,
-                )
-            }
-            Divider(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                color = MaterialTheme.colors.onBackground
-            )
-        }
+        TotalScoreContent(viewState)
         if (viewState.rounds.isEmpty()) {
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
@@ -235,45 +206,94 @@ internal fun ColumnScope.PointListColumn(
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.7f)
             )
         } else {
-            Box(Modifier.weight(1f)) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    painter = painterResource(id = R.drawable.treseta_cards),
-                    contentDescription = null,
-                    alpha = 0.1f
-                )
-                LazyColumn {
-                    items(viewState.rounds) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigate(NavRoutes.TresetaRoundEdit.route.plus("/${it.id}"))
-                                },
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text(
-                                text = it.firstTeamPoints.toString(),
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                style = Typography.body1
-                            )
-                            Text(
-                                text = it.secondTeamPoints.toString(),
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                style = Typography.body1
-                            )
-                        }
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, bottom = 8.dp),
-                            color = Color.LightGray
-                        )
-                    }
-                }
-            }
+            RoundsListContent(viewState, navigate)
         }
         Spacer(Modifier)
+    }
+}
+
+@Composable
+private fun ColumnScope.RoundsListContent(
+    viewState: TresetaGameViewState.GameReady,
+    navigate: (String) -> Unit,
+) {
+    Box(Modifier.weight(1f)) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize(),
+            painter = painterResource(id = R.drawable.treseta_cards),
+            contentDescription = null,
+            alpha = 0.1f
+        )
+        LazyColumn {
+            items(viewState.rounds) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navigate(NavRoutes.TresetaRoundEdit.route.plus("/${it.id}"))
+                        },
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        text = it.firstTeamPoints.toString(),
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        style = Typography.body1
+                    )
+                    Text(
+                        text = it.secondTeamPoints.toString(),
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        style = Typography.body1
+                    )
+                }
+                Divider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, bottom = 8.dp),
+                    color = Color.LightGray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TotalScoreContent(viewState: TresetaGameViewState.GameReady) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(text = viewState.firstTeamScore.toString(), style = Typography.h6)
+            Text(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                text = ":",
+                style = Typography.h6
+            )
+            Text(text = viewState.secondTeamScore.toString(), style = Typography.h6)
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Text(
+                text = stringResource(R.string.game_first_team_title),
+                style = Typography.h6,
+            )
+            Text(
+                text = stringResource(R.string.game_second_team_title),
+                style = Typography.h6,
+            )
+        }
+        Divider(
+            modifier = Modifier
+                .padding(horizontal = 4.dp, vertical = 8.dp)
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.onBackground
+        )
     }
 }

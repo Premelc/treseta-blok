@@ -14,4 +14,3 @@ class RoundEntity(
     @ColumnInfo(name = "secondTeamPoints") val secondTeamPoints: Int,
     @ColumnInfo(name = "secondTeamPointsNoCalls") val secondTeamPointsNoCalls: Int,
 )
-

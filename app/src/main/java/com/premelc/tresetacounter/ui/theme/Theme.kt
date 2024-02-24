@@ -12,7 +12,7 @@ fun TresetaBlokTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
         lightColors
     }
 
-  return MaterialTheme(
+    return MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,

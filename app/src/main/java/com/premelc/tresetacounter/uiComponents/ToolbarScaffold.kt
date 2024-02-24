@@ -44,7 +44,7 @@ internal fun ToolbarScaffold(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
+                            .padding(12.dp)
                     ) {
                         Icon(
                             modifier = Modifier
@@ -110,7 +110,7 @@ internal fun FullActionToolbar(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                        .padding(12.dp),
                 ) {
                     leftAction()
                     title?.let {

@@ -49,6 +49,7 @@ import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.service.data.TresetaGameSet
 import com.premelc.tresetacounter.service.data.TresetaRound
+import com.premelc.tresetacounter.uiComponents.DEFAULT_ANIMATION_DURATION
 import com.premelc.tresetacounter.utils.Team
 
 @Composable
@@ -137,16 +138,18 @@ private fun GameHistoryContent(
                             onFinished = {
                                 scope.launch {
                                     val offset = listState.getItemViewportOffset(index)
-                                    if (offset != null) listState.animateScrollBy(
-                                        value = offset.toFloat(),
-                                        animationSpec = tween(500)
-                                    )
-                                    else listState.animateScrollToItem(index)
+                                    if (offset != null) {
+                                        listState.animateScrollBy(
+                                            value = offset.toFloat(),
+                                            animationSpec = tween(DEFAULT_ANIMATION_DURATION)
+                                        )
+                                    } else {
+                                        listState.animateScrollToItem(index)
+                                    }
                                 }
                             },
                             onClick = {
-                                expanded.value = if (expanded.value == index) null
-                                else index
+                                expanded.value = if (expanded.value == index) null else index
                             }
                         ) {
                             SetHistoryContent(set)
@@ -175,36 +178,7 @@ private fun SetHistoryContent(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = pointsAfterRoundFirstTeam.last().toString(),
-                    style = Typography.subtitle1,
-                    textDecoration = if (pointsAfterRoundFirstTeam.last() > pointsAfterRoundSecondTeam.last()) {
-                        TextDecoration.Underline
-                    } else {
-                        TextDecoration.None
-                    }
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    text = ":",
-                    style = Typography.subtitle1
-                )
-                Text(
-                    text = pointsAfterRoundSecondTeam.last().toString(),
-                    style = Typography.subtitle1,
-                    textDecoration = if (pointsAfterRoundSecondTeam.last() > pointsAfterRoundFirstTeam.last()) {
-                        TextDecoration.Underline
-                    } else {
-                        TextDecoration.None
-                    }
-                )
-            }
+            TotalSetResultContent(pointsAfterRoundFirstTeam, pointsAfterRoundSecondTeam)
             Graph(
                 modifier = Modifier.height(250.dp),
                 xValues = (0..set.roundsList.size.coerceAtLeast(6) + 1).toList(),
@@ -226,65 +200,121 @@ private fun SetHistoryContent(
                 color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
             )
             set.roundsList.forEachIndexed { index, round: Round ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = CenterVertically
-                ) {
-                    if (round is TresetaRound) {
-                        CallsList(horizontalArrangement = Arrangement.End, calls = round.firstTeamCalls)
-                    }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .wrapContentWidth()
-                            .padding(16.dp),
-                        horizontalAlignment = CenterHorizontally,
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(bottom = 8.dp),
-                            text = stringResource(
-                                R.string.treseta_score,
-                                pointsAfterRoundFirstTeam[index + 1],
-                                pointsAfterRoundSecondTeam[index + 1]
-                            ),
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 8.sp,
-                                fontStyle = FontStyle.Italic,
-                                letterSpacing = 0.25.sp,
-                            ),
-                        )
-                        Text(
-                            text = stringResource(
-                                R.string.treseta_score,
-                                round.firstTeamPoints,
-                                round.secondTeamPoints
-                            ),
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 16.sp,
-                            ),
-                            maxLines = 1,
-                        )
-                    }
-                    if (round is TresetaRound) {
-                        CallsList(
-                            horizontalArrangement = Arrangement.Start,
-                            calls = round.secondTeamCalls
-                        )
-                    }
-                }
-                Divider(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .fillMaxWidth(), color = Color.LightGray
+                RoundInHistoryContent(
+                    round,
+                    index,
+                    pointsAfterRoundFirstTeam,
+                    pointsAfterRoundSecondTeam
                 )
             }
         }
     }
+}
+
+@Composable
+private fun TotalSetResultContent(
+    pointsAfterRoundFirstTeam: List<Int>,
+    pointsAfterRoundSecondTeam: List<Int>
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = pointsAfterRoundFirstTeam.last().toString(),
+            style = Typography.subtitle1,
+            textDecoration = if (pointsAfterRoundFirstTeam.last() > pointsAfterRoundSecondTeam.last()) {
+                TextDecoration.Underline
+            } else {
+                TextDecoration.None
+            }
+        )
+        Text(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            text = ":",
+            style = Typography.subtitle1
+        )
+        Text(
+            text = pointsAfterRoundSecondTeam.last().toString(),
+            style = Typography.subtitle1,
+            textDecoration = if (pointsAfterRoundSecondTeam.last() > pointsAfterRoundFirstTeam.last()) {
+                TextDecoration.Underline
+            } else {
+                TextDecoration.None
+            }
+        )
+    }
+}
+
+@Composable
+private fun RoundInHistoryContent(
+    round: Round,
+    index: Int,
+    pointsAfterRoundFirstTeam: List<Int>,
+    pointsAfterRoundSecondTeam: List<Int>
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = CenterVertically
+    ) {
+        if (round is TresetaRound) {
+            CallsList(
+                horizontalArrangement = Arrangement.End,
+                calls = round.firstTeamCalls
+            )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .wrapContentWidth()
+                .padding(16.dp),
+            horizontalAlignment = CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 8.dp),
+                text = stringResource(
+                    R.string.treseta_score,
+                    pointsAfterRoundFirstTeam[index + 1],
+                    pointsAfterRoundSecondTeam[index + 1]
+                ),
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 8.sp,
+                    fontStyle = FontStyle.Italic,
+                    letterSpacing = 0.25.sp,
+                ),
+            )
+            Text(
+                text = stringResource(
+                    R.string.treseta_score,
+                    round.firstTeamPoints,
+                    round.secondTeamPoints
+                ),
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                ),
+                maxLines = 1,
+            )
+        }
+        if (round is TresetaRound) {
+            CallsList(
+                horizontalArrangement = Arrangement.Start,
+                calls = round.secondTeamCalls
+            )
+        }
+    }
+    Divider(
+        modifier = Modifier
+            .height(1.dp)
+            .fillMaxWidth(),
+        color = Color.LightGray
+    )
 }
 
 private fun TresetaGameSet.getTeamTotalPointsPerRound(team: Team): List<Int> {

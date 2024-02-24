@@ -51,7 +51,7 @@ fun CallsPill(
                 },
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     letterSpacing = 0.25.sp,
                 )
             )
@@ -93,7 +93,7 @@ fun RemovableCallsPill(
                 },
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     letterSpacing = 0.25.sp,
                 )
             )

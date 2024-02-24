@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.ui.theme.ColorPalette
 
+@Suppress("MagicNumber")
 @Composable
 internal fun BuiltInNumPad(
     isSaveButtonEnabled: Boolean,
@@ -34,49 +35,61 @@ internal fun BuiltInNumPad(
         Row {
             NumberField(
                 text = "7",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(7)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(7)) }
+            )
             NumberField(
                 text = "8",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(8)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(8)) }
+            )
             NumberField(
                 text = "9",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(9)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(9)) }
+            )
         }
         Row {
             NumberField(
                 text = "4",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(4)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(4)) }
+            )
             NumberField(
                 text = "5",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(5)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(5)) }
+            )
             NumberField(
                 text = "6",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(6)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(6)) }
+            )
         }
         Row {
             NumberField(
                 text = "1",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(1)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(1)) }
+            )
             NumberField(
                 text = "2",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(2)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(2)) }
+            )
             NumberField(
                 text = "3",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(3)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(3)) }
+            )
         }
         Row {
             NumberField(
                 text = stringResource(R.string.game_calculator_delete_label),
                 backgroundColor = ColorPalette.richRed,
-                onClick = { onInteraction(NumPadInteraction.TapOnDeleteButton) })
+                onClick = { onInteraction(NumPadInteraction.TapOnDeleteButton) }
+            )
             NumberField(
                 text = "0",
-                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(0)) })
+                onClick = { onInteraction(NumPadInteraction.TapOnNumberButton(0)) }
+            )
             NumberField(
                 text = stringResource(R.string.game_calculator_save_label),
                 backgroundColor = if (isSaveButtonEnabled) ColorPalette.coolGreen else ColorPalette.neutralGray,
                 isEnabled = isSaveButtonEnabled,
-                onClick = { onInteraction(NumPadInteraction.TapOnSaveButton) })
+                onClick = { onInteraction(NumPadInteraction.TapOnSaveButton) }
+            )
         }
     }
 }
