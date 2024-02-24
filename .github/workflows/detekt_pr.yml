@@ -8,14 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Grant execute permission to gradlew script
-      run: chmod +x /home/runner/work/treseta-blok/treseta-blok/gradlew
-      shell: bash
-    
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Run detekt
-      uses: gradle/gradle-build-action@v2
+      uses: ./gradlew/gradle-build-action@v2
       with:
         arguments: detekt 
