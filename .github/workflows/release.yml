@@ -43,8 +43,10 @@ jobs:
       - name: Deploy to Alpha
         uses: r0adkll/upload-google-play@v1
         with:
+          releaseName: ${GITHUB_REF##*/}
           serviceAccountJson: service_account.json
           packageName: com.premelc.tresetacounter
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          changesNotSentForReview: true
           track: alpha
           whatsNewDirectory: whatsnew/
