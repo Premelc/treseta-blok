@@ -320,7 +320,7 @@ private fun RoundInHistoryContent(
 private fun TresetaGameSet.getTeamTotalPointsPerRound(team: Team): List<Int> {
     var totalPoints = 0
     val list = mutableListOf(totalPoints)
-    this@getTeamTotalPointsPerRound.roundsList.forEachIndexed { index, round ->
+    this@getTeamTotalPointsPerRound.roundsList.forEach { round ->
         totalPoints += if (team == Team.FIRST) round.firstTeamPoints else round.secondTeamPoints
         list.add(totalPoints)
     }
