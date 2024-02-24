@@ -1,4 +1,4 @@
-package com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator
+package com.premelc.tresetacounter.domain.treseta.tresetaCalculator
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,11 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction
 import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction.TapOnCallButton
 import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction.TapOnTeamCard
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorViewModel
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorViewState
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
 import com.premelc.tresetacounter.uiComponents.Calls
 import com.premelc.tresetacounter.uiComponents.NumPadInteraction

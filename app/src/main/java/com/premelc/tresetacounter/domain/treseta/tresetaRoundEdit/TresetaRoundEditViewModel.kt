@@ -18,6 +18,10 @@ import kotlinx.coroutines.launch
 
 private const val MAX_POINT_DIGITS = 2
 
+private const val MAX_NAPOLITANA_COUNT = 4
+private const val MAX_MULTIPLES_CALL_COUNT = 3
+private const val ROUND_MAX_POINTS = 11
+
 class TresetaRoundEditViewModel(
     private val roundId: Int,
     private val tresetaService: TresetaService,
@@ -49,7 +53,7 @@ class TresetaRoundEditViewModel(
         secondTeamCallsFlow,
         deleteRoundDialogFlow,
         showCallsSnackarFlow,
-    ) { selection, firstTeamPoints, secondTeamPoints, firstTeamCalls, secondTeamCalls, showDeleteRoundDialog, showCallsSnackbar ->
+    ) { selection, firstPoints, secondPoints, firstCalls, secondCalls, deleteRoundDialog, callsSnackbar ->
         RoundEditViewState(
             oldRoundData = TresetaRoundData(
                 firstTeamScore = oldRoundData.await().firstTeamPointsNoCalls,
@@ -58,15 +62,15 @@ class TresetaRoundEditViewModel(
                 secondTeamCalls = oldRoundData.await().secondTeamCalls,
             ),
             newRoundData = TresetaRoundData(
-                firstTeamScore = firstTeamPoints,
-                firstTeamCalls = firstTeamCalls,
-                secondTeamScore = secondTeamPoints,
-                secondTeamCalls = secondTeamCalls,
+                firstTeamScore = firstPoints,
+                firstTeamCalls = firstCalls,
+                secondTeamScore = secondPoints,
+                secondTeamCalls = secondCalls,
             ),
             selectedTeam = selection,
-            isSaveButtonEnabled = firstTeamPoints > 0 || secondTeamPoints > 0,
-            showDeleteRoundDialog = showDeleteRoundDialog,
-            showCallsSnackbar = showCallsSnackbar,
+            isSaveButtonEnabled = firstPoints > 0 || secondPoints > 0,
+            showDeleteRoundDialog = deleteRoundDialog,
+            showCallsSnackbar = callsSnackbar,
         )
     }.stateIn(
         viewModelScope,
@@ -108,6 +112,7 @@ class TresetaRoundEditViewModel(
                     navController.popBackStack()
                 }
             }
+
             TresetaRoundEditInteraction.DismissCallsSnackbar -> showCallsSnackarFlow.value = false
         }
     }
@@ -164,13 +169,13 @@ class TresetaRoundEditViewModel(
             Team.FIRST -> {
                 firstTeamPointsFlow.value =
                     (firstTeamPointsFlow.value.toString() + input.toString()).parseTeamPoints()
-                secondTeamPointsFlow.value = 11 - firstTeamPointsFlow.value
+                secondTeamPointsFlow.value = ROUND_MAX_POINTS - firstTeamPointsFlow.value
             }
 
             Team.SECOND -> {
                 secondTeamPointsFlow.value =
                     (secondTeamPointsFlow.value.toString() + input.toString()).parseTeamPoints()
-                firstTeamPointsFlow.value = 11 - secondTeamPointsFlow.value
+                firstTeamPointsFlow.value = ROUND_MAX_POINTS - secondTeamPointsFlow.value
             }
 
             Team.NONE -> Unit
@@ -180,8 +185,13 @@ class TresetaRoundEditViewModel(
     private fun checkIfMaxCallsReached(call: Call): Boolean {
         val totalCalls = firstTeamCallsFlow.value + secondTeamCallsFlow.value
         return when (call) {
-            Call.NAPOLITANA -> totalCalls.count { it == Call.NAPOLITANA } < 4
-            Call.X3, Call.X4 -> totalCalls.count { it == Call.X3 } + totalCalls.count { it == Call.X4 } < 3
+            Call.NAPOLITANA -> {
+                totalCalls.count { it == Call.NAPOLITANA } < MAX_NAPOLITANA_COUNT
+            }
+
+            Call.X3, Call.X4 -> {
+                totalCalls.count { it == Call.X3 } + totalCalls.count { it == Call.X4 } < MAX_MULTIPLES_CALL_COUNT
+            }
         }
     }
 
@@ -193,5 +203,5 @@ class TresetaRoundEditViewModel(
 
     private fun String.parseTeamPoints() =
         this.filter { it.isDigit() }.take(MAX_POINT_DIGITS).removePrefix("0").toInt()
-            .coerceAtMost(11)
+            .coerceAtMost(ROUND_MAX_POINTS)
 }

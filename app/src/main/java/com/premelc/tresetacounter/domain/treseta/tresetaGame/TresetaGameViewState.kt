@@ -3,7 +3,6 @@ package com.premelc.tresetacounter.domain.treseta.tresetaGame
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
 
-
 internal sealed interface TresetaGameViewState {
     data class GameReady(
         val gameId: Int = 0,

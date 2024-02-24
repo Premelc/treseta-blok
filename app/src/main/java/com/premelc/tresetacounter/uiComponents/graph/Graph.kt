@@ -16,9 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +30,7 @@ private val paddingSpace = 16.dp
 private const val VERTICAL_STEP = 5f
 
 @Composable
+@Suppress("MagicNumber", "CyclomaticComplexMethod")
 fun Graph(
     modifier: Modifier,
     xValues: List<Int>,
@@ -98,11 +102,15 @@ fun Graph(
                 )
             }
 
-            //this is done to draw the current winning team points over the losing team
-            val points = if (firstTeamPoints.sum() >= secondTeamPoints.sum()) Pair(
-                firstTeamPoints,
-                secondTeamPoints
-            ) else Pair(secondTeamPoints, firstTeamPoints)
+            // this is done to draw the current winning team points over the losing team
+            val points = if (firstTeamPoints.sum() >= secondTeamPoints.sum()) {
+                Pair(
+                    firstTeamPoints,
+                    secondTeamPoints
+                )
+            } else {
+                Pair(secondTeamPoints, firstTeamPoints)
+            }
 
             val firstTeamCoordinates = mutableListOf<PointF>()
             val secondTeamCoordinates = mutableListOf<PointF>()

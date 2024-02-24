@@ -24,11 +24,12 @@ class BriscolaGameViewModel(
 
     init {
         viewModelScope.launch {
-            briscolaService.selectedGameFlow().filterIsInstance<BriscolaGameState.GameReady>().collectLatest { game ->
-                game.setList.firstOrNull()?.let {
-                    checkIfSetIsOver(it)
+            briscolaService.selectedGameFlow().filterIsInstance<BriscolaGameState.GameReady>()
+                .collectLatest { game ->
+                    game.setList.firstOrNull()?.let {
+                        checkIfSetIsOver(it)
+                    }
                 }
-            }
         }
     }
 
@@ -75,25 +76,33 @@ class BriscolaGameViewModel(
 
             BriscolaGameInteraction.TapOnSetFinishedModalConfirm -> {
                 viewModelScope.launch {
-                    briscolaService.selectedGameFlow().filterIsInstance<BriscolaGameState.GameReady>().first().let { game ->
-                        game.setList.firstOrNull()?.let {
-                            briscolaService.updateCurrentGame(
-                                winningTeam = checkWinningTeam(it),
-                                game = game
-                            )
+                    briscolaService.selectedGameFlow()
+                        .filterIsInstance<BriscolaGameState.GameReady>().first().let { game ->
+                            game.setList.firstOrNull()?.let {
+                                briscolaService.updateCurrentGame(
+                                    winningTeam = checkWinningTeam(it),
+                                    game = game
+                                )
+                            }
                         }
-                    }
                     setFinishedModalFlow.value = false
                 }
             }
+
             is BriscolaGameInteraction.TapOnSubtractPointButton -> {
                 viewModelScope.launch {
                     briscolaService.removePointFromTeam(currentSetId.value, interaction.team)
                 }
             }
+
             BriscolaGameInteraction.TapOnMenuButton -> Unit
         }
     }
 
-    private fun checkWinningTeam(set: BriscolaGameSet) = if (set.firstTeamPoints > set.secondTeamPoints) Team.FIRST else Team.SECOND
+    private fun checkWinningTeam(set: BriscolaGameSet) =
+        if (set.firstTeamPoints > set.secondTeamPoints) {
+            Team.FIRST
+        } else {
+            Team.SECOND
+        }
 }

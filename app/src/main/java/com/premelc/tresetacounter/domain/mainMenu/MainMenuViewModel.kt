@@ -46,7 +46,6 @@ class MainMenuViewModel(
                         GameType.TRESETA -> tresetaService.deleteGame(interaction.gameId)
                         GameType.BRISCOLA -> briscolaService.deleteGame(interaction.gameId)
                     }
-
                 }
             }
 
@@ -63,9 +62,7 @@ class MainMenuViewModel(
                         GameType.TRESETA -> tresetaService.toggleGameFavoriteState(interaction.gameId)
                         GameType.BRISCOLA -> briscolaService.toggleGameFavoriteState(interaction.gameId)
                     }
-
                 }
-
         }
     }
 }

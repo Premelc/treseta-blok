@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameScreen
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuScreen
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.gameCalculator.TresetaGameCalculatorScreen
+import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaGameCalculatorScreen
 import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameScreen
 import com.premelc.tresetacounter.domain.treseta.tresetaHistory.TresetaGameHistoryScreen
 import com.premelc.tresetacounter.domain.treseta.tresetaRoundEdit.TresetaRoundEditScreen

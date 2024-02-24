@@ -22,30 +22,30 @@ fun NavGraphBuilder.composableWrapper(
         route = route,
         arguments = arguments,
         deepLinks = deepLinks,
-//        enterTransition = {
-//            slideIntoContainer(
-//                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-//                animationSpec = tween(TRANSITION_DURATION)
-//            )
-//        },
-//        exitTransition = {
-//            slideOutOfContainer(
-//                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
-//                animationSpec = tween(TRANSITION_DURATION)
-//            )
-//        },
-//        popEnterTransition = {
-//            slideIntoContainer(
-//                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-//                animationSpec = tween(TRANSITION_DURATION)
-//            )
-//        },
-//        popExitTransition = {
-//            slideOutOfContainer(
-//                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
-//                animationSpec = tween(TRANSITION_DURATION)
-//            )
-//        },
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                animationSpec = tween(TRANSITION_DURATION)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Left,
+                animationSpec = tween(TRANSITION_DURATION)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(TRANSITION_DURATION)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Companion.Right,
+                animationSpec = tween(TRANSITION_DURATION)
+            )
+        },
     ) {
         content(it)
     }

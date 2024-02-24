@@ -43,7 +43,6 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.domain.treseta.tresetaCalculator.TresetaCalculatorInteraction
 import com.premelc.tresetacounter.uiComponents.BuiltInNumPad
 import com.premelc.tresetacounter.uiComponents.Calls
 import com.premelc.tresetacounter.uiComponents.CallsList
@@ -56,6 +55,8 @@ import com.premelc.tresetacounter.utils.Team
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val ROTATION_DEGREES = 90f
 
 @Composable
 internal fun TresetaRoundEditScreen(
@@ -114,13 +115,13 @@ private fun RoundEditContent(
             ) {
                 Icon(
                     modifier = Modifier
-                        .rotate(90F),
+                        .rotate(ROTATION_DEGREES),
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null
                 )
                 Icon(
                     modifier = Modifier
-                        .rotate(90F),
+                        .rotate(ROTATION_DEGREES),
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null
                 )

@@ -2,7 +2,6 @@ package com.premelc.tresetacounter.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
 @Database(
     entities = [
@@ -14,7 +13,6 @@ import androidx.room.TypeConverters
     ],
     version = 20
 )
-
 abstract class CardGameDatabase : RoomDatabase() {
     abstract fun gameDao(): GameDao
     abstract fun roundDao(): RoundDao

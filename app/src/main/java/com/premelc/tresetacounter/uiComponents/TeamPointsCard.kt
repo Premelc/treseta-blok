@@ -32,7 +32,6 @@ import com.premelc.tresetacounter.ui.theme.ColorPalette
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.utils.Call
 
-
 @Composable
 fun RowScope.TeamPointCard(
     team: String,

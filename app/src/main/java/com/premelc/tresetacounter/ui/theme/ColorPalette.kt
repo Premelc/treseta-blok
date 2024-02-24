@@ -2,6 +2,7 @@ package com.premelc.tresetacounter.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+@Suppress("MagicNumber")
 object ColorPalette {
     val deepBlue = Color(0xFF334257)
     val slateBlue = Color(0xFF476072)

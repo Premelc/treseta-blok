@@ -1,6 +1,5 @@
 package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
-import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.utils.Team
 
 internal sealed interface BriscolaGameViewState {

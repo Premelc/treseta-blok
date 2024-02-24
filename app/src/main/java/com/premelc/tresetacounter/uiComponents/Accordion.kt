@@ -24,14 +24,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -56,12 +52,12 @@ fun Accordion(
         )
         AnimatedVisibility(
             visible = isExpanded,
-            enter = fadeIn(animationSpec = tween(500)) + expandVertically(
-                animationSpec = tween(500)
+            enter = fadeIn(animationSpec = tween(DEFAULT_ANIMATION_DURATION)) + expandVertically(
+                animationSpec = tween(DEFAULT_ANIMATION_DURATION)
             ),
-            exit = fadeOut(animationSpec = tween(500)) + shrinkVertically(
+            exit = fadeOut(animationSpec = tween(DEFAULT_ANIMATION_DURATION)) + shrinkVertically(
                 animationSpec = tween(
-                    500
+                    DEFAULT_ANIMATION_DURATION
                 )
             ),
         ) {
@@ -79,7 +75,7 @@ private fun AccordionHeader(
 ) {
     val rotation = animateFloatAsState(
         targetValue = if (expansionState) 0f else 180f,
-        animationSpec = tween(500),
+        animationSpec = tween(DEFAULT_ANIMATION_DURATION),
         finishedListener = {
             onFinished()
         },
@@ -110,16 +106,4 @@ private fun AccordionHeader(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun AccordionPreview() {
-    Accordion(
-        title = "testTitle",
-        rowContent = {},
-        onClick = {},
-        isExpanded = false,
-        onFinished = {},
-    )
 }
