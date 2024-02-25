@@ -15,16 +15,16 @@ object AdsHelper {
         val adRequest =
             RequestConfiguration.Builder().setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR))
         if (BuildConfig.DEBUG) {
-            val deviceId = MD5(getDeviceId(context))
+            val deviceId = md5(getDeviceId(context))
             if (!TextUtils.isEmpty(deviceId)) {
                 val id = deviceId!!.uppercase(Locale.getDefault())
                 Log.i("premoDebug", "id: $id")
-                adRequest.setTestDeviceIds(listOf(id,AdRequest.DEVICE_ID_EMULATOR)).build()
+                adRequest.setTestDeviceIds(listOf(id, AdRequest.DEVICE_ID_EMULATOR)).build()
             }
         }
     }
 
-    private fun MD5(md5: String): String? {
+    private fun md5(md5: String): String? {
         if (TextUtils.isEmpty(md5)) return null
         try {
             val md = MessageDigest.getInstance("MD5")
@@ -41,10 +41,6 @@ object AdsHelper {
     }
 
     private fun getDeviceId(context: Context): String {
-        return try {
-            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
-        } catch (e: Exception) {
-            ""
-        }
+        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
     }
 }
