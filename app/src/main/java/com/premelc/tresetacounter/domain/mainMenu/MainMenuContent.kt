@@ -2,6 +2,7 @@ package com.premelc.tresetacounter.domain.mainMenu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.data.GameEntity
 import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.Typography
+import com.premelc.tresetacounter.uiComponents.LanguageDropDownMenu
 import com.premelc.tresetacounter.uiComponents.PastGameCard
 import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.utils.GameType
@@ -52,31 +54,39 @@ private fun MainMenuContent(
     onInteraction: (MainMenuInteraction) -> Unit,
     navigate: (String) -> Unit,
 ) {
-    var tabIndex by remember { mutableStateOf(0) }
+    var tabIndex by remember { mutableIntStateOf(0) }
     ToolbarScaffold {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .padding(top = 20.dp)
-                    .weight(1f),
+                Modifier.weight(1f)
             ) {
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(250.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Image(
+                    Box(contentAlignment = Alignment.TopEnd) {
+                        Column(
                             modifier = Modifier
+                                .padding(top = 20.dp)
                                 .fillMaxWidth()
-                                .height(350.dp),
-                            painter = painterResource(id = R.drawable.treseta_cards),
-                            contentDescription = null,
+                                .height(250.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(350.dp),
+                                painter = painterResource(R.drawable.treseta_cards),
+                                contentDescription = null,
+                            )
+                        }
+                        LanguageDropDownMenu(
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .align(Alignment.TopEnd),
+                            selectedLanguage = viewState.selectedLanguage,
+                            onInteraction = onInteraction,
                         )
                     }
                 }

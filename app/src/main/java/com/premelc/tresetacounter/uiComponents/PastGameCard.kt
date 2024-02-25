@@ -95,7 +95,7 @@ private fun PastGameCardContent(game: GameEntity, onInteraction: (MainMenuIntera
         ) {
             if (game.timestamp != null) {
                 Text(
-                    modifier = Modifier.padding(vertical = 6.dp),
+                    modifier = Modifier.padding(bottom = 6.dp),
                     text = stringResource(
                         R.string.last_game_timestamp,
                         game.timestamp.parseTimestamp()

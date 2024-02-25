@@ -69,28 +69,6 @@ internal fun ToolbarScaffold(
 }
 
 @Composable
-internal fun NoActionToolbar(
-    content: @Composable () -> Unit,
-) {
-    Scaffold(
-        modifier = Modifier
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .windowInsetsPadding(WindowInsets.navigationBars),
-        topBar = {
-            BannerAd()
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
 internal fun FullActionToolbar(
     leftAction: @Composable () -> Unit,
     rightAction: @Composable () -> Unit,
