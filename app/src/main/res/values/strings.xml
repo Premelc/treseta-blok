@@ -1,56 +1,52 @@
 <resources>
-    <string name="app_title">Treseta brojac</string>
-    <string name="game_history_title">Povijest igre</string>
-    <string name="game_history_first_team_title">MI</string>
-    <string name="game_history_second_team_title">VI</string>
+    <string name="app_title">Tressette &amp; Briscola counter</string>
+    <string name="game_history_title">Game History</string>
+    <string name="game_history_first_team_title">US</string>
+    <string name="game_history_second_team_title">THEM</string>
     <string name="treseta_score" translatable="false">%1$d : %2$d</string>
-    <string name="game_history_set_number">%1$d. set</string>
-    <string name="last_game_timestamp">Zadnja partija: %1$s</string>
-    <string name="game_calculator_first_team_title">MI</string>
-    <string name="game_calculator_second_team_title">VI</string>
-    <string name="game_calculator_calls_title">Akužavanje</string>
-    <string name="game_calculator_calls_napola">Napola</string>
+    <string name="game_history_set_number">Set %1$d</string>
+    <string name="last_game_timestamp">Last game: %1$s</string>
+    <string name="game_calculator_first_team_title">US</string>
+    <string name="game_calculator_second_team_title">THEM</string>
+    <string name="game_calculator_calls_title">Calls</string>
+    <string name="game_calculator_calls_napola">Napolitana</string>
     <string name="game_calculator_calls_x3" translatable="false">x3</string>
     <string name="game_calculator_calls_x4" translatable="false">x4</string>
-    <string name="game_calculator_delete_label">Obriši</string>
-    <string name="game_calculator_save_label">Spremi</string>
-    <string name="main_menu_continue_game_title">Nastavi prijašnju igru</string>
-    <string name="main_menu_no_previous_games_label">Nemate prijašnjih igara \n Započni novu igru pritiskom na tipku</string>
-    <string name="main_menu_treseta_tab_title">Treseta</string>
-    <string name="main_menu_briscola_tab_title">Briškula</string>
-    <string name="main_menu_new_game_button">Nova igra</string>
-    <string name="main_menu_favourite_label">Favoriti</string>
-    <string name="main_menu_first_team_label">Mi\u0020</string>
-    <string name="main_menu_second_team_label">\u0020Vi</string>
-    <string name="treseta_game_title">TREŠETA</string>
-    <string name="briscola_game_title">BRIŠKULA</string>
-    <string name="game_add_new_round_button_label">Dodaj novu partiju</string>
-    <string name="game_first_team_title">MI</string>
-    <string name="game_second_team_title">VI</string>
-    <string name="game_no_rounds_yet_label">"Nije odigrana nijedna partija, pritisnite gumb za dodavanje partije"</string>
-    <string name="calls_napola">Napola</string>
-    <string name="calls_x3" translatable="false">X3</string>
-    <string name="calls_x4" translatable="false">X4</string>
-    <string name="edit_round_delete_dialog_title">Želite li zaista obrisati rundu?</string>
-    <string name="edit_round_delete_dialog_button_positive">Obriši</string>
-    <string name="edit_round_delete_dialog_button_negative">Odustani</string>
-    <string name="edit_round_toolbar_title">Uredi rundu</string>
-    <string name="game_set_finished_modal_positive">Nastavi</string>
-    <string name="game_set_finished_modal_text_first_team">Mi smo pobjedili!</string>
-    <string name="game_set_finished_modal_text_second_team">Vi ste pobjedili!</string>
-    <string name="timestamp_right_now">Upravo</string>
-    <string name="treseta_calls_snackbar">Maksimalan broj odabranih akužanja dostignut</string>
-    <string name="treseta_calls_snackbar_action">Uredu</string>
+    <string name="game_calculator_delete_label">Delete</string>
+    <string name="game_calculator_save_label">Save</string>
+    <string name="main_menu_continue_game_title">Continue previous game</string>
+    <string name="main_menu_no_previous_games_label">No previous games\nStart a new game by pressing the button</string>
+    <string name="main_menu_treseta_tab_title">Tressette</string>
+    <string name="main_menu_briscola_tab_title">Briscola</string>
+    <string name="main_menu_new_game_button">New game</string>
+    <string name="main_menu_favourite_label">Favorites</string>
+    <string name="main_menu_first_team_label">Us\u0020</string>
+    <string name="main_menu_second_team_label">\u0020Them</string>
+    <string name="treseta_game_title">TRESSETTE</string>
+    <string name="briscola_game_title">BRISCOLA</string>
+    <string name="game_add_new_round_button_label">Add new round</string>
+    <string name="game_first_team_title">US</string>
+    <string name="game_second_team_title">THEM</string>
+    <string name="game_no_rounds_yet_label">"No rounds played yet, press the button to add a round"</string>
+    <string name="calls_x3" translatable="false">x3</string>
+    <string name="calls_x4" translatable="false">x4</string>
+    <string name="edit_round_delete_dialog_title">Do you really want to delete the round?</string>
+    <string name="edit_round_delete_dialog_button_positive">Delete</string>
+    <string name="edit_round_delete_dialog_button_negative">Cancel</string>
+    <string name="edit_round_toolbar_title">Edit round</string>
+    <string name="calls_napola">Napolitana</string>
+    <string name="game_set_finished_modal_positive">Continue</string>
+    <string name="game_set_finished_modal_text_first_team">We have won!</string>
+    <string name="game_set_finished_modal_text_second_team">They have won!</string>
+    <string name="timestamp_right_now">Just now</string>
+    <string name="treseta_calls_snackbar">Max number of selected calls has been reached.</string>
+    <string name="treseta_calls_snackbar_action">OK</string>
     <plurals name="timestamp_minutes_ago">
-        <item quantity="one">Prije jedne minute</item>
-        <item quantity="few">Prije %1$d minute</item>
-        <item quantity="many">Prije %1$d minuta</item>
-        <item quantity="other">Prije %1$d minuta</item>
+        <item quantity="one">a minute ago</item>
+        <item quantity="other">%1$d minutes ago</item>
     </plurals>
     <plurals name="timestamp_hours_ago">
-        <item quantity="one">Prije jedan sat</item>
-        <item quantity="few">Prije %1$d sata</item>
-        <item quantity="many">Prije %1$d sati</item>
-        <item quantity="other">Prije %1$d sati</item>
+        <item quantity="one">An hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
     </plurals>
 </resources>

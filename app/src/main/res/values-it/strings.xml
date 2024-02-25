@@ -1,17 +1,14 @@
 <resources>
-    <string name="app_title">Tresette contatore</string>
+    <string name="app_title">Tressette &amp; Briscola contatore</string>
     <string name="game_history_title">Storia della partita</string>
     <string name="game_history_first_team_title">NOI</string>
     <string name="game_history_second_team_title">VOI</string>
-    <string name="treseta_score" translatable="false">%1$d : %2$d</string>
     <string name="game_history_set_number">Set %1$d</string>
     <string name="last_game_timestamp">Ultima partita: %1$s</string>
     <string name="game_calculator_first_team_title">NOI</string>
     <string name="game_calculator_second_team_title">VOI</string>
     <string name="game_calculator_calls_title">L\'accusa</string>
     <string name="game_calculator_calls_napola">Napolitana</string>
-    <string name="game_calculator_calls_x3" translatable="false">x3</string>
-    <string name="game_calculator_calls_x4" translatable="false">x4</string>
     <string name="game_calculator_delete_label">Elimina</string>
     <string name="game_calculator_save_label">Salva</string>
     <string name="main_menu_continue_game_title">Continua partita precedente</string>
@@ -28,8 +25,6 @@
     <string name="game_first_team_title">NOI</string>
     <string name="game_second_team_title">VOI</string>
     <string name="game_no_rounds_yet_label">"Nessun round giocato ancora, premi il pulsante per aggiungere un round"</string>
-    <string name="calls_x3" translatable="false">x3</string>
-    <string name="calls_x4" translatable="false">x4</string>
     <string name="edit_round_delete_dialog_title">Vuoi davvero eliminare il round?</string>
     <string name="edit_round_delete_dialog_button_positive">Elimina</string>
     <string name="edit_round_delete_dialog_button_negative">Annulla</string>
