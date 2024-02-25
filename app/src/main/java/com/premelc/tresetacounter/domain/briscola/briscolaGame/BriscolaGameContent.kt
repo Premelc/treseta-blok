@@ -2,7 +2,6 @@ package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,10 +31,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
@@ -47,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -173,22 +172,23 @@ private fun RowScope.AddSubtractButtons(
     Box(
         modifier = modifier
             .weight(1f)
-            .border(
-                width = 1.dp,
-                shape = CircleShape,
-                color = MaterialTheme.colors.primary
-            ),
+//            .border(
+//                width = 1.dp,
+//                shape = CircleShape,
+//                color = MaterialTheme.colors.primary
+//            )
+        ,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            IncreasePointButton {
+            EditPointsButton(painterResource(R.drawable.circle_plus)) {
                 interaction(BriscolaGameInteraction.TapOnAddPointButton(team))
             }
-            DecreasePointButton {
+            EditPointsButton(painterResource(R.drawable.circle_minus)) {
                 interaction(BriscolaGameInteraction.TapOnSubtractPointButton(team))
             }
         }
@@ -196,41 +196,18 @@ private fun RowScope.AddSubtractButtons(
 }
 
 @Composable
-private fun IncreasePointButton(
-    modifier: Modifier = Modifier,
+private fun RowScope.EditPointsButton(
+    painter: Painter,
     onClick: () -> Unit,
 ) {
-    Button(
+    IconButton(
         onClick = onClick,
-        modifier = modifier.size(80.dp),
-        shape = CircleShape,
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.weight(1f),
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
-            modifier = Modifier.size(40.dp),
-            contentDescription = null
-        )
-    }
-}
-
-@Composable
-private fun DecreasePointButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.size(80.dp),
-        shape = CircleShape,
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-        contentPadding = PaddingValues(0.dp),
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.minus),
-            modifier = Modifier.size(40.dp),
-            contentDescription = null
+            painter = painter,
+            contentDescription = null,
+            tint = MaterialTheme.colors.primary
         )
     }
 }
@@ -337,7 +314,7 @@ private fun BriscolaGrid(firstTeamPoints: Int, secondTeamPoints: Int) {
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 8.dp),
         state = gridState,
         verticalArrangement = Arrangement.Center,
