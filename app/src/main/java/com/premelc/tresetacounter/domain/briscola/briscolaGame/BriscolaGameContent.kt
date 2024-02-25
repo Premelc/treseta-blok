@@ -183,10 +183,10 @@ private fun RowScope.AddSubtractButtons(
                 .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            EditPointsButton(painterResource(R.drawable.italy)) {
+            EditPointsButton(painterResource(R.drawable.plus)) {
                 interaction(BriscolaGameInteraction.TapOnAddPointButton(team))
             }
-            EditPointsButton(painterResource(R.drawable.italy)) {
+            EditPointsButton(painterResource(R.drawable.minus)) {
                 interaction(BriscolaGameInteraction.TapOnSubtractPointButton(team))
             }
         }
@@ -312,7 +312,7 @@ private fun BriscolaGrid(firstTeamPoints: Int, secondTeamPoints: Int) {
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = 8.dp),
         state = gridState,
         verticalArrangement = Arrangement.Center,
