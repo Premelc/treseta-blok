@@ -1,1 +1,6 @@
-first test automatic deployment
+Preview release 0.2.1
+-adjusted call pills size
+-changed briscola button icons
+-solve issue where briscola buttons are messed up on smaller screens
+-adjust past game tile paddings
+-added in-app language change option
