@@ -2,7 +2,6 @@ package com.premelc.tresetacounter.uiComponents
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,54 +33,54 @@ internal fun LanguageDropDownMenu(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
-        LanguageAccordion(
-            modifier = modifier,
-            selectedLanguage = selectedLanguage,
-            isExpanded = expanded,
-            onHeaderTap = {
-                expanded = !expanded
-            },
+    LanguageAccordion(
+        modifier = modifier,
+        selectedLanguage = selectedLanguage,
+        isExpanded = expanded,
+        onHeaderTap = {
+            expanded = !expanded
+        },
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth()
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-            ) {
-                if (selectedLanguage != "en") {
-                    LanguageDropDownItem(
-                        onClick = {
-                            expanded = false
-                            onInteraction(TapOnLanguageItem("en"))
-                            context.setLanguage("en")
-                        },
-                        text = stringResource(R.string.language_name_english),
-                        icon = painterResource(R.drawable.uk)
-                    )
-                }
-                if (selectedLanguage != "hr") {
-                    LanguageDropDownItem(
-                        onClick = {
-                            expanded = false
-                            onInteraction(TapOnLanguageItem("hr"))
-                            context.setLanguage("hr")
-                        },
-                        text = stringResource(R.string.language_name_croatian),
-                        icon = painterResource(R.drawable.croatia)
-                    )
-                }
-                if (selectedLanguage != "it") {
-                    LanguageDropDownItem(
-                        onClick = {
-                            expanded = false
-                            onInteraction(TapOnLanguageItem("it"))
-                            context.setLanguage("it")
-                        },
-                        text = stringResource(R.string.language_name_italian),
-                        icon = painterResource(R.drawable.italy)
-                    )
-                }
+            if (selectedLanguage != "en") {
+                LanguageDropDownItem(
+                    onClick = {
+                        expanded = false
+                        onInteraction(TapOnLanguageItem("en"))
+                        context.setLanguage("en")
+                    },
+                    text = stringResource(R.string.language_name_english),
+                    icon = painterResource(R.drawable.uk)
+                )
+            }
+            if (selectedLanguage != "hr") {
+                LanguageDropDownItem(
+                    onClick = {
+                        expanded = false
+                        onInteraction(TapOnLanguageItem("hr"))
+                        context.setLanguage("hr")
+                    },
+                    text = stringResource(R.string.language_name_croatian),
+                    icon = painterResource(R.drawable.croatia)
+                )
+            }
+            if (selectedLanguage != "it") {
+                LanguageDropDownItem(
+                    onClick = {
+                        expanded = false
+                        onInteraction(TapOnLanguageItem("it"))
+                        context.setLanguage("it")
+                    },
+                    text = stringResource(R.string.language_name_italian),
+                    icon = painterResource(R.drawable.italy)
+                )
             }
         }
+    }
 }
 
 @Composable
