@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -158,8 +157,16 @@ private fun IncreasePointsButtons(interaction: (BriscolaGameInteraction) -> Unit
             .padding(horizontal = 20.dp, vertical = 30.dp),
         horizontalArrangement = Arrangement.SpaceAround,
     ) {
-        AddSubtractButtons(modifier = Modifier.padding(end = 4.dp), team = Team.FIRST, interaction = interaction)
-        AddSubtractButtons(modifier = Modifier.padding(start = 4.dp), team = Team.SECOND, interaction = interaction)
+        AddSubtractButtons(
+            modifier = Modifier.padding(end = 4.dp),
+            team = Team.FIRST,
+            interaction = interaction
+        )
+        AddSubtractButtons(
+            modifier = Modifier.padding(start = 4.dp),
+            team = Team.SECOND,
+            interaction = interaction
+        )
     }
 }
 
@@ -169,26 +176,17 @@ private fun RowScope.AddSubtractButtons(
     team: Team,
     interaction: (BriscolaGameInteraction) -> Unit,
 ) {
-    Box(
-        modifier = modifier
-            .weight(1f)
-//            .border(
-//                width = 1.dp,
-//                shape = CircleShape,
-//                color = MaterialTheme.colors.primary
-//            )
-        ,
-    ) {
+    Box(modifier.weight(1f)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            EditPointsButton(painterResource(R.drawable.circle_plus)) {
+            EditPointsButton(painterResource(R.drawable.italy)) {
                 interaction(BriscolaGameInteraction.TapOnAddPointButton(team))
             }
-            EditPointsButton(painterResource(R.drawable.circle_minus)) {
+            EditPointsButton(painterResource(R.drawable.italy)) {
                 interaction(BriscolaGameInteraction.TapOnSubtractPointButton(team))
             }
         }

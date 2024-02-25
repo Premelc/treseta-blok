@@ -2,6 +2,7 @@ package com.premelc.tresetacounter
 
 import androidx.room.Room
 import com.premelc.tresetacounter.data.CardGameDatabase
+import com.premelc.tresetacounter.data.PreferencesManager
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuViewModel
 import com.premelc.tresetacounter.domain.treseta.tresetaGame.TresetaGameViewModel
 import com.premelc.tresetacounter.domain.briscola.briscolaGame.BriscolaGameViewModel
@@ -35,4 +36,5 @@ val appModule = module {
     viewModelOf(::TresetaRoundEditViewModel)
     viewModelOf(::TresetaCalculatorViewModel)
     singleOf(::TresetaService)
+    singleOf(::PreferencesManager)
 }

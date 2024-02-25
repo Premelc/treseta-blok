@@ -11,9 +11,6 @@ interface RoundDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRound(round: RoundEntity): Long
 
-    @Query("SELECT * FROM round WHERE setId  IS :setId")
-    suspend fun getAllRounds(setId: Int): List<RoundEntity>
-
     @Query("SELECT * FROM round")
     fun getRounds(): Flow<List<RoundEntity>>
 

@@ -46,4 +46,7 @@
         <item quantity="many">%1$d ore fa</item>
         <item quantity="other">%1$d ore fa</item>
     </plurals>
+    <string name="language_name_english">Inglese</string>
+    <string name="language_name_italian">Italiano</string>
+    <string name="language_name_croatian">Croato</string>
 </resources>

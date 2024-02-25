@@ -44,4 +44,7 @@
         <item quantity="one">An hour ago</item>
         <item quantity="other">%1$d hours ago</item>
     </plurals>
+    <string name="language_name_english">English</string>
+    <string name="language_name_italian">Italian</string>
+    <string name="language_name_croatian">Croatian</string>
 </resources>

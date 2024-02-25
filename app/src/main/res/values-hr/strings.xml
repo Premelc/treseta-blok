@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_title">Trešeta &amp; Briškula brojač</string>
     <string name="game_history_title">Povijest igre</string>
     <string name="game_history_first_team_title">MI</string>
@@ -13,7 +13,7 @@
     <string name="game_calculator_save_label">Spremi</string>
     <string name="main_menu_continue_game_title">Nastavi prijašnju igru</string>
     <string name="main_menu_no_previous_games_label">Nemate prijašnjih igara \n Započni novu igru pritiskom na tipku</string>
-    <string name="main_menu_treseta_tab_title">Treseta</string>
+    <string name="main_menu_treseta_tab_title">Trešeta</string>
     <string name="main_menu_briscola_tab_title">Briškula</string>
     <string name="main_menu_new_game_button">Nova igra</string>
     <string name="main_menu_favourite_label">Favoriti</string>
@@ -37,15 +37,16 @@
     <string name="treseta_calls_snackbar">Maksimalan broj odabranih akužanja dostignut</string>
     <string name="treseta_calls_snackbar_action">Uredu</string>
     <plurals name="timestamp_minutes_ago">
-        <item quantity="one">Prije jedne minute</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Prije jedne minute</item>
         <item quantity="few">Prije %1$d minute</item>
-        <item quantity="many">Prije %1$d minuta</item>
         <item quantity="other">Prije %1$d minuta</item>
     </plurals>
     <plurals name="timestamp_hours_ago">
-        <item quantity="one">Prije jedan sat</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Prije jedan sat</item>
         <item quantity="few">Prije %1$d sata</item>
-        <item quantity="many">Prije %1$d sati</item>
         <item quantity="other">Prije %1$d sati</item>
     </plurals>
+    <string name="language_name_english">Engleski</string>
+    <string name="language_name_italian">Talijanski</string>
+    <string name="language_name_croatian">Hrvatski</string>
 </resources>

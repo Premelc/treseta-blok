@@ -41,6 +41,9 @@
     <string name="timestamp_right_now">Just now</string>
     <string name="treseta_calls_snackbar">Max number of selected calls has been reached.</string>
     <string name="treseta_calls_snackbar_action">OK</string>
+    <string name="language_name_english">English</string>
+    <string name="language_name_italian">Italian</string>
+    <string name="language_name_croatian">Croatian</string>
     <plurals name="timestamp_minutes_ago">
         <item quantity="one">a minute ago</item>
         <item quantity="other">%1$d minutes ago</item>
