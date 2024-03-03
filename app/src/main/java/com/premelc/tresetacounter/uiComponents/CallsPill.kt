@@ -53,7 +53,8 @@ fun CallsPill(
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 0.25.sp,
-                )
+                ),
+                maxLines = 1,
             )
         }
     }
@@ -95,7 +96,8 @@ fun RemovableCallsPill(
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 0.25.sp,
-                )
+                ),
+                maxLines = 1,
             )
         }
     }

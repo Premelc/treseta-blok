@@ -17,10 +17,10 @@ val lightColors = with(ColorPalette) {
 
 val darkColors = with(ColorPalette) {
     lightColors(
-        primary = slateBlue,
+        primary = steelBlue,
         secondary = totalWhite,
         background = midnightBlue,
-        surface = slateBlue,
+        surface = steelBlue,
         onPrimary = totalWhite,
         onSecondary = totalWhite,
         onBackground = totalWhite,
