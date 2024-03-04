@@ -1,5 +1,6 @@
 package com.premelc.tresetacounter
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import com.google.android.gms.ads.MobileAds
 import com.premelc.tresetacounter.navigation.NavigationHost
 import com.premelc.tresetacounter.ui.theme.TresetaBlokTheme
+import com.premelc.tresetacounter.utils.LocaleHelper.updateResources
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,5 +29,9 @@ class MainActivity : ComponentActivity() {
             }
         }
         MobileAds.initialize(this) {}
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(updateResources(base!!))
     }
 }
