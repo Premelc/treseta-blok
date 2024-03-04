@@ -2,6 +2,7 @@ package com.premelc.tresetacounter.domain.briscola.briscolaGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.premelc.tresetacounter.service.BriscolaService
 import com.premelc.tresetacounter.service.data.BriscolaGameSet
 import com.premelc.tresetacounter.service.data.BriscolaGameState
@@ -16,7 +17,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BriscolaGameViewModel(
-    private val briscolaService: BriscolaService
+    private val briscolaService: BriscolaService,
+    private val navController: NavController,
 ) : ViewModel() {
 
     private val currentSetId = MutableStateFlow(0)
@@ -95,7 +97,7 @@ class BriscolaGameViewModel(
                 }
             }
 
-            BriscolaGameInteraction.TapOnMenuButton -> Unit
+            BriscolaGameInteraction.TapOnMenuButton -> navController.popBackStack()
         }
     }
 

@@ -2,6 +2,7 @@ package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.service.data.TresetaGameState
@@ -16,7 +17,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewModel() {
+class TresetaGameViewModel(
+    private val tresetaService: TresetaService,
+    private val navController: NavController,
+) : ViewModel() {
 
     private val currentSetId = MutableStateFlow(0)
     private val setFinishedModalFlow = MutableStateFlow(false)
@@ -65,10 +69,9 @@ class TresetaGameViewModel(private val tresetaService: TresetaService) : ViewMod
 
     internal fun onInteraction(interaction: TresetaGameInteraction) {
         when (interaction) {
-            TresetaGameInteraction.TapOnBackButton -> Unit
             TresetaGameInteraction.TapOnNewRound -> Unit
             TresetaGameInteraction.TapOnHistoryButton -> Unit
-            TresetaGameInteraction.TapOnMenuButton -> Unit
+            TresetaGameInteraction.TapOnMenuButton -> navController.popBackStack()
             is TresetaGameInteraction.TapOnRoundScore -> Unit
             TresetaGameInteraction.TapOnSetFinishedModalConfirm -> {
                 viewModelScope.launch {
