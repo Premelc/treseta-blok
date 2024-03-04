@@ -1,3 +1,5 @@
-Preview release 0.2.2
--changed dark mode primary color to be lighter for increased contrast
--fixed bug where call pills for napolitana would be split into two lines
+Closed test release 0.2.3
+-fixed game screen staying in back stack after navigating to main menu which caused loops when navigating using back button
+-fixed a bug where navigating back to a game screen of a deleted game was possible
+-fixed centering on tressette game screen points list
+-fixed issue where devices below API 33 weren't able to change the language in the app
