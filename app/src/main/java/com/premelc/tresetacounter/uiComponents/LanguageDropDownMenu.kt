@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuInteraction.TapOnLanguageItem
 import com.premelc.tresetacounter.domain.mainMenu.MainMenuInteraction
-import com.premelc.tresetacounter.utils.setLanguage
+import com.premelc.tresetacounter.utils.changeLanguage
 
 @Composable
 internal fun LanguageDropDownMenu(
@@ -51,7 +51,7 @@ internal fun LanguageDropDownMenu(
                     onClick = {
                         expanded = false
                         onInteraction(TapOnLanguageItem("en"))
-                        context.setLanguage("en")
+                        context.changeLanguage("en")
                     },
                     text = stringResource(R.string.language_name_english),
                     icon = painterResource(R.drawable.uk)
@@ -62,7 +62,7 @@ internal fun LanguageDropDownMenu(
                     onClick = {
                         expanded = false
                         onInteraction(TapOnLanguageItem("hr"))
-                        context.setLanguage("hr")
+                        context.changeLanguage("hr")
                     },
                     text = stringResource(R.string.language_name_croatian),
                     icon = painterResource(R.drawable.croatia)
@@ -73,7 +73,7 @@ internal fun LanguageDropDownMenu(
                     onClick = {
                         expanded = false
                         onInteraction(TapOnLanguageItem("it"))
-                        context.setLanguage("it")
+                        context.changeLanguage("it")
                     },
                     text = stringResource(R.string.language_name_italian),
                     icon = painterResource(R.drawable.italy)

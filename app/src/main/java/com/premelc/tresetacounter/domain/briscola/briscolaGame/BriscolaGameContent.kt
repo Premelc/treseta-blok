@@ -52,19 +52,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.premelc.tresetacounter.R
-import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-internal fun BriscolaGameScreen(navigate: (String) -> Unit) {
-    val viewModel: BriscolaGameViewModel = koinViewModel()
+internal fun BriscolaGameScreen(navController: NavController) {
+    val viewModel: BriscolaGameViewModel = koinViewModel { parametersOf(navController) }
     val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
     if (viewState is BriscolaGameViewState.GameReady) {
-        BriscolaGameContent(viewState, viewModel::onInteraction, navigate)
+        BriscolaGameContent(viewState, viewModel::onInteraction)
     }
 }
 
@@ -72,17 +73,13 @@ internal fun BriscolaGameScreen(navigate: (String) -> Unit) {
 internal fun BriscolaGameContent(
     viewState: BriscolaGameViewState.GameReady,
     onInteraction: (BriscolaGameInteraction) -> Unit,
-    navigate: (String) -> Unit
 ) {
     FullActionToolbar(
         title = stringResource(R.string.briscola_game_title),
         leftAction = {},
         rightAction = {
             Icon(
-                modifier = Modifier.clickable {
-                    navigate(NavRoutes.MainMenu.route)
-                    onInteraction(BriscolaGameInteraction.TapOnMenuButton)
-                },
+                modifier = Modifier.clickable { onInteraction(BriscolaGameInteraction.TapOnMenuButton) },
                 painter = painterResource(org.koin.android.R.drawable.abc_ic_menu_overflow_material),
                 contentDescription = null,
             )

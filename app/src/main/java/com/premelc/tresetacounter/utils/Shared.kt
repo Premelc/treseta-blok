@@ -1,11 +1,10 @@
 package com.premelc.tresetacounter.utils
 
+import android.app.Activity
 import android.app.LocaleManager
 import android.content.Context
 import android.os.Build
 import android.os.LocaleList
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import com.premelc.tresetacounter.service.data.Round
 
 private const val NAPOLITANA_POINTS = 3
@@ -39,13 +38,11 @@ internal fun List<Round>.checkWinningTeam(): Team {
     }
 }
 
-internal fun Context.setLanguage(localeTag: String) {
+internal fun Context.changeLanguage(localeTag: String) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         this.getSystemService(LocaleManager::class.java).applicationLocales =
             LocaleList.forLanguageTags(localeTag)
     } else {
-        AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.forLanguageTags(localeTag)
-        )
+        (this as Activity).recreate()
     }
 }

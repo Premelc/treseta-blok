@@ -39,15 +39,13 @@ private fun NavController.navigateWrapper(route: String) {
 
 private fun NavGraphBuilder.briscolaNavigation(navController: NavController) {
     composableWrapper(NavRoutes.BriscolaGame.route) {
-        BriscolaGameScreen { route: String ->
-            navController.navigateWrapper(route)
-        }
+        BriscolaGameScreen(navController)
     }
 }
 
 private fun NavGraphBuilder.tresetaNavigation(navController: NavController) {
     composableWrapper(NavRoutes.TresetaGame.route) {
-        TresetaGameScreen { route: String ->
+        TresetaGameScreen(navController) { route: String ->
             navController.navigateWrapper(route)
         }
     }
