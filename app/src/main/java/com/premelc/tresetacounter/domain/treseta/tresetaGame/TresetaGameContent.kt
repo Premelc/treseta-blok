@@ -1,5 +1,6 @@
 package com.premelc.tresetacounter.domain.treseta.tresetaGame
 
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -232,16 +234,22 @@ private fun ColumnScope.RoundsListContent(
                         .clickable {
                             navigate(NavRoutes.TresetaRoundEdit.route.plus("/${it.id}"))
                         },
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     Text(
+                        modifier = Modifier
+                            .widthIn(min = 20.dp)
+                            .padding(vertical = 10.dp),
+                        textAlign = TextAlign.Center,
                         text = it.firstTeamPoints.toString(),
-                        modifier = Modifier.padding(vertical = 10.dp),
                         style = Typography.body1
                     )
                     Text(
+                        modifier = Modifier
+                            .widthIn(min = 20.dp)
+                            .padding(vertical = 10.dp),
+                        textAlign = TextAlign.Center,
                         text = it.secondTeamPoints.toString(),
-                        modifier = Modifier.padding(vertical = 10.dp),
                         style = Typography.body1
                     )
                 }
