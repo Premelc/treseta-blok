@@ -33,6 +33,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
@@ -47,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -57,6 +58,7 @@ import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
+import com.premelc.tresetacounter.utils.WakeLock
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -74,22 +76,22 @@ internal fun BriscolaGameContent(
     viewState: BriscolaGameViewState.GameReady,
     onInteraction: (BriscolaGameInteraction) -> Unit,
 ) {
+    WakeLock()
     FullActionToolbar(
         title = stringResource(R.string.briscola_game_title),
-        leftAction = {},
-        rightAction = {
+        leftAction = {
             Icon(
                 modifier = Modifier.clickable { onInteraction(BriscolaGameInteraction.TapOnMenuButton) },
-                painter = painterResource(org.koin.android.R.drawable.abc_ic_menu_overflow_material),
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null,
             )
         },
+        rightAction = {},
     ) {
         Column {
             PointsList(viewState)
             Spacer(Modifier)
             IncreasePointsButtons(onInteraction)
-            CurrentSetResult(viewState)
         }
     }
     if (viewState.showSetFinishedModal) {
@@ -203,39 +205,6 @@ private fun RowScope.EditPointsButton(
             painter = painter,
             contentDescription = null,
             tint = MaterialTheme.colors.primary
-        )
-    }
-}
-
-@Composable
-private fun CurrentSetResult(viewState: BriscolaGameViewState.GameReady) {
-    Column {
-        Divider(
-            modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-            color = MaterialTheme.colors.onBackground
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(
-                text = viewState.firstTeamCurrentSetScore.toString(),
-                style = Typography.h6,
-                textDecoration = if (viewState.winningTeam == Team.FIRST) TextDecoration.Underline else null
-            )
-            Text(
-                text = viewState.secondTeamScore.toString(),
-                style = Typography.h6,
-                textDecoration = if (viewState.winningTeam == Team.SECOND) TextDecoration.Underline else null
-            )
-        }
-        Divider(
-            modifier = Modifier
-                .padding(horizontal = 4.dp, vertical = 8.dp)
-                .fillMaxWidth(),
-            color = MaterialTheme.colors.onBackground
         )
     }
 }

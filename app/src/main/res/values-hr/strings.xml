@@ -19,6 +19,10 @@
     <string name="main_menu_favourite_label">Favoriti</string>
     <string name="main_menu_first_team_label">Mi\u0020</string>
     <string name="main_menu_second_team_label">\u0020Vi</string>
+    <string name="main_menu_dialog_text">Želite li zaista obrisati igru?</string>
+    <string name="main_menu_dialog_positive">Obriši</string>
+    <string name="main_menu_dialog_negative">Odustani</string>
+    <string name="main_menu_too_many_games_snackbar">Ne možete započeti novu igru. Maksimalan broj igara je 20.</string>
     <string name="treseta_game_title">TREŠETA</string>
     <string name="briscola_game_title">BRIŠKULA</string>
     <string name="game_add_new_round_button_label">Dodaj novu partiju</string>
