@@ -1,5 +1,7 @@
-Closed test release 0.2.3
--fixed game screen staying in back stack after navigating to main menu which caused loops when navigating using back button
--fixed a bug where navigating back to a game screen of a deleted game was possible
--fixed centering on tressette game screen points list
--fixed issue where devices below API 33 weren't able to change the language in the app
+Closed test release 0.2.4
+-changed some text positioning to be consistent throughout the app
+-changed out the go to main menu icon to back icon as it maes more sense
+-added a wake lock to prevent the device from locking while on game screens
+-limited the max amount of games to 20 and added an explanation snackbar for disabled button
+-removed some score tracking from briscola as it didn't make sense to have it there
+-added a confirmation dialog when deleting games on the main menu screen
