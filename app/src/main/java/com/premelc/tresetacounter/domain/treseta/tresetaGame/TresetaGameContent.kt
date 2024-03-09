@@ -22,6 +22,8 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +42,7 @@ import com.premelc.tresetacounter.navigation.NavRoutes
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
+import com.premelc.tresetacounter.utils.WakeLock
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -58,9 +61,10 @@ internal fun TresetaGameContent(
     onInteraction: (TresetaGameInteraction) -> Unit,
     navigate: (String) -> Unit
 ) {
+    WakeLock()
     FullActionToolbar(
         title = stringResource(R.string.treseta_game_title),
-        leftAction = {
+        rightAction = {
             if (viewState.showHistoryButton) {
                 Icon(
                     modifier = Modifier.clickable {
@@ -72,10 +76,10 @@ internal fun TresetaGameContent(
                 )
             }
         },
-        rightAction = {
+        leftAction = {
             Icon(
                 modifier = Modifier.clickable { onInteraction(TresetaGameInteraction.TapOnMenuButton) },
-                painter = painterResource(org.koin.android.R.drawable.abc_ic_menu_overflow_material),
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null,
             )
         },

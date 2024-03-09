@@ -22,6 +22,10 @@
     <string name="main_menu_favourite_label">Favorites</string>
     <string name="main_menu_first_team_label">Us\u0020</string>
     <string name="main_menu_second_team_label">\u0020Them</string>
+    <string name="main_menu_dialog_text">Do you really want to delete the game?</string>
+    <string name="main_menu_dialog_positive">Delete</string>
+    <string name="main_menu_dialog_negative">Cancel</string>
+    <string name="main_menu_too_many_games_snackbar">Cannot create a new game. The maximum number of games is 20</string>
     <string name="treseta_game_title">TRESSETTE</string>
     <string name="briscola_game_title">BRISCOLA</string>
     <string name="game_add_new_round_button_label">Add new round</string>

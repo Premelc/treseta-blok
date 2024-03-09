@@ -6,13 +6,15 @@ import com.premelc.tresetacounter.data.PreferencesManager
 import com.premelc.tresetacounter.service.BriscolaService
 import com.premelc.tresetacounter.service.TresetaService
 import com.premelc.tresetacounter.utils.GameType
+import com.premelc.tresetacounter.utils.combine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val PREFS_LANGUAGE_KEY = "selected_language"
+private const val PREFS_SELECTE_GAME_TYPE = "selected_game_type"
 
 class MainMenuViewModel(
     private val tresetaService: TresetaService,
@@ -20,43 +22,55 @@ class MainMenuViewModel(
     private val preferencesManager: PreferencesManager,
 ) : ViewModel() {
 
-    private val selectedLanguage =
+    private val selectedLanguageFlow =
         MutableStateFlow(preferencesManager.getData(PREFS_LANGUAGE_KEY, "en"))
+    private val selectedGameTypeFlow =
+        MutableStateFlow(preferencesManager.getData(PREFS_SELECTE_GAME_TYPE, "0"))
+    private val showDeleteGameDialogFlow = MutableStateFlow<Pair<Int, GameType>?>(null)
+    private val showTooManyGamesSnackbarFlow = MutableStateFlow(false)
 
     val viewState = combine(
         tresetaService.gamesFlow(),
         briscolaService.gamesFlow(),
-        selectedLanguage,
-    ) { tresetaGamesList, briscolaGamesList, selectedLanguage ->
+        selectedLanguageFlow,
+        showDeleteGameDialogFlow,
+        selectedGameTypeFlow,
+        showTooManyGamesSnackbarFlow,
+    ) { tresetaGamesList, briscolaGamesList, selectedLanguage,
+        showDeleteGameDialog, selectedGameType, showTooManyGamesSnackbar ->
         MainMenuViewState(
             selectedLanguage = selectedLanguage,
             tresetaGames = tresetaGamesList?.sortedByDescending { it.timestamp } ?: emptyList(),
             briscolaGames = briscolaGamesList?.sortedByDescending { it.timestamp } ?: emptyList(),
+            showDeleteGameDialog = showDeleteGameDialog,
+            selectedGameType = selectedGameType.toInt(),
+            showTooManyGamesSnackbar = showTooManyGamesSnackbar,
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.Eagerly,
-        MainMenuViewState(),
+        MainMenuViewState(
+            selectedGameType = preferencesManager.getData(PREFS_SELECTE_GAME_TYPE, "0").toInt(),
+        ),
     )
 
     internal fun onInteraction(interaction: MainMenuInteraction) {
         when (interaction) {
             is MainMenuInteraction.OnNewGameClicked -> {
                 viewModelScope.launch {
-                    when (interaction.gameTypeSelected) {
-                        GameType.TRESETA -> tresetaService.startNewGame()
-                        GameType.BRISCOLA -> briscolaService.startNewGame()
+                    if (canCreateNewGame(interaction.gameTypeSelected)) {
+                        when (interaction.gameTypeSelected) {
+                            GameType.TRESETA -> tresetaService.startNewGame()
+                            GameType.BRISCOLA -> briscolaService.startNewGame()
+                        }
+                    } else {
+                        showTooManyGamesSnackbarFlow.value = true
                     }
                 }
             }
 
             is MainMenuInteraction.TapOnDeleteButton -> {
-                viewModelScope.launch {
-                    when (interaction.gameType) {
-                        GameType.TRESETA -> tresetaService.deleteGame(interaction.gameId)
-                        GameType.BRISCOLA -> briscolaService.deleteGame(interaction.gameId)
-                    }
-                }
+                showDeleteGameDialogFlow.value = Pair(interaction.gameId, interaction.gameType)
             }
 
             is MainMenuInteraction.TapOnGameCard -> {
@@ -75,9 +89,43 @@ class MainMenuViewModel(
                 }
 
             is MainMenuInteraction.TapOnLanguageItem -> {
-                selectedLanguage.value = interaction.languageCode
+                selectedLanguageFlow.value = interaction.languageCode
                 preferencesManager.saveData(PREFS_LANGUAGE_KEY, interaction.languageCode)
             }
+
+            MainMenuInteraction.TapOnDialogCancel -> {
+                showDeleteGameDialogFlow.value = null
+            }
+
+            is MainMenuInteraction.TapOnDialogConfirm -> {
+                viewModelScope.launch {
+                    when (interaction.gameType) {
+                        GameType.TRESETA -> tresetaService.deleteGame(interaction.gameId)
+                        GameType.BRISCOLA -> briscolaService.deleteGame(interaction.gameId)
+                    }
+                }
+                showDeleteGameDialogFlow.value = null
+            }
+
+            is MainMenuInteraction.TapOnGameTypeTab -> {
+                selectedGameTypeFlow.value = interaction.tabIndex.toString()
+                preferencesManager.saveData(
+                    PREFS_SELECTE_GAME_TYPE,
+                    interaction.tabIndex.toString()
+                )
+            }
+
+            MainMenuInteraction.DissmissTooManyGamesSnackbar -> {
+                showTooManyGamesSnackbarFlow.value = false
+            }
+        }
+    }
+
+    private suspend fun canCreateNewGame(gameTypeSelected: GameType): Boolean {
+        return if (gameTypeSelected == GameType.TRESETA) {
+            (tresetaService.gamesFlow().first() ?: emptyList()).size < 20
+        } else {
+            (briscolaService.gamesFlow().first() ?: emptyList()).size < 20
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.premelc.tresetacounter.domain.mainMenu
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,18 +10,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,6 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.premelc.tresetacounter.R
 import com.premelc.tresetacounter.data.GameEntity
@@ -39,6 +48,7 @@ import com.premelc.tresetacounter.uiComponents.LanguageDropDownMenu
 import com.premelc.tresetacounter.uiComponents.PastGameCard
 import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.utils.GameType
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -54,8 +64,14 @@ private fun MainMenuContent(
     onInteraction: (MainMenuInteraction) -> Unit,
     navigate: (String) -> Unit,
 ) {
-    var tabIndex by remember { mutableIntStateOf(0) }
-    ToolbarScaffold {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarMessage = stringResource(R.string.main_menu_too_many_games_snackbar)
+    ToolbarScaffold(
+        snackbarHostState = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -93,9 +109,9 @@ private fun MainMenuContent(
                 item {
                     GameTypeTabs(
                         viewState = viewState,
-                        selectedIndex = tabIndex,
+                        selectedIndex = viewState.selectedGameType,
                         onTabSelection = { selectedIndex ->
-                            tabIndex = selectedIndex
+                            onInteraction(MainMenuInteraction.TapOnGameTypeTab(selectedIndex))
                         },
                         onInteraction = onInteraction,
                         navigate = navigate
@@ -105,8 +121,34 @@ private fun MainMenuContent(
             NewGameButton(
                 onInteraction = onInteraction,
                 navigate = navigate,
-                selectedIndex = tabIndex
+                selectedIndex = viewState.selectedGameType,
+                isEnabled = when (viewState.selectedGameType) {
+                    0 -> viewState.tresetaGames.size < 20
+                    else -> viewState.briscolaGames.size < 20
+                },
             )
+        }
+    }
+    if (viewState.showDeleteGameDialog != null) {
+        DeleteGameDialog(
+            onInteraction = onInteraction,
+            gameId = viewState.showDeleteGameDialog.first,
+            gameType = viewState.showDeleteGameDialog.second,
+        )
+    }
+    LaunchedEffect(viewState.showTooManyGamesSnackbar) {
+        if (viewState.showTooManyGamesSnackbar) {
+            scope.launch {
+                val result = snackbarHostState.showSnackbar(
+                    message = snackbarMessage,
+                    duration = SnackbarDuration.Short
+                )
+                when (result) {
+                    SnackbarResult.Dismissed, SnackbarResult.ActionPerformed -> {
+                        onInteraction(MainMenuInteraction.DissmissTooManyGamesSnackbar)
+                    }
+                }
+            }
         }
     }
 }
@@ -115,6 +157,7 @@ private fun MainMenuContent(
 private fun NewGameButton(
     onInteraction: (MainMenuInteraction) -> Unit,
     navigate: (String) -> Unit,
+    isEnabled: Boolean,
     selectedIndex: Int,
 ) {
     Button(
@@ -124,20 +167,25 @@ private fun NewGameButton(
                     if (selectedIndex == 0) GameType.TRESETA else GameType.BRISCOLA
                 )
             )
-            navigate(
-                if (selectedIndex == 0) {
-                    NavRoutes.TresetaGame.route
-                } else {
-                    NavRoutes.BriscolaGame.route
-                }
-            )
+            if (isEnabled) {
+                navigate(
+                    if (selectedIndex == 0) {
+                        NavRoutes.TresetaGame.route
+                    } else {
+                        NavRoutes.BriscolaGame.route
+                    }
+                )
+            }
         },
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
             .height(60.dp),
     ) {
-        Text(text = stringResource(R.string.main_menu_new_game_button))
+        Text(
+            text = stringResource(R.string.main_menu_new_game_button),
+            color = MaterialTheme.colors.onPrimary.copy(alpha = if (isEnabled) 1.0f else 0.5f)
+        )
     }
 }
 
@@ -268,6 +316,62 @@ private fun PastGameContent(
                 onInteraction = onInteraction,
                 navigate = navigate,
             )
+        }
+    }
+}
+
+@Composable
+private fun DeleteGameDialog(
+    onInteraction: (MainMenuInteraction) -> Unit,
+    gameId: Int,
+    gameType: GameType,
+) {
+    Dialog(
+        onDismissRequest = { /*TODO*/ },
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(MaterialTheme.colors.background)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                text = stringResource(R.string.main_menu_dialog_text)
+            )
+            Button(
+                modifier = Modifier
+                    .padding(vertical = 6.dp)
+                    .height(60.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    onInteraction(MainMenuInteraction.TapOnDialogConfirm(gameId, gameType))
+                },
+            ) {
+                Text(text = stringResource(R.string.main_menu_dialog_positive))
+            }
+            Button(
+                modifier = Modifier
+                    .padding(vertical = 6.dp)
+                    .height(60.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.background,
+                ),
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colors.onBackground),
+                onClick = {
+                    onInteraction(MainMenuInteraction.TapOnDialogCancel)
+                },
+            ) {
+                Text(text = stringResource(R.string.main_menu_dialog_negative))
+            }
         }
     }
 }

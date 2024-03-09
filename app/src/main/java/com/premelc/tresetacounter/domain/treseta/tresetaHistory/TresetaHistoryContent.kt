@@ -1,6 +1,7 @@
 package com.premelc.tresetacounter.domain.treseta.tresetaHistory
 
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +42,6 @@ import androidx.navigation.NavController
 import com.premelc.tresetacounter.ui.theme.Typography
 import com.premelc.tresetacounter.uiComponents.Accordion
 import com.premelc.tresetacounter.uiComponents.CallsList
-import com.premelc.tresetacounter.uiComponents.ToolbarScaffold
 import com.premelc.tresetacounter.uiComponents.getItemViewportOffset
 import com.premelc.tresetacounter.uiComponents.graph.Graph
 import com.premelc.tresetacounter.uiComponents.parseTimestamp
@@ -50,6 +53,7 @@ import com.premelc.tresetacounter.service.data.Round
 import com.premelc.tresetacounter.service.data.TresetaGameSet
 import com.premelc.tresetacounter.service.data.TresetaRound
 import com.premelc.tresetacounter.uiComponents.DEFAULT_ANIMATION_DURATION
+import com.premelc.tresetacounter.uiComponents.FullActionToolbar
 import com.premelc.tresetacounter.utils.Team
 
 @Composable
@@ -64,10 +68,18 @@ private fun GameHistoryContent(
     viewState: TresetaHistoryViewState,
     onInteraction: (TresetaHistoryInteraction) -> Unit
 ) {
-    ToolbarScaffold(
-        backAction = {
-            onInteraction(TresetaHistoryInteraction.OnBackButtonClicked)
-        }
+    FullActionToolbar(
+        leftAction = {
+            Icon(
+                modifier = Modifier.clickable {
+                    onInteraction(TresetaHistoryInteraction.OnBackButtonClicked)
+                },
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = null
+            )
+        },
+        title = stringResource(id = R.string.game_history_title),
+        rightAction = {}
     ) {
         val listState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -81,13 +93,13 @@ private fun GameHistoryContent(
             verticalArrangement = Arrangement.Top,
             state = listState,
         ) {
-            item {
-                Text(
-                    text = stringResource(id = R.string.game_history_title),
-                    style = Typography.h6.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 20.dp)
-                )
-            }
+//            item {
+//                Text(
+//                    text = stringResource(id = R.string.game_history_title),
+//                    style = Typography.h6.copy(fontWeight = FontWeight.Bold),
+//                    modifier = Modifier.padding(bottom = 20.dp)
+//                )
+//            }
             item {
                 Column {
                     Row(
