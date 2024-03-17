@@ -26,7 +26,10 @@ fun BannerAd(modifier: Modifier = Modifier) {
                         config.screenWidthDp
                     )
                 )
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                // test ad unit id
+                // adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                // this one is the real one
+                adUnitId = "ca-app-pub-9680718533779299/4280350693"
                 loadAd(AdRequest.Builder().build())
             }
         }
