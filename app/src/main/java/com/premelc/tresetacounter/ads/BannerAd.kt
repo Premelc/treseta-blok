@@ -1,5 +1,6 @@
 package com.premelc.tresetacounter.ads
 
+import android.util.Log
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ fun BannerAd(modifier: Modifier = Modifier) {
                         config.screenWidthDp
                     )
                 )
+                Log.i("premoDebug", AdRequest.Builder().build().isTestDevice(context).toString())
                 // test ad unit id
                 // adUnitId = "ca-app-pub-3940256099942544/6300978111"
                 // this one is the real one
