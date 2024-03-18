@@ -1,7 +1,2 @@
-Closed test release 0.2.4
--changed some text positioning to be consistent throughout the app
--changed out the go to main menu icon to back icon as it maes more sense
--added a wake lock to prevent the device from locking while on game screens
--limited the max amount of games to 20 and added an explanation snackbar for disabled button
--removed some score tracking from briscola as it didn't make sense to have it there
--added a confirmation dialog when deleting games on the main menu screen
+Release 1.0.0
+-First public release
